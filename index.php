@@ -94,7 +94,7 @@ require_once "config.php";
     }
 
 </style>
-<div class="cover-container d-flex h-100 p-3 mx-auto flex-column text-center">
+<div class="cover-container d-flex p-3 mx-auto flex-column text-center" style="height: calc(100vh - 121px);">
     <main role="main" class="inner cover">
         <h1 class="cover-heading">Demiran CRM és Munkaerőnyilvántartó rendszer</h1>
         <p class="lead">A rendszer fejlesztés alatt áll, a funkcionalitás és a Design az idő folyamán változhat. A Béta rendszer használatáért felelősséget nem vállalok.</p>
@@ -103,10 +103,7 @@ require_once "config.php";
         </p>
     </main>
 </div>
-<footer class="mastfoot mt-auto">
-    <div class="inner">
-        <p>© 2021 - Reterics Attila</p>
-    </div>
-</footer>
+
+<?php footer(); ?>
 </body>
 </html>

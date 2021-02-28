@@ -102,5 +102,6 @@ $ip = getIPAddress();
 
 
 </div>
+<?php footer(); ?>
 </body>
 </html>

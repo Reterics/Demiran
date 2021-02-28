@@ -159,3 +159,6 @@ if(isset($_POST['details'])){
         </div>
     <?php
 endif;
+footer()
+?>
+ </body></html>

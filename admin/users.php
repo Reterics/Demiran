@@ -38,9 +38,11 @@ if (isset($_GET['id'])):
                             <h5 class="title"><?php echo $result['username']; ?></h5>
                         </div>
                         <div class="body">
+                            <?php if(isset($result['image']) && $result['image'] != ""): ?>
                             <img src="./uploads/<?php echo $result['image']; ?>" alt="profile-picture"
-                                 style="    width: 100%;">
+                                 style=" width: 100%;">
                             <?php
+                            endif;
                             echo "<table class='table'>";
 
                             echo "<tr>
@@ -357,5 +359,5 @@ else:
 
 endif;
 ?>
-
+ <?php footer(); ?>
 </body></html>

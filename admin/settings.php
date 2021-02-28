@@ -333,4 +333,6 @@ require_once "process.php";
         </div>
 
     </div>
+<?php footer(); ?>
+
 </body></html>

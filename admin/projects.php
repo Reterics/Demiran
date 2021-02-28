@@ -400,6 +400,9 @@ else:
             </div>
         </div>
     </div>
+    </div>
 <?php
 
 endif;
+footer(); ?>
+ </body></html>

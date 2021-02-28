@@ -369,5 +369,6 @@ $sourceCount = count($sources);
         msg_id.value = d
     }
 </script>
+<?php footer(); ?>
 </body>
 </html>

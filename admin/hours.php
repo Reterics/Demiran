@@ -102,39 +102,42 @@ if (isset($connection) && $connection) :
         $allTime += $differenceInteger;
         array_push($allData, $row);
     }
+
+
 endif;
+
 
 ?>
 <div style="padding: 1em;">
     <h2><?php
-        if (isset($_GET['id'])) {
-            echo $currentUserName." óraszámai";
-        } else {
+        if (isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')) {
             echo "Összes felhasználó óraszáma";
+        } else {
+            echo $currentUserName." óraszámai";
         }
         ?></h2>
     <div class="row">
         <div class="col-md-12" style="display: flex; flex-wrap: nowrap">
             <div class="status-box-4">
                 <h5 class="title">Nap</h5>
-                <h3 class="value"><?php echo $dayTime; ?> óra</h3>
+                <h3 class="value"><?php echo floor($dayTime/3600); ?> óra</h3>
                 <div class="value">Számítva innen: <?php echo $todayDate; ?></div>
             </div>
             <div class="status-box-4">
                 <h5 class="title">Hét</h5>
-                <h3 class="value"><?php echo $weekTime; ?> óra</h3>
+                <h3 class="value"><?php echo floor($weekTime/3600); ?> óra</h3>
                 <div class="value">Számítva innen: <?php echo $weekDate; ?></div>
 
             </div>
             <div class="status-box-4">
                 <h5 class="title">Hónap</h5>
-                <h3 class="value"><?php echo $monthTime; ?> óra</h3>
+                <h3 class="value"><?php echo floor($monthTime/3600); ?> óra</h3>
                 <div class="value">Számítva innen: <?php echo $monthDate; ?></div>
 
             </div>
             <div class="status-box-4">
                 <h5 class="title">Év</h5>
-                <h3 class="value"><?php echo $yearTime; ?> óra</h3>
+                <h3 class="value"><?php echo floor($yearTime/3600); ?> óra</h3>
                 <div class="value">Számítva innen: <?php echo $yearDate; ?></div>
 
 
@@ -214,5 +217,6 @@ endif;
         </div>
 
 
-    </div>
+    </div></div>
+    <?php footer(); ?>
 </body></html>

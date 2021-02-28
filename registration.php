@@ -60,5 +60,6 @@ VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', 'member', 
         </div>
     </div>
 <?php } ?>
+<?php footer(); ?>
 </body>
 </html>

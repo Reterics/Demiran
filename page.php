@@ -145,5 +145,6 @@ else:
 endif;
 
 ?>
+<?php footer(); ?>
 </body>
 </html>

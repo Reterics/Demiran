@@ -89,5 +89,6 @@ if (isset($_POST['username']) && isset($connection)){
         navigator.geolocation.getCurrentPosition(success, error);
     }
 </script>
+<?php footer(); ?>
 </body>
 </html>

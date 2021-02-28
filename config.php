@@ -106,3 +106,15 @@ function sqlGetAll($sql) {
         return null;
     }
 }
+
+
+function footer(){
+?>
+<footer class="footer">
+    <div class="container">
+        <p> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
+    </div>
+</footer>
+
+<?php
+}

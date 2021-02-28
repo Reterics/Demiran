@@ -217,4 +217,5 @@ else:
 
 endif;
 
-
+ footer(); ?>
+    </body></html>
