@@ -209,9 +209,7 @@ else:
                         Demiran.applyDragNDrop(".drag-container", ".dragged");
                     </script>
                 </div>
-                <div class="footer btn-group mr-2">
 
-                </div>
 
 
                 <div class="registerForm" style="display: none">

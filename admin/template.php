@@ -183,6 +183,26 @@ function admin_header_menu(){
 </header>
 
 <script>
+
+    Date.prototype.toCurrentTimeString = function() {
+        var tzo = -this.getTimezoneOffset(),
+            dif = tzo >= 0 ? '+' : '-',
+            pad = function(num) {
+                var norm = Math.floor(Math.abs(num));
+                return (norm < 10 ? '0' : '') + norm;
+            };
+        return this.getFullYear() +
+            '-' + pad(this.getMonth() + 1) +
+            '-' + pad(this.getDate()) +
+            'T' + pad(this.getHours()) +
+            ':' + pad(this.getMinutes()) +
+            ':' + pad(this.getSeconds()) +
+            dif + pad(tzo / 60) +
+            ':' + pad(tzo % 60);
+    };
+
+
+
     let con;
 
     function homeLog(data) {
@@ -239,7 +259,8 @@ function admin_header_menu(){
     let interval = null;
     const startTimer = function(fromTime){
         const date = new Date(fromTime).getTime();
-
+        console.log(new Date(fromTime));
+        console.log(new Date());
         clearInterval(interval);
 
         function secondsToHms(d) {
@@ -270,13 +291,13 @@ function admin_header_menu(){
 
     if(stopIcon && startIcon/* && pauseIcon*/){
         //Start counter backend
-
+        const nowDateTime = new Date().toCurrentTimeString().slice(0, 19).replace('T', ' ');
         startIcon.onclick = function(){
 
             const working = !startIcon.classList.contains("inactive-icon");
             home.log("Clicked Start, active: " + working);
             if(working){
-                Demiran.post("process.php", 'task=work&counter=start', function (e, result) {
+                Demiran.post("process.php", 'task=work&counter=start&starttime='+encodeURIComponent(nowDateTime), function (e, result) {
                     console.log(result);
 
                     stopIcon.classList.remove("inactive-icon");
@@ -291,7 +312,7 @@ function admin_header_menu(){
             const working = !stopIcon.classList.contains("inactive-icon");
             home.log("Clicked Stop, active: " + working);
             if(working){
-                Demiran.post("process.php", 'task=work&counter=stop', function (e, result) {
+                Demiran.post("process.php", 'task=work&counter=stop&starttime='+encodeURIComponent(nowDateTime), function (e, result) {
                     console.log(result);
                     if(result === "ok"){
                         clearInterval(interval);
@@ -312,7 +333,7 @@ function admin_header_menu(){
             home.log("Munkaidő válasz a szervertől: " + result);
             const elapsed = document.querySelector(".elapsed-time");
             if(elapsed){
-                elapsed.innerHTML = result;
+                //elapsed.innerHTML = result;
             }
             if(result !== "00:00:00"){
                 <?php

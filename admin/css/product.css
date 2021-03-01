@@ -693,3 +693,8 @@ Chat részletek / details
         max-width: 540px;
     }
 }
+
+
+div.footer {
+    position: relative;
+}

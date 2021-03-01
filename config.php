@@ -112,7 +112,7 @@ function footer(){
 ?>
 <footer class="footer">
     <div class="container">
-        <p> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
+        <p style="    font-size: 12px;"> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
     </div>
 </footer>
 

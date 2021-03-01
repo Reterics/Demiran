@@ -156,28 +156,32 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
         echo mysqli_connect_error();
     }
 } else if(isset($_POST['counter']) && isset($_POST['task']) && isset($_SESSION['role']) && isset($_SESSION['id'])){
+    //date_default_timezone_set('Europe/Budapest');
+
     $sql = "SELECT * FROM `shift_list` WHERE start_time IS NOT NULL AND end_time IS NULL AND `user`=".$_SESSION['id'];
     $unfinished = mysqli_query($connection, $sql);
     $unfinishedRow = null;
     if ($unfinished) {
         $unfinishedRow = mysqli_fetch_array($unfinished);
     }
-
+    if(isset($_POST['starttime']) && $_POST['starttime'] !== "") {
+        $mysql_date_now = $_POST['starttime'];
+        //echo $mysql_date_now;
+    } else {
+        $mysql_date_now = date("Y-m-d H:i:s");
+    }
 
     if($_POST['counter'] === "start"){
         if($unfinishedRow){
-            $mysql_date_now = date("Y-m-d H:i:s");
             $sql = "UPDATE `shift_list` SET end_time='".$mysql_date_now."' WHERE id=".$unfinishedRow['id']." AND user=".$_SESSION['id'];
             mysqli_query($connection, $sql);
         }
-        $mysql_date_now = date("Y-m-d H:i:s");
         $task = mysqli_real_escape_string($connection, $_POST['task']);
         $sql = "INSERT INTO `shift_list` (user,start_time,note,task) VALUES ('".$_SESSION['id']."','".$mysql_date_now."','','".$task."');";
         mysqli_query($connection, $sql);
         echo $mysql_date_now;
     } else if($_POST['counter'] === "stop"){
         if($unfinishedRow){
-            $mysql_date_now = date("Y-m-d H:i:s");
 
             $sql = "UPDATE `shift_list` SET end_time='".$mysql_date_now."' WHERE id=".$unfinishedRow['id']." AND user=".$_SESSION['id'];
             mysqli_query($connection, $sql);
