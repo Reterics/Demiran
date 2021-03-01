@@ -111,6 +111,10 @@ require_once "process.php";
                         <div id="map" style="height: 100%"></div>
 
                     </div>
+                </div>
+                <div class="footer btn-group mr-2">
+                    <input type="button" class="btn btn-outline-black" name="send" value="Mentés" id="save" />
+                </div>
                     <script>
 
                         Demiran.applyDragNDrop(".drag-container", ".dragged");
@@ -291,6 +295,8 @@ require_once "process.php";
                                             }
                                             console.log(data,error);
                                         });
+                                    } else {
+                                        console.error("Form is not found");
                                     }
 
 
@@ -304,11 +310,9 @@ require_once "process.php";
                             console.warn("There is no setup button");
                         }
                     </script>
-                </div>
 
-                <div class="footer btn-group mr-2">
-                    <input type="button" class="btn btn-outline-black" name="send" value="Mentés" id="save" />
-                </div>
+
+
 
 
             </div>

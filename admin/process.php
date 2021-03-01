@@ -158,6 +158,33 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
 } else if(isset($_POST['counter']) && isset($_POST['task']) && isset($_SESSION['role']) && isset($_SESSION['id'])){
     //date_default_timezone_set('Europe/Budapest');
 
+    function getUnfinishedJobForUser($userId) {
+        global $connection;
+        if(!isset($connection) || !$connection) {
+            return null;
+        }
+        $sql = "SELECT * FROM `shift_list` WHERE start_time IS NOT NULL AND end_time IS NULL AND `user`=".$userId;
+        $unfinished = mysqli_query($connection, $sql);
+        $unfinishedRow = null;
+        if ($unfinished) {
+            $unfinishedRow = mysqli_fetch_array($unfinished);
+        }
+        return $unfinishedRow;
+    }
+
+    function stopUnfinishedJob($userId, $jobId, $now) {
+        if(!isset($now) || !$now) {
+            $now = date("Y-m-d H:i:s");
+        }
+        global $connection;
+        if(!isset($connection) || !$connection) {
+            return "fail";
+        }
+        $sql = "UPDATE `shift_list` SET end_time='".$now."' WHERE id=".$jobId." AND user=".$userId;
+        mysqli_query($connection, $sql);
+        return "ok";
+    }
+
     $sql = "SELECT * FROM `shift_list` WHERE start_time IS NOT NULL AND end_time IS NULL AND `user`=".$_SESSION['id'];
     $unfinished = mysqli_query($connection, $sql);
     $unfinishedRow = null;

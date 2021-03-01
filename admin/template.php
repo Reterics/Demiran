@@ -5,7 +5,7 @@
  * Date: 2020. 10. 13.
  * Time: 13:49
  */
-
+date_default_timezone_set('Europe/Budapest');
 function getIPAddress() {
     if(!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = $_SERVER['HTTP_CLIENT_IP'];
