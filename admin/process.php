@@ -157,7 +157,10 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
     }
 } else if(isset($_POST['counter']) && isset($_POST['task']) && isset($_SESSION['role']) && isset($_SESSION['id'])){
     //date_default_timezone_set('Europe/Budapest');
-
+    $userId = $_SESSION['id'];
+    if (isset($_POST['user']) && $_POST['user'] != "" && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')) {
+        $userId = $_POST['user'];
+    }
     function getUnfinishedJobForUser($userId) {
         global $connection;
         if(!isset($connection) || !$connection) {
@@ -185,7 +188,7 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
         return "ok";
     }
 
-    $sql = "SELECT * FROM `shift_list` WHERE start_time IS NOT NULL AND end_time IS NULL AND `user`=".$_SESSION['id'];
+    $sql = "SELECT * FROM `shift_list` WHERE start_time IS NOT NULL AND end_time IS NULL AND `user`=".$userId;
     $unfinished = mysqli_query($connection, $sql);
     $unfinishedRow = null;
     if ($unfinished) {
@@ -200,17 +203,17 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
 
     if($_POST['counter'] === "start"){
         if($unfinishedRow){
-            $sql = "UPDATE `shift_list` SET end_time='".$mysql_date_now."' WHERE id=".$unfinishedRow['id']." AND user=".$_SESSION['id'];
+            $sql = "UPDATE `shift_list` SET end_time='".$mysql_date_now."' WHERE id=".$unfinishedRow['id']." AND user=".$userId;
             mysqli_query($connection, $sql);
         }
         $task = mysqli_real_escape_string($connection, $_POST['task']);
-        $sql = "INSERT INTO `shift_list` (user,start_time,note,task) VALUES ('".$_SESSION['id']."','".$mysql_date_now."','','".$task."');";
+        $sql = "INSERT INTO `shift_list` (user,start_time,note,task) VALUES ('".$userId."','".$mysql_date_now."','','".$task."');";
         mysqli_query($connection, $sql);
         echo $mysql_date_now;
     } else if($_POST['counter'] === "stop"){
         if($unfinishedRow){
 
-            $sql = "UPDATE `shift_list` SET end_time='".$mysql_date_now."' WHERE id=".$unfinishedRow['id']." AND user=".$_SESSION['id'];
+            $sql = "UPDATE `shift_list` SET end_time='".$mysql_date_now."' WHERE id=".$unfinishedRow['id']." AND user=".$userId;
             mysqli_query($connection, $sql);
         }
         echo "ok";

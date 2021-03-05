@@ -5,7 +5,26 @@
  * Date: 2020. 10. 13.
  * Time: 13:49
  */
-date_default_timezone_set('Europe/Budapest');
+
+function getAlLSettings(){
+    $sql = "SELECT * FROM settings;";
+    $globalSettings = array();
+    if (isset($connection) && $connection) :
+        $result = mysqli_query($connection, $sql);
+        while ($row = mysqli_fetch_array($result)) {
+            $globalSettings[$row['setting_name']] = $row['message'];
+        }
+
+    endif;
+    return $globalSettings;
+}
+$globalSettings = getAlLSettings();
+if(isset($globalSettings['timezone'])){
+    date_default_timezone_set($globalSettings['timezone']||'Europe/Budapest');
+} else {
+    date_default_timezone_set('Europe/Budapest');
+}
+
 function getIPAddress() {
     if(!empty($_SERVER['HTTP_CLIENT_IP'])) {
         $ip = $_SERVER['HTTP_CLIENT_IP'];

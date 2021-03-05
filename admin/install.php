@@ -131,6 +131,9 @@ if(isset($_POST['addtables'])):
 
 INSERT IGNORE INTO settings SET id=1,setting_name='ip_stack',message='::1',extra='';
 INSERT IGNORE INTO settings SET id=2,setting_name='geo_data',message='46.8877312,16.8394752,100',extra='';
+INSERT IGNORE INTO settings SET id=3,setting_name='timezone',message='Europe/Budapest',extra='';
+INSERT IGNORE INTO settings SET id=4,setting_name='start_work_auto',message='true',extra='';
+INSERT IGNORE INTO settings SET id=5,setting_name='stop_work_auto',message='true',extra='';
 INSERT IGNORE INTO users SET id=1,username='testadmin',email='test@test.com',password='81dc9bdb52d04dc20036dbd8313ed055',role='admin',image='',job='',details='',exp='0',level='1',trn_date='2021-01-26 12:36:46',work_time='';
 
 ";
