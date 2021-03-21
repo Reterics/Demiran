@@ -10,6 +10,9 @@ if(mysqli_connect_errno()){
     die("Failed to connect to MySQL: " . mysqli_connect_error());
 }
 
+require_once "admin/lib/settings.php";
+$globalSettings = new Settings();
+$globalSettings->loadSettings();
 /**
  * Ezzel a függvénnyel írok ki részleteket az oldalra fejlesztés során
  * @param string $title
@@ -91,19 +94,20 @@ function sqlGetFirst($sql){
 
 function sqlGetAll($sql) {
     global $connection;
-    if($connection){
+    $array = array();
+    if ($connection) {
         $query = mysqli_query($connection, $sql);
-        if(!$query){
-            return null;
+        if (!$query){
+            return $array;
         }
-        $array[] = mysqli_fetch_array($query, MYSQLI_ASSOC);
+        //$array[] = mysqli_fetch_array($query, MYSQLI_ASSOC);
         while ($row = mysqli_fetch_array($query, MYSQLI_ASSOC))
         {
             array_push($array, $row);
         }
         return $array;
     } else {
-        return null;
+        return $array;
     }
 }
 

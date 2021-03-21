@@ -17,6 +17,10 @@ require_once("./template.php");
         <meta charset="utf-8">
         <title>Projektek - Secured Page</title>
         <?php admin_head(); ?>
+        <script src="./js/charts/d3v5.js" ></script>
+        <script src="./js/charts/d3color.js" ></script>
+        <script src="./js/charts/calendar.js" ></script>
+
     </head>
     <body>
 <?php
@@ -24,15 +28,27 @@ admin_header_menu();
 require_once "process.php";
 $search = array(" 00:00:00");
 $replace = array("");
-
+require_once "methods.php";
 
 if (isset($_GET['id'])):
 
     $sql = "SELECT * FROM project WHERE id='".$_GET['id']."';";
 
-    if($connection):
-        $result = mysqli_fetch_array(mysqli_query($connection, $sql));
-        $userIDs = array();
+    $project_details = sqlGetAll($sql);
+    $userIDs = getUserIDs($project_details);
+
+    $sql = "SELECT id,users,title,`repeat`,image, elapsed, priority, deadline,`order` FROM project_tasks WHERE project=".$project_details[0]['id'].";";
+
+    $project_tasks = sqlGetAll($sql);
+    $userIDList = getUserIDs($project_tasks);
+    foreach ($userIDList as $userID) {
+        if (!in_array($userID, $userIDs)) {
+            array_push($userIDs, $userID);
+        }
+    }
+    $userData = getUsersByIDs($userIDs);
+
+    $result = $project_details[0];
         ?>
         <div style="padding: 1em;">
 
@@ -45,33 +61,27 @@ if (isset($_GET['id'])):
                             <h5 class="title"><span class="back-icon" style="margin-right: 10px;height: 1.3em;width: 1.3em;" onclick="navigate('./projects.php')"></span><?php echo $result['title']; ?></h5>
                         </div>
                         <div class="body">
+                            <table class='table'>
+                                <tr><td>ID</td><td><?php echo $result['id'] ?></td></tr>
+                                <tr><td>Felhasználók</td><td class='users'><?php setUserIconSpan(selectUserFromArray($result['users'], $userData)); ?></td></tr>
+                                <tr><td>Kategóriák</td><td><?php echo $result['category']  ?></td></tr>
+                                <tr><td>Megrendelő</td><td class='client'><?php echo $result['client'];  ?></td></tr>
+                                <tr><td>Státusz</td><td><?php echo $result['status']  ?></td></tr>
+                                <tr><td>Számlázás</td><td><?php echo $result['billing']  ?></td></tr>
+                                <tr><td>Ár</td><td><?php echo $result['price'] ?></td></tr>
 
-                            <?php
-                            echo "<table class='table'>";
+                                <tr><td>Készült</td><td><?php echo $result['created']  ?></td></tr>
+                                <tr><td>Kezdés</td><td><?php echo $result['start_time'] ?></td></tr>
+                                <tr><td>Határidő</td><td><?php echo $result['deadline'] ?></td></tr>
+                            </table>
 
-                            echo "<tr>
-                            <td>ID</td><td>" . $result['id'] . "</td></tr>
-                            <tr><td>Felhasználók</td><td class='users'>" . $result['users'] . "</td></tr>
-                            <tr><td>Kategóriák</td><td>" . $result['category'] . "</td></tr>
-                            <tr><td>Megrendelő</td><td class='client'>" . $result['client'] . "</td></tr>
-                            <tr><td>Státusz</td><td>" . $result['status'] . "</td></tr>
-                            <tr><td>Számlázás</td><td>" . $result['billing'] . "</td></tr>
-                            <tr><td>Ár</td><td>" . $result['price'] . "</td></tr>
-                       
-                            <tr><td>Készült</td><td>" . $result['created'] . "</td></tr>
-                            <tr><td>Kezdés</td><td>" . $result['start_time'] . "</td></tr>
-                            <tr><td>Határidő</td><td>" . $result['deadline'] . "</td></tr>";
+                            <div class='details-container'><?php echo $result['details'] ?></div>"
 
-                            echo "</table>";
-
-
-                            echo "<div class='details-container'>".$result['details']."</div>"
-                            ?>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <div class="lio-modal" style="opacity: 0.1">
+                    <div class="lio-modal">
                         <div class="header">
                             <h5 class="title">Project Tasks</h5>
                             <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin' || $_SESSION['role'] === 'developer')): ?>
@@ -94,43 +104,38 @@ if (isset($_GET['id'])):
 
                             <?php
 
-                            $sql = "SELECT id,users,title,`repeat`,image, elapsed, priority, deadline,`order` FROM project_tasks WHERE project=".$result['id'].";";
 
-                            $project_tasks = mysqli_query($connection, $sql);
-                            while ($row =mysqli_fetch_array($project_tasks)){
+                            foreach ($project_tasks as $row) :
                                 ?>
                                 <div class="dragged" data-order="<?php echo $row['order'] ?>">
                                     <button class="dragButton"><span class="toggler-icon"></span></button>
 
                                     <div class="id short"><?php echo $row['id'] ?></div>
                                     <div class="title"><?php echo $row['title'] ?></div>
-                                    <div class="users"><?php echo $row['users'] ?></div>
+                                    <div class="users">
+
+                                        <?php
+                                        $pieces = explode(",", $row['users']);
+                                        foreach ($pieces as $userID) {
+                                            setUserIconSpan(selectUserFromArray($userID, $userData));
+                                        }
+
+                                         ?></div>
                                     <div class="repeat"><?php echo $row['repeat'] ?></div>
                                     <div class="elapsed"><?php echo $row['elapsed'] ?></div>
                                     <div class="priority"><?php echo $row['priority'] ?></div>
                                     <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
                                     <div class="actions">
-                                        <span class="hoverIcon seeDetails details-icon" onclick="editProject('<?php echo $row['id'] ?>')"></span>
+                                        <span class="hoverIcon seeDetails details-icon" onclick="editTask('<?php echo $row['id'] ?>')"></span>
                                 <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-                                        <span class="hoverIcon removeLine remove-icon" onclick="removeProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
+                                        <span class="hoverIcon removeLine remove-icon" onclick="removeTask('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
                                 <?php endif; ?>
                                     </div>
 
                                 </div>
 
 
-                                <?php
-                                $pieces = explode(",", $row['users']);
-                                foreach ($pieces as $userID) {
-                                    if (is_numeric($userID) && !in_array($userID, $userIDs)) {
-                                        array_push($userIDs, $userID);
-                                    }
-                                }
-                                if($row['client'] && !in_array($row['client'],$userIDs)) {
-                                    array_push($userIDs, $row['client']);
-                                }
-                            }
-                            ?>
+                                <?php endforeach; ?>
                         </div>
                     </div>
                 </div>
@@ -155,39 +160,101 @@ if (isset($_GET['id'])):
             </div>
         </div>
 
+    <div class="addTaskDiv" style="display: none">
+        <form style="padding: 10px 15px;" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <input type="hidden" name="project_id" id="project_id" value="<?php echo $result['id'] ?>">
+                <label for="title">Cím
+                    <input type="text" class="form-control" name="title" id="title" placeholder="Cím" required/>
+                </label>
+                <label for="users">Hozzárendelt felhasználók</label>
+                <select class="form-control" name="users[]" id="users" multiple>
+                    <?php echo geUsersAsOptions($connection); ?>
+                </select>
 
-    <?php
 
-        $pieces = explode(",", $result['users']);
-        foreach ($pieces as $userID) {
-            if (is_numeric($userID) && !in_array($userID, $userIDs)) {
-                array_push($userIDs, $userID);
-            }
-        }
-        if($result['client'] && !in_array($result['client'],$userIDs)) {
-            array_push($userIDs, $result['client']);
-        }
+                <label for="repeat">Ismétlés
+                    <select class="form-control" name="repeat" id="repeat" >
+                        <option value="once">Egyszeri</option>
+                        <option value="frequently">Rendszeres</option>
+                    </select></label>
 
-        echo "<script>const userIDs = {";
-        if (count($userIDs)){
-            $sql = "SELECT id,username FROM users WHERE id IN (".implode(", ",$userIDs).")";
-            $result = mysqli_query($connection, $sql);
-            $i = 0;
-            while ($row = mysqli_fetch_array($result)) {
-                if($i != 0){
-                    echo ",";
+                <label for="priority">Prioritás
+                    <select class="form-control" name="priority" id="priority" >
+                        <option value="low">Alacsony</option>
+                        <option value="medium">Közepes</option>
+                        <option value="high">Magas</option>
+                    </select></label>
+
+
+
+                <label>Kezdés
+                    <input type="date" class="form-control" name="start_time" value="" min="2020-10-01" max="2030-12-31">
+                </label>
+                <label>Határidő
+                    <input type="date" class="form-control" name="deadline" value="" min="2020-10-01" max="2030-12-31">
+                </label>
+                <input type="text" class="form-control" name="addprojecttask" style="display:none;" value="1"/>
+
+            </div>
+
+        </form>
+
+    </div>
+    <script type="text/javascript">
+        const registerButton = document.querySelector(".addTask");
+        if(registerButton){
+            registerButton.onclick = function () {
+                const form = document.querySelector(".addTaskDiv form");
+
+                if(form){
+                    const cln = form.cloneNode(true);
+
+                    const popup = Demiran.openPopUp("Hozzáadás", cln, [
+                        {
+                            value:"Hozzáad",
+                            onclick: (closeDialog, modalID)=>{
+                                const modal = document.querySelector("#"+modalID);
+                                const form = modal.querySelector("form");
+                                form.submit();
+                                closeDialog();
+                            }
+                        },
+                        {
+                            value:"Vissza",
+                            type:"close"
+                        }
+                    ]);
                 }
-                echo "'".$row['id']."':'".$row['username']."'";
-                $i = $i +1;
             }
         }
-        echo "};setUserDetails(userIDs);</script>";
-    endif;
 
+        const removeTask = function (id, title) {
+            Demiran.openPopUp("Jóváhagyás", "Biztonsan törölni szeretnéd ezt a Feladatot? <br> " + id + " - " + title, [
+                {
+                    value:"Igen",
+                    onclick: (closeDialog)=>{
+                        closeDialog();
+                        Demiran.post("process.php", 'deleteproject_task=' + id, function (e, result) {
+                            console.log(result);
+                            if (result.trim() === "OK") {
+                                location.reload();
+                            }
+                        });
+                    }
+                },
+                {
+                    value:"Vissza",
+                    type:"close"
+                }
+            ]);
+
+            return false;
+        };
+
+    </script>
+<?php
 else:
-    require_once "methods.php";
-
-
     ?>
 
     <div style="padding: 1em;">
@@ -219,77 +286,45 @@ else:
                     <?php
                     $sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project;";
 
-                    if ($connection) :
-                        $userIDs = array();
-                        $result = mysqli_query($connection, $sql);
+                    $projects = sqlGetAll($sql);
+                    $userIDs = getUserIDs($projects);
+                    $userData = getUsersByIDs($userIDs);
+                    foreach($projects as $row) :
+                        ?>
+                        <div class="dragged" data-order="<?php echo $row['order'] ?>">
+                            <button class="dragButton"><span class="toggler-icon"></span></button>
 
-
-
-                        while ($row = mysqli_fetch_array($result)) {
-
-                            ?>
-                            <div class="dragged" data-order="<?php echo $row['order'] ?>">
-                                <button class="dragButton"><span class="toggler-icon"></span></button>
-
-                                <div class="id short"><?php echo $row['id'] ?></div>
-                                <div class="title"><?php echo $row['title'] ?></div>
-                                <div class="users" data-id="<?php echo $row['id'] ?>"><?php echo $row['users'] ?></div>
-                                <div class="category"><?php echo $row['category'] ?></div>
-                                <div class="client"><?php echo $row['client'] ?></div>
-                                <div class="status"><?php echo $row['status'] ?></div>
-                                <div class="billing"><?php echo $row['billing'] ?></div>
-                                <div class="price"><?php echo $row['price'] ?></div>
-                                <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
-                                <div class="actions">
-                                    <span class="hoverIcon seeDetails details-icon" onclick="editProject('<?php echo $row['id'] ?>')"></span>
-                                    <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-                                    <span class="hoverIcon removeLine remove-icon" onclick="removeProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
-                                    <?php endif; ?>
-                                </div>
-
+                            <div class="id short"><?php echo $row['id'] ?></div>
+                            <div class="title"><?php echo $row['title'] ?></div>
+                            <div class="users" data-id="<?php echo $row['id'] ?>">
+                                <?php setUserIconSpan(selectUserFromArray($row['users'], $userData)); ?>
+                               </div>
+                            <div class="category"><?php echo $row['category'] ?></div>
+                            <div class="client"><?php echo $row['client'] ?></div>
+                            <div class="status"><?php echo $row['status'] ?></div>
+                            <div class="billing"><?php echo $row['billing'] ?></div>
+                            <div class="price"><?php echo $row['price'] ?></div>
+                            <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
+                            <div class="actions">
+                                <span class="hoverIcon seeDetails details-icon" onclick="editProject('<?php echo $row['id'] ?>')"></span>
+                                <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
+                                <span class="hoverIcon removeLine remove-icon" onclick="removeProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
+                                <?php endif; ?>
                             </div>
 
-
-                            <?php
-
-
-                            $pieces = explode(",", $row['users']);
-                            foreach ($pieces as $userID) {
-                                if (is_numeric($userID) && !in_array($userID, $userIDs)) {
-                                    array_push($userIDs, $userID);
-                                }
-                            }
-                            if($row['client'] && !in_array($row['client'],$userIDs)) {
-                                array_push($userIDs, $row['client']);
-                            }
-
-                        }
-                        echo "<script>const userIDs = {";
-                        if (count($userIDs)){
-                            $sql = "SELECT id,username FROM users WHERE id IN (".implode(", ",$userIDs).")";
-                            $result = mysqli_query($connection, $sql);
-                            $i = 0;
-                            while ($row = mysqli_fetch_array($result)) {
-                                if($i != 0){
-                                    echo ",";
-                                }
-                                echo "'".$row['id']."':'".$row['username']."'";
-                                $i = $i +1;
-                            }
-                        }
-                        echo "};setUserDetails(userIDs);</script>";
-
-                    endif;
+                        </div>
+                        <?php
+                    endforeach;
                     ?>
 
 
 
 
 
-<script>
-    Demiran.applyDragNDrop(".drag-container", ".dragged");
+    <script>
+        Demiran.applyDragNDrop(".drag-container", ".dragged");
 
-</script>
+    </script>
                 </div>
                 <div class="footer btn-group mr-2" style="display:none;">
                     <button class="btn btn-outline-dark mb-2 mr-sm-2 addP" type="button">Új Projekt Felvétele</button>
@@ -404,5 +439,64 @@ else:
 <?php
 
 endif;
-footer(); ?>
+
+
+
+?>
+<div class="row" style="padding:0 1em">
+    <div class="col-md-12">
+        <div class="lio-modal">
+            <div class="header">
+                <h5 class="title">Naptár</h5>
+            </div>
+            <div class="body" style="height:30vh">
+                <div class="v" style="display: flex;justify-content: center;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    Demiran.post("lib/charts.js.php", 'get_project_times=true<?php
+        if(isset($_GET['id'])) {
+            echo "&filter_project=".$_GET['id'];
+        }
+        ?>', function (e, result) {
+        console.log(result);
+        console.log(JSON.parse(result));
+        const data = JSON.parse(result);
+        const inputData = [];
+        data.forEach(function(d){
+            if(d){
+                if (d.start_time) {
+                    inputData.push({
+                        date:d.start_time,
+                        color:1
+                    });
+                }
+                if (d.deadline) {
+                    inputData.push({
+                        date:d.deadline,
+                        color:2
+                    });
+                }
+            }
+
+
+        });
+        drawCalendar2({
+            selector:".v",
+            data:inputData
+
+        })
+    });
+</script>
+<?php
+
+
+
+
+
+
+footer();
+?>
  </body></html>

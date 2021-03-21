@@ -119,6 +119,14 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
     } else {
         echo mysqli_connect_error();
     }
+} else if(isset($_POST['deleteproject_task'])){
+    $query = "DELETE from `project_tasks` WHERE id=".$_POST['deleteproject_task'];
+    $result = mysqli_query($connection, $query);
+    if ($result) {
+        echo "OK";
+    } else {
+        echo mysqli_connect_error();
+    }
 } else if(isset($_POST['addpage']) && isset($_POST['title'])) {
     $user = "";
     if(isset($_POST['user'])){
@@ -244,4 +252,54 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
         echo "fail";
     }
 
+} else if(isset($_POST['addprojecttask']) && isset($_POST['title'])) {
+    $title = "";
+    $users = "";
+    $repeat = "";
+    $priority = "";
+    $project_id = "";
+    if(isset($_POST['users'])){
+        $i = 0;
+        foreach ($_POST['users'] as $user) {
+            if($i != 0){
+                $users .= ",";
+            }
+            $users .= mysqli_real_escape_string($connection,$user);
+            $i = $i + 1;
+        }
+    }
+    if(isset($_POST['title'])){
+        $title = $_POST['title'];
+    }
+    if(isset($_POST['repeat'])){
+        $repeat = $_POST['repeat'];
+    }
+    if(isset($_POST['priority'])){
+        $priority = $_POST['priority'];
+    }
+
+    if(isset($_POST['project_id'])){
+        $project_id = $_POST['project_id'];
+    }
+
+    $trn_date = date("Y-m-d H:i:s");
+
+    $start_date = $trn_date;
+    if(isset($_POST['start_time'])){
+        $start_date = $_POST['start_time'];
+    }
+
+    $end_date = $trn_date;
+    if(isset($_POST['deadline'])){
+        $end_date = $_POST['deadline'];
+    }
+    $query = "INSERT into `project_tasks` (users, title, project, visibility, `repeat`, image, details, attachments, elapsed, priority, start_time, deadline, `order`)
+VALUES ('$users', '$title', '$project_id', 'all', '$repeat', '', '', '', '', '$priority', '$start_date', '$end_date', '1')";
+    $result = mysqli_query($connection, $query);
+    echo "$query";
+    if ($result) {
+        echo "OK";
+    } else {
+        echo mysqli_connect_error();
+    }
 }

@@ -24,18 +24,16 @@ if (isset($_GET['id'])):
         $result = mysqli_fetch_array(mysqli_query($connection, $sql))
         ?>
         <div style="padding: 1em;">
-            <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-            <div class="row" style="margin-bottom: 10px">
-                <div class="col-md-12">
-                    <a href="./users.php" class="btn btn-outline-primary"> << Vissza</a>
-                </div>
-            </div>
-            <?php endif; ?>
+
             <div class="row">
                 <div class="col-md-4">
                     <div class="lio-modal">
                         <div class="header">
-                            <h5 class="title"><?php echo $result['username']; ?></h5>
+                            <h5 class="title">
+                                <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
+                                <span class="back-icon" style="margin-right: 10px;height: 1.3em;width: 1.3em;" onclick="navigate('./users.php')"></span>
+                                <?php endif; ?>
+                                <?php echo $result['username']; ?></h5>
                         </div>
                         <div class="body">
                             <?php if(isset($result['image']) && $result['image'] != ""): ?>
@@ -60,7 +58,21 @@ if (isset($_GET['id'])):
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-8" <?php
+                if($_SESSION["username"] != $result['username']) {
+                    echo 'style="display:none;"';
+                }
+                ?>>
+
+                    <div class="lio-modal">
+                        <div class="header">
+                            <h5 class="title">Beállítások</h5>
+                        </div>
+                        <div class="body">
+
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

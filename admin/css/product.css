@@ -6,7 +6,9 @@ body {
     /* background by SVGBackgrounds.com */
 
 }
-
+body > div:first-child {
+    padding: 1em;
+}
 header.main > nav.navbar-dark{
     background-color: rgb(63, 117, 162);
     background-image: none;
@@ -209,7 +211,70 @@ body {
 .lio-modal > .footer > :not(:last-child) {
     margin-right: .25rem;
 }
+.lio-vertical-tabs{
+    display: flex;
+}
+.lio-vertical-tabs > .lio-modal {
+    border-left: none;
+    height: 100%;
+}
+.lio-vertical-tabs > .lio-modal > .header > .title {
+    font-size: 1.15rem;
+}
+.lio-vertical-tabs > .lio-modal > .body {
+    padding-left: 15px;
+}
+.lio-vertical-tabs > .lio-tabs{
+    border-right: none;
+}
+.lio-tabs {
+    background-color: #eef7ff;
+    width: 130px;
+    padding: 0;
+    border: 1px solid rgba(0, 0, 0, .4);
+    box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
+    border-right: none;
+}
+.lio-tabs > .tab-line {
+    padding: 10px 5px;
+    text-align: left;
+    cursor: pointer;
+}
+.lio-tabs > .tab-line:hover {
+    background-color: #fff;
+}
+.lio-tabs > .tab-line.active {
+    background-color: #fff;
+}
+.lio-tabs > .tab-line.activee:hover {
+    background-color: #eef7ff;
+}
+.lio-tabs > .tab-header{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    border-bottom: 1px solid #e9ecef;
+    padding: 0.2rem 0.5rem;
+    align-items: center;
+    border-bottom: 1px solid rgba(0,0,0,.125);
 
+    margin-bottom: 0;
+    line-height: 1.5;
+    font-size: 1.25rem;
+    font-family: inherit;
+    font-weight: 500;
+    margin-top: 0;
+}
+
+.lio-modal .body .form-group{
+    margin-bottom: 0;
+    display:flex;
+}
 table > tbody > tr > td, table > tbody > tr > th, table > tfoot > tr > td, table > tfoot > tr > th, table > thead > tr > td, table > thead > tr > th {
     padding: 8px;
     line-height: 1.42857143;
@@ -719,4 +784,45 @@ Chat részletek / details
 
 div.footer {
     position: relative;
+}
+
+/* Tooltip container */
+.tooltip_div {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltip_div .tooltiptext {
+    visibility: hidden;
+    width: 140px;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, .2);
+    color: #000;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    font-weight: 400;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip_div:hover .tooltiptext {
+    visibility: visible;
+}
+
+.setting_label {
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 700;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    text-align: lefté
 }

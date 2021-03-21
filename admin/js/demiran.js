@@ -654,3 +654,14 @@ function getDistanceFromLatLonInM(lat1,lon1,lat2,lon2) {
     return d * 1000;
 }
 
+const GET = {};
+
+function loadGETParameters() {
+    const params = window.location.search.substr(1);
+    params.split("&")
+        .forEach(function (item) {
+            const tmp = item.split("=");
+            GET[tmp[0]] = tmp[1];
+        });
+}
+loadGETParameters();

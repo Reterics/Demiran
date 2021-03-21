@@ -6,21 +6,9 @@
  * Time: 13:49
  */
 
-function getAlLSettings(){
-    $sql = "SELECT * FROM settings;";
-    $globalSettings = array();
-    if (isset($connection) && $connection) :
-        $result = mysqli_query($connection, $sql);
-        while ($row = mysqli_fetch_array($result)) {
-            $globalSettings[$row['setting_name']] = $row['message'];
-        }
-
-    endif;
-    return $globalSettings;
-}
-$globalSettings = getAlLSettings();
-if(isset($globalSettings['timezone'])){
-    date_default_timezone_set($globalSettings['timezone']||'Europe/Budapest');
+$timezone = $globalSettings->getSettingByName("timezone");
+if($timezone){
+    date_default_timezone_set($timezone||'Europe/Budapest');
 } else {
     date_default_timezone_set('Europe/Budapest');
 }
@@ -36,6 +24,65 @@ function getIPAddress() {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     return $ip;
+}
+
+function getUserIDs($array) {
+    $userIDs = array();
+    foreach($array as $value) {
+        $pieces = explode(",", $value['users']);
+        foreach ($pieces as $userID) {
+            if (is_numeric($userID) && !in_array($userID, $userIDs)) {
+                array_push($userIDs, $userID);
+            }
+        }
+        if(isset($value['client']) && $value['client'] != "" && !in_array($value['client'], $userIDs)) {
+            array_push($userIDs, $value['client']);
+        }
+    }
+    return $userIDs;
+}
+
+function getUsersByIDs($array){
+    $sql = "SELECT * FROM users WHERE ID IN (";
+    $i = 0;
+    foreach($array as $userID) {
+        if($i != 0){
+            $sql.= ", ";
+        }
+        $sql.= $userID;
+        $i = $i + 1;
+    }
+    $sql.= ");";
+    //echo "<br>".$sql."<br>";
+    return sqlGetAll($sql);
+}
+
+function selectUserFromArray($id, $array) {
+    $selectedUser = null;
+    foreach($array as $user) {
+        if (isset($user["id"]) && $user["id"] == $id ){
+            $selectedUser =  $user;
+        }
+    }
+    return $selectedUser;
+}
+
+function stringToColorCode($str) {
+    $code = dechex(crc32($str));
+    $code = substr($code, 0, 6);
+    return $code;
+}
+
+
+function setUserIconSpan($userData) {
+    if(!isset($userData) || $userData == null || $userData == "") {
+        return "";
+    }
+    ?>
+    <span class="userSpan" title="<?php echo $userData["username"]; ?>" style="background-color:<?php echo "#D1".stringToColorCode($userData["username"]); ?>">
+        <?php echo strtoupper(substr($userData["username"], 0,1)) . substr($userData["username"], 1,1); ?>
+    </span>
+    <?php
 }
 
 function load_tiny_mce(){
@@ -186,14 +233,22 @@ function admin_header_menu(){
                     <li class="nav-item"><a class="nav-link projects" href="projects.php">Projektek</a></li>
                     <li class="nav-item"><a class="nav-link pages" href="pages.php">Oldalak</a></li>
 
-                    <li class="nav-item" style="display: none"><a class="nav-link messages hidden" href="messages.php">Üzenetek</a></li>
-                    <li class="nav-item"><a class="nav-link settings" href="settings.php">Beállítások</a></li>
-                <?php else:?>
-                    <li class="nav-item"><a class="nav-link users" href="users.php?id=<?php echo $_SESSION['id'];?>">Profilom</a></li>
                 <?php endif; ?>
                 <li class="nav-item"><a class="nav-link hours" href="hours.php">Óraszámok</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo $_SESSION['username']; ?>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="users.php?id=<?php echo $_SESSION['id'];?>">Profilom</a>
+                        <a class="dropdown-item hidden" href="messages.php">Üzenetek</a>
+                        <a class="dropdown-item" href="settings.php">Beállítások</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="logout.php">Kijelentkezés</a>
+                    </div>
+                </li>
 
-                <li class="nav-item"><a class="nav-link logout" href="logout.php">Kijelentkezés</a></li>
+
 
             </ul>
 
@@ -220,6 +275,23 @@ function admin_header_menu(){
             ':' + pad(tzo % 60);
     };
 
+    function activateNavigationDropdown() {
+        document.querySelectorAll("li.nav-item.dropdown").forEach(function(node){
+            const subNode = node.querySelector("div.dropdown-menu");
+            if(subNode){
+                node.onclick = function(){
+                    if(node.classList.contains("show")){
+                        node.classList.remove("show");
+                        subNode.classList.remove("show");
+                    } else {
+                        node.classList.add("show");
+                        subNode.classList.add("show");
+                    }
+                }
+            }
+        })
+    }
+    activateNavigationDropdown();
 
 
     let con;
