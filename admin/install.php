@@ -176,7 +176,7 @@ else:
 
     ?>
 
-    <div style="padding: 1em;">
+    <div class="top_outer_div">
         <div class="row">
             <div class="col-md-12">
                 <div class="lio-modal">

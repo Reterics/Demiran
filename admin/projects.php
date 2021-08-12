@@ -50,7 +50,7 @@ if (isset($_GET['id'])):
 
     $result = $project_details[0];
         ?>
-        <div style="padding: 1em;">
+        <div class="top_outer_div">
 
             <div class="row">
                 <div class="col-md-4">
@@ -257,7 +257,7 @@ if (isset($_GET['id'])):
 else:
     ?>
 
-    <div style="padding: 1em;">
+    <div class="top_outer_div">
     <div class="row">
         <div class="col-md-12">
             <div class="lio-modal">
@@ -321,10 +321,9 @@ else:
 
 
 
-    <script>
+   <!-- <script>
         Demiran.applyDragNDrop(".drag-container", ".dragged");
-
-    </script>
+    </script> -->
                 </div>
                 <div class="footer btn-group mr-2" style="display:none;">
                     <button class="btn btn-outline-dark mb-2 mr-sm-2 addP" type="button">Új Projekt Felvétele</button>

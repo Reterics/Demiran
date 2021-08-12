@@ -28,7 +28,7 @@ require_once "process.php";
 
 
 ?>
-<div style="padding: 1em;">
+<div class="top_outer_div">
     <div class="row">
         <div class="col-md-12">
             <div class="lio-vertical-tabs" style="    height: 80vh;">
@@ -36,6 +36,7 @@ require_once "process.php";
                     <div class="tab-header">Beállítások</div>
                     <div class="tab-line active">Általános</div>
                     <div class="tab-line">Bejelentkezés</div>
+                    <div class="tab-line">Névjegy</div>
                 </div>
 
                 <div class="lio-modal">
@@ -268,7 +269,7 @@ require_once "process.php";
                     </div>
                     <script>
 
-                        Demiran.applyDragNDrop(".drag-container", ".dragged");
+                        //Demiran.applyDragNDrop(".drag-container", ".dragged");
 
                         const bubbles = document.querySelectorAll(".setting-bubble");
                         bubbles.forEach(function(node){
@@ -462,16 +463,31 @@ require_once "process.php";
                         }
                     </script>
 
-             </div>
+                </div>
+
+                <div class="lio-modal" style="display: none;">
+                    <div class="header">
+                        <h5 class="title">Névjegyek</h5>
 
 
 
-            </div>
+                    </div>
+
+                    <div class="body">
+                    <?php
+                        require_once "./lib/version.php";
+                    ?>
+                    </div>
+
+
+
+
+                </div>
         </div>
 
 
     </div>
-
+    </div>
     <script>
         const tabParent = document.querySelector(".lio-vertical-tabs");
         if (tabParent) {
@@ -526,6 +542,7 @@ require_once "process.php";
         </div>
 
     </div>
+</div>
 <?php footer(); ?>
 
 </body></html>

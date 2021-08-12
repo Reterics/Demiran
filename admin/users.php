@@ -23,7 +23,7 @@ if (isset($_GET['id'])):
     if (isset($connection) && $connection):
         $result = mysqli_fetch_array(mysqli_query($connection, $sql))
         ?>
-        <div style="padding: 1em;">
+        <div class="top_outer_div">
 
             <div class="row">
                 <div class="col-md-4">
@@ -87,7 +87,7 @@ else:
 
     ?>
 
-    <div style="padding: 1em;">
+    <div class="top_outer_div">
     <div class="row">
         <div class="col-md-12">
             <div class="lio-modal">
@@ -218,7 +218,7 @@ else:
                         });
                         <?php endif; ?>
 
-                        Demiran.applyDragNDrop(".drag-container", ".dragged");
+                        //Demiran.applyDragNDrop(".drag-container", ".dragged");
                     </script>
                 </div>
 

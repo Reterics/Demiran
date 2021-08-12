@@ -24,7 +24,7 @@ require_once "process.php";
 
 ?>
 
-<div style="padding: 1em;">
+<div class="top_outer_div">
     <div class="row">
         <div class="col-md-12">
             <div class="lio-modal">
@@ -112,7 +112,7 @@ require_once "process.php";
                     endif;
                     ?>
                     <script>
-                        Demiran.applyDragNDrop(".drag-container", ".dragged");
+                        //Demiran.applyDragNDrop(".drag-container", ".dragged");
 
                         const registerButton = document.querySelector(".addP");
                         if(registerButton){

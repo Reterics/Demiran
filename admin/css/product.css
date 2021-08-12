@@ -232,7 +232,7 @@ body {
     width: 130px;
     padding: 0;
     border: 1px solid rgba(0, 0, 0, .4);
-    box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
+    box-shadow: 0 0 1px rgba(0,0,0,0.13), 0 1px 3px rgba(0,0,0,0.2);
     border-right: none;
 }
 .lio-tabs > .tab-line {
@@ -274,6 +274,7 @@ body {
 .lio-modal .body .form-group{
     margin-bottom: 0;
     display:flex;
+    flex-direction: column;
 }
 table > tbody > tr > td, table > tbody > tr > th, table > tfoot > tr > td, table > tfoot > tr > th, table > thead > tr > td, table > thead > tr > th {
     padding: 8px;
@@ -586,7 +587,9 @@ input[type="checkbox"]:focus {
     padding: 2px 5px;
     background: none;
 }
-
+.dragButton{
+    display: none; /* Modification on 2021-08-12*/
+}
 .dragged > div, .dragTitle > div {
     flex-basis: 10%;
     width: 10%;
@@ -738,7 +741,7 @@ Chat részletek / details
     background-clip: padding-box;
     border: 1px solid rgba(0, 0, 0, .2);
     outline: 0;
-    box-shadow: 0 0 1px rgb(0 0 0 / 13%), 0 1px 3px rgb(0 0 0 / 20%);
+    box-shadow: 0 0 1px rgba(0,0,0,0.13), 0 1px 3px rgba(0,0,0,0.2);
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
 }
@@ -824,5 +827,9 @@ div.footer {
     flex-direction: row;
     justify-content: space-between;
     flex-wrap: nowrap;
-    text-align: lefté
+    text-align: left;
+}
+
+.top_outer_div {
+    padding: 1em;
 }

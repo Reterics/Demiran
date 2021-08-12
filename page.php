@@ -26,7 +26,7 @@ if (isset($_GET['id'])) :
 
     if (!$row):
         ?>
-        <div style="padding: 1em;">
+        <div class="top_outer_div">
             <div class="row" style="justify-content: center;">
                 <div class="col-md-3">
                     <div class="lio-modal">
@@ -44,7 +44,7 @@ if (isset($_GET['id'])) :
     <?php
     else:
         ?>
-        <div style="padding: 1em;">
+        <div class="top_outer_div">
             <div class="row">
                 <div class="col-md-3">
                     <div class="lio-modal">
@@ -68,7 +68,7 @@ if (isset($_GET['id'])) :
 else:
 
     ?>
-    <div style="padding: 1em;">
+    <div class="top_outer_div">
         <div class="row" style="justify-content: center">
             <div class="col-md-4">
                 <form class="form" method="get" style="text-align: center">

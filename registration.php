@@ -1,5 +1,5 @@
 <?php
-exit();
+#exit();
 
 require_once('config.php');
 ?>

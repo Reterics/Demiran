@@ -116,7 +116,7 @@ endif;
 
 
 ?>
-<div style="padding: 1em;">
+<div class="top_outer_div">
     <h2><?php
         if($openedUser){
             echo $currentUserName." óraszámai";
@@ -215,7 +215,7 @@ endif;
 
                     <script>
 
-                        Demiran.applyDragNDrop(".drag-container", ".dragged");
+                        //Demiran.applyDragNDrop(".drag-container", ".dragged");
 
                         document.querySelectorAll(".drag-container .dragged .name").forEach(function (div){
                             const dataId = div.getAttribute("data-id");
