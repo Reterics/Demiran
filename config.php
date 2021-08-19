@@ -38,7 +38,7 @@ function headerHTML(){
     ?>
 
 <header class="main">
-    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: rgb(63, 117, 162);"><a
+    <nav class="navbar navbar-expand-lg navbar-dark" ><a
             class="navbar-brand" href="#">
             <img class="d-inline-block align-top" height="30" src="./admin/img/logo.svg" style="height: 35px; width: 100%;" alt="demiran Logo">
         </a>

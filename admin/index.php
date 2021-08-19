@@ -24,8 +24,12 @@ $ip = getIPAddress();
 
 ?>
 
+<div class="row top_outer_div">
 
-<div class="form row" style="padding: 1em;">
+</div>
+
+
+<div class="form row ">
     <div class="col-sm-<?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')) {
         echo "6";
     } else {echo "12";}?>">

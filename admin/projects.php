@@ -37,7 +37,7 @@ if (isset($_GET['id'])):
     $project_details = sqlGetAll($sql);
     $userIDs = getUserIDs($project_details);
 
-    $sql = "SELECT id,users,title,`repeat`,image, elapsed, priority, deadline,`order` FROM project_tasks WHERE project=".$project_details[0]['id'].";";
+    $sql = "SELECT id,users,title,`repeat`,image, state, priority, deadline,`order` FROM project_tasks WHERE project=" .$project_details[0]['id'].";";
 
     $project_tasks = sqlGetAll($sql);
     $userIDList = getUserIDs($project_tasks);
@@ -122,7 +122,7 @@ if (isset($_GET['id'])):
 
                                          ?></div>
                                     <div class="repeat"><?php echo $row['repeat'] ?></div>
-                                    <div class="elapsed"><?php echo $row['elapsed'] ?></div>
+                                    <div class="state"><?php echo $row['state'] ?></div>
                                     <div class="priority"><?php echo $row['priority'] ?></div>
                                     <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
                                     <div class="actions">
@@ -186,13 +186,19 @@ if (isset($_GET['id'])):
                         <option value="high">Magas</option>
                     </select></label>
 
-
+                <label for="state">Státusz
+                    <select class="form-control" name="state" id="state" >
+                        <option value="open">Nyitott</option>
+                        <option value="in_progress">Folyamatban</option>
+                        <option value="review">Átnézésre vár</option>
+                        <option value="closed">Lezárt</option>
+                    </select></label>
 
                 <label>Kezdés
-                    <input type="date" class="form-control" name="start_time" value="" min="2020-10-01" max="2030-12-31">
+                    <input type="date" class="form-control" name="start_time" value="<?php echo date("Y-m-d"); ?>" min="2020-10-01" max="2030-12-31">
                 </label>
                 <label>Határidő
-                    <input type="date" class="form-control" name="deadline" value="" min="2020-10-01" max="2030-12-31">
+                    <input type="date" class="form-control" name="deadline" value="<?php echo date("Y-m-d",strtotime('first day of +1 month')); ?>" min="2020-10-01" max="2030-12-31">
                 </label>
                 <input type="text" class="form-control" name="addprojecttask" style="display:none;" value="1"/>
 

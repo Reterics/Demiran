@@ -258,6 +258,7 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
     $repeat = "";
     $priority = "";
     $project_id = "";
+    $state = "open";
     if(isset($_POST['users'])){
         $i = 0;
         foreach ($_POST['users'] as $user) {
@@ -277,6 +278,9 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
     if(isset($_POST['priority'])){
         $priority = $_POST['priority'];
     }
+    if(isset($_POST['state'])){
+        $state = $_POST['state'];
+    }
 
     if(isset($_POST['project_id'])){
         $project_id = $_POST['project_id'];
@@ -293,8 +297,8 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
     if(isset($_POST['deadline'])){
         $end_date = $_POST['deadline'];
     }
-    $query = "INSERT into `project_tasks` (users, title, project, visibility, `repeat`, image, details, attachments, elapsed, priority, start_time, deadline, `order`)
-VALUES ('$users', '$title', '$project_id', 'all', '$repeat', '', '', '', '', '$priority', '$start_date', '$end_date', '1')";
+    $query = "INSERT into `project_tasks` (users, title, project, visibility, `repeat`, image, details, attachments, state, priority, start_time, deadline, `order`)
+VALUES ('$users', '$title', '$project_id', 'all', '$repeat', '', '', '', '$state', '$priority', '$start_date', '$end_date', '1')";
     $result = mysqli_query($connection, $query);
     echo "$query";
     if ($result) {

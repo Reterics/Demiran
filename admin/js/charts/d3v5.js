@@ -3173,9 +3173,9 @@
     function timeout$1(callback, delay, time) {
         var t = new Timer;
         delay = delay == null ? 0 : +delay;
-        t.restart(function(elapsed) {
+        t.restart(function(state) {
             t.stop();
-            callback(elapsed + delay);
+            callback(state + delay);
         }, delay, time);
         return t;
     }

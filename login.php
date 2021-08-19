@@ -58,7 +58,7 @@ if (isset($_POST['username']) && isset($connection)){
             <label>Jelszó:
             <input type="password" class="form-control" name="password" placeholder="Jelszó"></label>
             <input id="geo_string" type="hidden" class="form-control" name="geo_string" value="">
-            <input type="submit" value="Bejelentkezés" name="submit" class="btn btn-outline-black">
+            <input type="submit" value="Bejelentkezés" name="submit" class="btn btn-outline-black" >
 
             <div class="message">
                 Hibás bejelentkezési adatok!

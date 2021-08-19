@@ -228,12 +228,14 @@ function admin_header_menu(){
             ?></div>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item active"><a class="nav-link index" href="index.php">Kezdőlap</a></li>
+                <li class="nav-item"><a class="nav-link tasks" href="tasks.php">Feladatok</a></li>
                 <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
                     <li class="nav-item"><a class="nav-link users" href="users.php">Felhasználók</a></li>
                     <li class="nav-item"><a class="nav-link projects" href="projects.php">Projektek</a></li>
                     <li class="nav-item"><a class="nav-link pages" href="pages.php">Oldalak</a></li>
 
                 <?php endif; ?>
+
                 <li class="nav-item"><a class="nav-link hours" href="hours.php">Óraszámok</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

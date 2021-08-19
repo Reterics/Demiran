@@ -76,7 +76,7 @@ if(isset($_POST['addtables'])):
          `image` varchar(1500) NOT NULL,
          `details` varchar(5000) NOT NULL,
          `attachments` varchar(5000) NOT NULL,
-         `elapsed` varchar(300) NOT NULL,
+         `state` varchar(300) NOT NULL,
          `priority` varchar(50) NOT NULL,
          `start_time` datetime NOT NULL,
          `deadline` datetime NOT NULL,

@@ -19,14 +19,15 @@ require_once "config.php";
         justify-content: center;
         box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
         overflow: hidden;
+        background-image: url(/admin/img/DSC01980.jpg);
     }
     .cover-container {
         max-width: 42em;
         margin-top: 10vh;
-        text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+        text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .2);
 
         margin-bottom: calc(90vh - 61px - 338px);
-        color: #949494;
+        color: #3b3b3bdb;
 
     }
 
@@ -94,15 +95,18 @@ require_once "config.php";
     }
 
 </style>
-<div class="cover-container d-flex p-3 mx-auto flex-column text-center" style="height: calc(100vh - 121px);">
-    <main role="main" class="inner cover">
-        <h1 class="cover-heading">Demiran CRM és Munkaerőnyilvántartó rendszer</h1>
+<div class="cover-container d-flex p-3 flex-column text-center" style="height: calc(100vh - 121px);margin-right: auto!important;">
+    <main role="main" class="inner cover" style="    background-color: #ffffffd9;">
+        <h1 class="cover-heading">Demiran Projektmenedzsment Szoftver</h1>
         <p class="lead">A rendszer fejlesztés alatt áll, a funkcionalitás és a Design az idő folyamán változhat. A Béta rendszer használatáért felelősséget nem vállalok.</p>
         <p class="lead">
-            <a href="login.php" class="btn btn-lg btn-secondary">Bejelentkezés</a>
+            <a href="login.php" class="btn btn-lg btn-secondary" style="font-weight: 500;background-color: #3b3b3b;">Bejelentkezés</a>
         </p>
     </main>
+
 </div>
+
+
 
 <?php footer(); ?>
 </body>

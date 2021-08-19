@@ -11,6 +11,8 @@ body > div:first-child {
 }
 header.main > nav.navbar-dark{
     background-color: rgb(63, 117, 162);
+    background-color: rgb(108 117 125);
+    background-color: rgb(59 59 59);
     background-image: none;
 }
 
@@ -172,7 +174,7 @@ body {
 .lio-modal > .body {
     width: 100%;
     height: 100%;
-    padding: 5px;
+    /*padding: 5px;*/
 }
 
 .lio-modal > .footer > input[type=button] {
@@ -478,6 +480,76 @@ input[type="checkbox"]:focus {
 
 }
 
+
+.exclamation-mark-icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    content: "";
+    background-size: 100% 100%;
+    cursor: pointer;
+    background: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="iso-8859-1"%3F%3E%3Csvg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 27.963 27.963" style="enable-background:new 0 0 27.963 27.963;" xml:space="preserve"%3E%3Cg%3E%3Cg id="c129_exclamation"%3E%3Cpath d="M13.983,0C6.261,0,0.001,6.259,0.001,13.979c0,7.724,6.26,13.984,13.982,13.984s13.98-6.261,13.98-13.984 C27.963,6.259,21.705,0,13.983,0z M13.983,26.531c-6.933,0-12.55-5.62-12.55-12.553c0-6.93,5.617-12.548,12.55-12.548 c6.931,0,12.549,5.618,12.549,12.548C26.531,20.911,20.913,26.531,13.983,26.531z"/%3E%3Cpolygon points="15.579,17.158 16.191,4.579 11.804,4.579 12.414,17.158 "/%3E%3Cpath d="M13.998,18.546c-1.471,0-2.5,1.029-2.5,2.526c0,1.443,0.999,2.528,2.444,2.528h0.056c1.499,0,2.469-1.085,2.469-2.528 C16.441,19.575,15.468,18.546,13.998,18.546z"/%3E%3C/g%3E%3Cg id="Capa_1_207_"%3E%3C/g%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3C/svg%3E%0A')  no-repeat center center;
+}
+
+.exclamation-mark-icon-high {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    content: "";
+    background-size: 100% 100%;
+    cursor: pointer;
+    background: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="iso-8859-1"%3F%3E%3Csvg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 27.963 27.963" style="enable-background:new 0 0 27.963 27.963;" xml:space="preserve" fill="%23f32616"%3E%3Cg%3E%3Cg id="c129_exclamation"%3E%3Cpath d="M13.983,0C6.261,0,0.001,6.259,0.001,13.979c0,7.724,6.26,13.984,13.982,13.984s13.98-6.261,13.98-13.984 C27.963,6.259,21.705,0,13.983,0z M13.983,26.531c-6.933,0-12.55-5.62-12.55-12.553c0-6.93,5.617-12.548,12.55-12.548 c6.931,0,12.549,5.618,12.549,12.548C26.531,20.911,20.913,26.531,13.983,26.531z"/%3E%3Cpolygon points="15.579,17.158 16.191,4.579 11.804,4.579 12.414,17.158 "/%3E%3Cpath d="M13.998,18.546c-1.471,0-2.5,1.029-2.5,2.526c0,1.443,0.999,2.528,2.444,2.528h0.056c1.499,0,2.469-1.085,2.469-2.528 C16.441,19.575,15.468,18.546,13.998,18.546z"/%3E%3C/g%3E%3Cg id="Capa_1_207_"%3E%3C/g%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3C/svg%3E%0A') no-repeat center center;
+}
+
+.exclamation-mark-icon-medium {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    content: "";
+    background-size: 100% 100%;
+    cursor: pointer;
+    background: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="iso-8859-1"%3F%3E%3Csvg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 27.963 27.963" style="enable-background:new 0 0 27.963 27.963;" xml:space="preserve" fill="%23f39416"%3E%3Cg%3E%3Cg id="c129_exclamation"%3E%3Cpath d="M13.983,0C6.261,0,0.001,6.259,0.001,13.979c0,7.724,6.26,13.984,13.982,13.984s13.98-6.261,13.98-13.984 C27.963,6.259,21.705,0,13.983,0z M13.983,26.531c-6.933,0-12.55-5.62-12.55-12.553c0-6.93,5.617-12.548,12.55-12.548 c6.931,0,12.549,5.618,12.549,12.548C26.531,20.911,20.913,26.531,13.983,26.531z"/%3E%3Cpolygon points="15.579,17.158 16.191,4.579 11.804,4.579 12.414,17.158 "/%3E%3Cpath d="M13.998,18.546c-1.471,0-2.5,1.029-2.5,2.526c0,1.443,0.999,2.528,2.444,2.528h0.056c1.499,0,2.469-1.085,2.469-2.528 C16.441,19.575,15.468,18.546,13.998,18.546z"/%3E%3C/g%3E%3Cg id="Capa_1_207_"%3E%3C/g%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3C/svg%3E%0A') no-repeat center center;
+}
+
+.exclamation-mark-icon-low {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    content: "";
+    background-size: 100% 100%;
+    cursor: pointer;
+    background: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="iso-8859-1"%3F%3E%3Csvg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 27.963 27.963" style="enable-background:new 0 0 27.963 27.963;" xml:space="preserve" fill="%233f75a2"%3E%3Cg%3E%3Cg id="c129_exclamation"%3E%3Cpath d="M13.983,0C6.261,0,0.001,6.259,0.001,13.979c0,7.724,6.26,13.984,13.982,13.984s13.98-6.261,13.98-13.984 C27.963,6.259,21.705,0,13.983,0z M13.983,26.531c-6.933,0-12.55-5.62-12.55-12.553c0-6.93,5.617-12.548,12.55-12.548 c6.931,0,12.549,5.618,12.549,12.548C26.531,20.911,20.913,26.531,13.983,26.531z"/%3E%3Cpolygon points="15.579,17.158 16.191,4.579 11.804,4.579 12.414,17.158 "/%3E%3Cpath d="M13.998,18.546c-1.471,0-2.5,1.029-2.5,2.526c0,1.443,0.999,2.528,2.444,2.528h0.056c1.499,0,2.469-1.085,2.469-2.528 C16.441,19.575,15.468,18.546,13.998,18.546z"/%3E%3C/g%3E%3Cg id="Capa_1_207_"%3E%3C/g%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3C/svg%3E%0A') no-repeat center center;
+}
+
+
+.list-icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    content: "";
+    background-size: 100% 100%;
+    cursor: pointer;
+    background: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="utf-8"%3F%3E%3Csvg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve"%3E%3Cg id="Bullet-list"%3E%3Cpath d="M22.9840508,12.7494497h40c0.5522995,0,0.9995995-0.4471998,0.9995995-0.9994993 c0-0.5522003-0.4473-0.9995003-0.9995995-0.9995003h-40c-0.5522003,0-0.9995003,0.4473-0.9995003,0.9995003 C21.9845505,12.3022499,22.4318504,12.7494497,22.9840508,12.7494497z"/%3E%3Cpath d="M62.9840508,31.2963505h-40c-0.5522003,0-0.9995003,0.4473-0.9995003,0.9994984 c0,0.5522995,0.4473,0.9995003,0.9995003,0.9995003h40c0.5522995,0,0.9995995-0.4472008,0.9995995-0.9995003 C63.9836502,31.7436504,63.5363503,31.2963505,62.9840508,31.2963505z"/%3E%3Cpath d="M62.9840508,51.2504501h-40c-0.5522003,0-0.9995003,0.4473-0.9995003,0.9995003 c0,0.5522995,0.4473,0.9995003,0.9995003,0.9995003h40c0.5522995,0,0.9995995-0.4472008,0.9995995-0.9995003 C63.9836502,51.6977501,63.5363503,51.2504501,62.9840508,51.2504501z"/%3E%3Cpath d="M5.9840508,5.7822499c-3.2904999,0-5.9677,2.6771998-5.9677,5.9677005c0,3.2905998,2.6772001,5.9678001,5.9677,5.9678001 c3.2905998,0,5.9678001-2.6772003,5.9678001-5.9678001C11.9518509,8.4594498,9.2746506,5.7822499,5.9840508,5.7822499z M5.9840508,15.7822504c-2.2235854,0-4.0321999-1.8086004-4.0321999-4.0323c0-2.2236004,1.8086146-4.0322003,4.0321999-4.0322003 c2.2236996,0,4.0323,1.8085999,4.0323,4.0322003C10.0163507,13.97365,8.2077503,15.7822504,5.9840508,15.7822504z"/%3E%3Cpath d="M5.9840508,26.3281498c-3.2904999,0-5.9677,2.6772003-5.9677,5.9676991c0,3.2905998,2.6772001,5.9678001,5.9677,5.9678001 c3.2905998,0,5.9678001-2.6772003,5.9678001-5.9678001C11.9518509,29.0053501,9.2746506,26.3281498,5.9840508,26.3281498z M5.9840508,36.3281517c-2.2235854,0-4.0321999-1.8086014-4.0321999-4.0323029c0-2.2235985,1.8086146-4.032198,4.0321999-4.032198 c2.2236996,0,4.0323,1.8085995,4.0323,4.032198C10.0163507,34.5195503,8.2077503,36.3281517,5.9840508,36.3281517z"/%3E%3Cpath d="M5.9840508,46.2822495c-3.2904999,0-5.9677,2.6772003-5.9677,5.967701c0,3.2905998,2.6772001,5.9678001,5.9677,5.9678001 c3.2905998,0,5.9678001-2.6772003,5.9678001-5.9678001C11.9518509,48.9594498,9.2746506,46.2822495,5.9840508,46.2822495z M5.9840508,56.2822495c-2.2235854,0-4.0321999-1.8085976-4.0321999-4.032299c0-2.2236023,1.8086146-4.0321999,4.0321999-4.0321999 c2.2236996,0,4.0323,1.8085976,4.0323,4.0321999C10.0163507,54.4736519,8.2077503,56.2822495,5.9840508,56.2822495z"/%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3C/svg%3E%0A') no-repeat center center;
+}
+
+.kan-ban-icon {
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    content: "";
+    background-size: 100% 100%;
+    cursor: pointer;
+    background: url('data:image/svg+xml,%3C%3Fxml version="1.0" encoding="iso-8859-1"%3F%3E%3Csvg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve"%3E%3Cg%3E%3Cg%3E%3Cpath d="M197.999,39.423H95.305c-4.7,0-8.51,3.81-8.51,8.51c0,4.701,3.81,8.51,8.51,8.51h102.695 c8.228,0,14.924,6.694,14.924,14.923V114.8c0,8.228-6.694,14.924-14.924,14.924H31.943c-8.228,0-14.924-6.694-14.924-14.924 V71.366c0-8.229,6.694-14.923,14.924-14.923h29.324c4.7,0,8.51-3.809,8.51-8.51c0-4.7-3.81-8.51-8.51-8.51H31.943 C14.329,39.423,0,53.753,0,71.366V114.8c0,17.614,14.329,31.943,31.943,31.943h166.057c17.613,0,31.943-14.329,31.943-31.943 V71.366C229.942,53.753,215.613,39.423,197.999,39.423z"/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Cpath d="M480.057,39.423H314.001c-17.614,0-31.943,14.33-31.943,31.943V114.8c0,17.614,14.329,31.943,31.943,31.943h166.057 c17.613,0,31.943-14.329,31.943-31.943V71.366C512,53.753,497.671,39.423,480.057,39.423z M494.981,114.8 c0,8.228-6.694,14.924-14.924,14.924H314.001c-8.229,0-14.924-6.694-14.924-14.924V71.366h0c0-8.229,6.694-14.923,14.923-14.923 h166.057c8.228,0,14.924,6.694,14.924,14.923V114.8z"/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Cpath d="M197.999,202.34H31.943C14.329,202.34,0,216.669,0,234.283v43.434c0,17.614,14.329,31.943,31.943,31.943h166.057 c17.613,0,31.943-14.329,31.943-31.943v-43.434C229.942,216.669,215.613,202.34,197.999,202.34z M212.923,277.717 c0,8.228-6.694,14.924-14.924,14.924H31.943c-8.228,0-14.924-6.694-14.924-14.924v-43.434c0-8.229,6.694-14.923,14.924-14.923 h166.057c8.228,0,14.924,6.694,14.924,14.923V277.717z"/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Cpath d="M480.057,202.342H314.001c-17.614,0-31.943,14.33-31.943,31.943v43.434c0,17.612,14.329,31.941,31.943,31.941H421.97 c4.7,0,8.51-3.809,8.51-8.51c0-4.7-3.81-8.51-8.51-8.51H314.001c-8.229,0-14.924-6.694-14.924-14.922v-43.434 c0-8.229,6.694-14.924,14.924-14.924h166.057c8.228,0,14.924,6.694,14.924,14.924v43.434c0,8.228-6.694,14.922-14.924,14.922 h-24.049c-4.7,0-8.51,3.81-8.51,8.51c0,4.701,3.81,8.51,8.51,8.51h24.049c17.613,0,31.943-14.329,31.943-31.941v-43.434 C512,216.672,497.671,202.342,480.057,202.342z"/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Cpath d="M197.999,365.258h-31.473c-4.7,0-8.51,3.81-8.51,8.51s3.81,8.51,8.51,8.51h31.473c8.228,0,14.924,6.694,14.924,14.924 v43.434c0,8.229-6.694,14.924-14.924,14.924H31.943c-8.228,0-14.924-6.694-14.924-14.924V397.2 c0-8.229,6.694-14.924,14.924-14.924h100.546c4.7,0,8.51-3.81,8.51-8.51s-3.81-8.51-8.51-8.51H31.943 C14.329,365.258,0,379.587,0,397.2v43.434c0,17.613,14.329,31.943,31.943,31.943h166.057c17.613,0,31.943-14.329,31.943-31.943 V397.2C229.942,379.587,215.613,365.258,197.999,365.258z"/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3Cg%3E%3Cpath d="M480.057,365.258H314.001c-17.614,0-31.943,14.329-31.943,31.943v43.434c0,17.613,14.329,31.943,31.943,31.943h166.057 c17.613,0,31.943-14.329,31.943-31.943V397.2C512,379.588,497.671,365.258,480.057,365.258z M494.981,440.634 c0,8.228-6.694,14.924-14.924,14.924H314.001c-8.229,0-14.924-6.694-14.924-14.924V397.2h0c0-8.228,6.694-14.923,14.923-14.923 h166.057c8.228,0,14.924,6.694,14.924,14.924V440.634z"/%3E%3C/g%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3Cg%3E%3C/g%3E%3C/svg%3E') no-repeat center center;
+}
+
+
+
 .elapsed-time{
     color:black;
 }
@@ -750,8 +822,10 @@ Chat részletek / details
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60px;
-    line-height: 60px;
+    /*height: 60px;
+    line-height: 60px;*/
+    height: 47px;
+    line-height: 47px;
     background-color: #fdfeffa6;
 }
 .footer > .container {
@@ -832,4 +906,198 @@ div.footer {
 
 .top_outer_div {
     padding: 1em;
+}
+
+#main_tasks_menu {
+    float: left;
+    width: 64px;
+    border: 1px solid #e4e4e4;
+    height: calc(100vh - 61px);
+    background-color: white;
+}
+
+#main_tasks_content {
+    float: left;
+    width: calc(100% - 64px)
+}
+
+li.nav-item.inline {
+    display: inline-flex;
+}
+li.nav-item.inline > * {
+    margin-right: 10px;
+}
+.mini_top_filter_bar.navbar .navbar-nav {
+    flex-direction: row;
+}
+
+.listed_tasks .project_container {
+    padding: 5px 5px;
+}
+.listed_tasks .project_group {
+    padding: 5px 5px;
+}
+.listed_tasks .project_group_head {
+    max-width: 120px;
+    border: 1px solid #e4e4e4;
+    border-bottom: none;
+    padding: 0 5px;
+}
+
+.listed_tasks .project_task {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.listed_tasks .project_task {
+    border-left: 1px solid #e4e4e4;
+    border-right: 1px solid #e4e4e4;
+    border-bottom: 1px solid #e4e4e4;
+    padding: 4px 10px;
+}
+.listed_tasks .project_task:hover {
+    background-color: #f4f4f4
+}
+.listed_tasks .project_task:first-child {
+    border: 1px solid #e4e4e4;
+}
+.listed_tasks .project_task > div {
+    flex-basis: 10%;
+    width: 10%;
+    flex-shrink: 0;
+    flex-grow: 0;
+}
+
+
+.listed_tasks .project_task > div.short {
+    flex-basis: 5%;
+    width: 5%;
+}
+.listed_tasks .project_task > div.long {
+    flex-basis: 15%;
+    width: 15%;
+}
+.listed_tasks .project_task > div.state {
+    display: none;
+}
+.listed_tasks .project_task > div.title {
+    flex-basis: 20%;
+    width: 20%;
+}
+
+.listed_tasks .project_group_head{
+    border-top-right-radius: 13px;
+}
+.listed_tasks .project_group_head.open {
+    background-color: #80808017;
+}
+.listed_tasks .project_group_head.in_progress, .listed_tasks .project_group_head.medium {
+    background-color: #68b0eb52;
+
+}
+.listed_tasks .project_group_head.review {
+    background-color: #ff980061;
+}
+.listed_tasks .project_group_head.high {
+    background-color: rgba(255, 0, 15, 0.27);
+}
+.listed_tasks .project_group_head.closed, .listed_tasks .project_group_head.low {
+    background-color: #c0e99261;
+}
+
+
+.kanban_tasks .project_container {
+    padding: 5px 5px;
+}
+
+.kanban_tasks .project_container > .project_body{
+    display: flex;
+    justify-content: left;
+    padding: 5px 15px;
+}
+.kanban_tasks .project_task > .id,
+.kanban_tasks .project_task > .repeat,
+.kanban_tasks .project_task > .state,
+.kanban_tasks .project_task > .repeat,
+.kanban_tasks .project_task > .priority,
+
+.kanban_tasks .project_task > .actions
+{
+    display: none
+}
+
+.kanban_tasks .project_task > .users{
+    order:3;
+    align-content: flex-end;
+    text-align: end;
+    width: 100%;
+}
+.kanban_tasks .project_task > .date{
+    order:2;
+    font-size: 0.8em;
+    margin-bottom:5px;
+}
+.kanban_tasks .project_task {
+    padding: 5px 10px;
+    border: 1px solid #e4e4e4;
+    margin: 5px 2px;
+    background-color: white;
+    display: flex;
+    flex-flow: wrap;
+    flex-direction: column;
+    align-content: flex-start;
+}
+.kanban_tasks .project_task:hover {
+    background-color: #eeeeee;
+}
+.kanban_tasks .project_group {
+    padding: 5px 5px;
+    border: 1px solid #e4e4e4;
+    margin: 2px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.kanban_tasks .project_group_head {
+    padding: 0 5px;
+}
+
+
+.main_content {
+    padding: 5px
+}
+
+.project_container{
+    margin-bottom: 10px;
+}
+
+#main_tasks_menu > .menu_icon_outer {
+    text-align: center;
+    padding: 10px 0;
+}
+#main_tasks_menu > .menu_icon_outer > span {
+    width: 2em;
+    height: 2em;
+}
+
+form.mini_top_filter_bar {
+    padding: 0;
+}
+form.mini_top_filter_bar > ul {
+    padding: 0px 5px 3px 10px;
+    /*background-color: white;*/
+    background-color: #3b3b3b;
+    font-size: 0.8em;
+    /*border: 1px solid #eeeeee;*/
+    line-height: 1;
+}
+form.mini_top_filter_bar > ul > li > label{
+    margin-top: 3px;
+    font-weight: 400;
+    color: rgba(255,255,255,.5);
+}
+
+header nav.navbar {
+    padding: 0.2rem 1rem;
 }
