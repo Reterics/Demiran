@@ -57,6 +57,45 @@ function getUsersByIDs($array){
     return sqlGetAll($sql);
 }
 
+function getClientsAsOptions(){
+    global $connection;
+    $sql = "SELECT id,username FROM users WHERE role = 'client'";
+    $result = mysqli_query($connection, $sql);
+    $html = "";
+    while ($row = mysqli_fetch_array($result)) {
+        $html .= "<option value='".$row['id']."'>".$row['username']."</option>";
+    }
+    return $html;
+}
+function geUsersAsOptions(){
+    global $connection;
+    $sql = "SELECT id,username FROM users WHERE role != 'client'";
+    $result = mysqli_query($connection, $sql);
+    $html = "";
+    while ($row = mysqli_fetch_array($result)) {
+        $html .= "<option value='".$row['id']."'>".$row['username']."</option>";
+    }
+    return $html;
+}
+function geProjectsAsOptions($selected = null){
+    global $connection;
+    $sql = "SELECT id, title FROM project";
+    $result = mysqli_query($connection, $sql);
+    $html = "";
+    if ($selected == null){
+        $html .= "<option value=''>Válassz</option>";
+    }
+    while ($row = mysqli_fetch_array($result)) {
+        if ($selected != null && $selected == $row['id']) {
+            $html .= "<option value='".$row['id']."' selected>".$row['title']."</option>";
+        } else {
+            $html .= "<option value='".$row['id']."'>".$row['title']."</option>";
+        }
+
+    }
+    return $html;
+}
+
 function selectUserFromArray($id, $array) {
     $selectedUser = null;
     foreach($array as $user) {
@@ -83,6 +122,7 @@ function setUserIconSpan($userData) {
         <?php echo strtoupper(substr($userData["username"], 0,1)) . substr($userData["username"], 1,1); ?>
     </span>
     <?php
+    return "";
 }
 
 function load_tiny_mce(){
@@ -199,7 +239,6 @@ function admin_head(){
 <?php
 
 }
-
 
 function admin_header_menu(){
 
@@ -619,4 +658,107 @@ function admin_header_menu(){
 </script>
 
 <?php
+}
+
+function add_task_form($project_id = null){
+    ?>
+    <div class="addTaskDiv" style="display: none">
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group">
+
+                <label for="title">Cím
+                    <input type="text" class="form-control" name="title" id="title" placeholder="Cím" required/>
+                </label>
+                <label for="project_id">Projekt</label>
+                <!--  <input type="hidden" name="project_id" id="project_id" value="<?php echo $project_id ?>"> -->
+                <select class="form-control" name="project_id" id="project_id" >
+                    <?php echo geProjectsAsOptions($project_id); ?>
+                </select>
+                <label for="users">Hozzárendelt felhasználók</label>
+
+                <select class="form-control" name="users[]" id="users" multiple>
+                    <?php echo geUsersAsOptions(); ?>
+                </select>
+
+
+                <label for="repeat">Ismétlés
+                    <select class="form-control" name="repeat" id="repeat" >
+                        <option value="once">Egyszeri</option>
+                        <option value="frequently">Rendszeres</option>
+                    </select></label>
+
+                <label for="priority">Prioritás
+                    <select class="form-control" name="priority" id="priority" >
+                        <option value="low">Alacsony</option>
+                        <option value="medium">Közepes</option>
+                        <option value="high">Magas</option>
+                    </select></label>
+
+                <label for="state">Státusz
+                    <select class="form-control" name="state" id="state" >
+                        <option value="open">Nyitott</option>
+                        <option value="in_progress">Folyamatban</option>
+                        <option value="review">Átnézésre vár</option>
+                        <option value="closed">Lezárt</option>
+                    </select></label>
+
+                <label>Kezdés
+                    <input type="date" class="form-control" name="start_time" value="<?php echo date("Y-m-d"); ?>" min="2020-10-01" max="2030-12-31">
+                </label>
+                <label>Határidő
+                    <input type="date" class="form-control" name="deadline" value="<?php echo date("Y-m-d",strtotime('first day of +1 month')); ?>" min="2020-10-01" max="2030-12-31">
+                </label>
+                <input type="text" class="form-control" name="addprojecttask" style="display:none;" value="1"/>
+
+            </div>
+
+        </form>
+
+    </div>
+    <script type="text/javascript">
+        const addTaskButton = document.querySelector(".addTask");
+        if(addTaskButton){
+            addTaskButton.onclick = function () {
+                const form = document.querySelector(".addTaskDiv form");
+
+                if(form){
+                    const cln = form.cloneNode(true);
+
+                    const popup = Demiran.openPopUp("Hozzáadás", cln, [
+                        {
+                            value:"Hozzáad",
+                            onclick: (closeDialog, modalID)=>{
+                                const modal = document.querySelector("#"+modalID);
+                                if(modal){
+                                    const form = modal.querySelector("form");
+                                    if(form){
+                                        const title = form.querySelector("#title");
+                                        if(title && !title.value){
+                                            alert("Kérlek adj meg egy címet!");
+                                            return;
+                                        }
+                                        const project_id = form.querySelector("#project_id");
+                                        if(project_id && !project_id.value){
+                                            alert("Kérlek válassz ki egy projektet!");
+                                            return;
+                                        }
+                                        form.submit();
+                                        closeDialog();
+                                        return;
+                                    }
+                                }
+                                alert("Kritikus hiba a DOM-ban!");
+                            }
+                        },
+                        {
+                            value:"Vissza",
+                            type:"close"
+                        }
+                    ]);
+                }
+            }
+        }
+
+    </script>
+    <?php
 }

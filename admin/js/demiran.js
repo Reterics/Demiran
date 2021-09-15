@@ -665,3 +665,29 @@ function loadGETParameters() {
         });
 }
 loadGETParameters();
+
+const removeTask = function (id, title) {
+    Demiran.openPopUp("Jóváhagyás", "Biztonsan törölni szeretnéd ezt a Feladatot? <br> " + id + " - " + title, [
+        {
+            value:"Igen",
+            onclick: (closeDialog)=>{
+                closeDialog();
+                Demiran.post("process.php", 'deleteproject_task=' + id, function (e, result) {
+                    console.log(result);
+                    if (result.trim() === "OK") {
+                        location.reload();
+                    }
+                });
+            }
+        },
+        {
+            value:"Vissza",
+            type:"close"
+        }
+    ]);
+
+    return false;
+};
+const editTask = function (id) {
+    alert('Ez a funckió nincs implementálva az MVPben');
+};

@@ -28,7 +28,6 @@ admin_header_menu();
 require_once "process.php";
 $search = array(" 00:00:00");
 $replace = array("");
-require_once "methods.php";
 
 if (isset($_GET['id'])):
 
@@ -185,105 +184,9 @@ if (isset($_GET['id'])):
             </div>
         </div>
 
-    <div class="addTaskDiv" style="display: none">
-        <form style="padding: 10px 15px;" method="post" enctype="multipart/form-data">
-            <div class="form-group">
-                <input type="hidden" name="project_id" id="project_id" value="<?php echo $result['id'] ?>">
-                <label for="title">Cím
-                    <input type="text" class="form-control" name="title" id="title" placeholder="Cím" required/>
-                </label>
-                <label for="users">Hozzárendelt felhasználók</label>
-                <select class="form-control" name="users[]" id="users" multiple>
-                    <?php echo geUsersAsOptions($connection); ?>
-                </select>
-
-
-                <label for="repeat">Ismétlés
-                    <select class="form-control" name="repeat" id="repeat" >
-                        <option value="once">Egyszeri</option>
-                        <option value="frequently">Rendszeres</option>
-                    </select></label>
-
-                <label for="priority">Prioritás
-                    <select class="form-control" name="priority" id="priority" >
-                        <option value="low">Alacsony</option>
-                        <option value="medium">Közepes</option>
-                        <option value="high">Magas</option>
-                    </select></label>
-
-                <label for="state">Státusz
-                    <select class="form-control" name="state" id="state" >
-                        <option value="open">Nyitott</option>
-                        <option value="in_progress">Folyamatban</option>
-                        <option value="review">Átnézésre vár</option>
-                        <option value="closed">Lezárt</option>
-                    </select></label>
-
-                <label>Kezdés
-                    <input type="date" class="form-control" name="start_time" value="<?php echo date("Y-m-d"); ?>" min="2020-10-01" max="2030-12-31">
-                </label>
-                <label>Határidő
-                    <input type="date" class="form-control" name="deadline" value="<?php echo date("Y-m-d",strtotime('first day of +1 month')); ?>" min="2020-10-01" max="2030-12-31">
-                </label>
-                <input type="text" class="form-control" name="addprojecttask" style="display:none;" value="1"/>
-
-            </div>
-
-        </form>
-
-    </div>
-    <script type="text/javascript">
-        const registerButton = document.querySelector(".addTask");
-        if(registerButton){
-            registerButton.onclick = function () {
-                const form = document.querySelector(".addTaskDiv form");
-
-                if(form){
-                    const cln = form.cloneNode(true);
-
-                    const popup = Demiran.openPopUp("Hozzáadás", cln, [
-                        {
-                            value:"Hozzáad",
-                            onclick: (closeDialog, modalID)=>{
-                                const modal = document.querySelector("#"+modalID);
-                                const form = modal.querySelector("form");
-                                form.submit();
-                                closeDialog();
-                            }
-                        },
-                        {
-                            value:"Vissza",
-                            type:"close"
-                        }
-                    ]);
-                }
-            }
-        }
-
-        const removeTask = function (id, title) {
-            Demiran.openPopUp("Jóváhagyás", "Biztonsan törölni szeretnéd ezt a Feladatot? <br> " + id + " - " + title, [
-                {
-                    value:"Igen",
-                    onclick: (closeDialog)=>{
-                        closeDialog();
-                        Demiran.post("process.php", 'deleteproject_task=' + id, function (e, result) {
-                            console.log(result);
-                            if (result.trim() === "OK") {
-                                location.reload();
-                            }
-                        });
-                    }
-                },
-                {
-                    value:"Vissza",
-                    type:"close"
-                }
-            ]);
-
-            return false;
-        };
-
-    </script>
+    <?php
+    add_task_form($result['id']);
+    ?>
 <?php
 else:
     ?>
@@ -369,7 +272,7 @@ else:
                             </label>
                             <label for="users">Hozzárendelt felhasználók</label>
                             <select class="form-control" name="users[]" id="users" multiple>
-                                <?php echo geUsersAsOptions($connection); ?>
+                                <?php echo geUsersAsOptions(); ?>
                             </select>
 
                             <label for="category">Kategória
@@ -377,7 +280,7 @@ else:
                             </label>
                             <label for="client">Megrendelő
                             <select class="form-control"  name="client" id="client" >
-                                <?php echo getClientsAsOptions($connection); ?>
+                                <?php echo getClientsAsOptions(); ?>
                             </select>
                             </label>
 
