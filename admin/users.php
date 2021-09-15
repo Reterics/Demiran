@@ -58,22 +58,69 @@ if (isset($_GET['id'])):
                         </div>
                     </div>
                 </div>
-                <div class="col-md-8" <?php
-                if($_SESSION["username"] != $result['username']) {
-                    echo 'style="display:none;"';
-                }
-                ?>>
+                <?php if($_SESSION["username"] == $result['username']) : ?>
+                <div class="col-md-8">
 
                     <div class="lio-modal">
                         <div class="header">
-                            <h5 class="title">Beállítások</h5>
+                            <h5 class="title">Műveletek</h5>
                         </div>
                         <div class="body">
+
+                            <div class="form-group inline">
+                                <div class="col-sm-7">
+                                    <h4>GDPR - Adatkezelés</h4>
+                                </div>
+                            </div>
+                            <div class="form-group inline" >
+                                <div class="col-sm-3 col-sm-offset-1 input-lg">
+                                    Saját adatok letöltése
+
+                                </div>
+                                <div class="col-sm-7">
+                                    <input type="button" class="btn btn-outline-dark" value="Adatok letöltése">
+                                </div>
+                            </div>
+                            <div class="form-group inline">
+                                <div class="col-sm-7">
+                                    <h4>Jelszó Módosítás</h4>
+                                </div>
+                            </div>
+
+                            <form>
+                                <div class="form-group inline">
+                                    <div class="col-sm-7">
+                                        <label>Régi Jelszó
+                                            <input type="text" class="form-control" value="">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group inline">
+                                    <div class="col-sm-7">
+                                        <label>Új Jelszó
+                                            <input type="text" class="form-control" value="">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group inline">
+                                    <div class="col-sm-7">
+                                        <label>Új Jelszó Megerősítése
+                                            <input type="text" class="form-control" value="">
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="form-group inline">
+                                    <div class="col-sm-7">
+                                        <input type="submit" class="btn btn-outline-dark" value="Mentés">
+                                    </div>
+                                </div>
+                            </form>
 
                         </div>
                     </div>
 
                 </div>
+                <?php endif; ?>
             </div>
         </div>
 

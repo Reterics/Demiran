@@ -65,7 +65,7 @@ if (isset($_GET['id'])):
                                 <tr><td>ID</td><td><?php echo $result['id'] ?></td></tr>
                                 <tr><td>Felhasználók</td><td class='users'><?php setUserIconSpan(selectUserFromArray($result['users'], $userData)); ?></td></tr>
                                 <tr><td>Kategóriák</td><td><?php echo $result['category']  ?></td></tr>
-                                <tr><td>Megrendelő</td><td class='client'><?php echo $result['client'];  ?></td></tr>
+                                <tr><td>Megrendelő</td><td class='client'><?php setUserIconSpan(selectUserFromArray($result['client'], $userData))  ?></td></tr>
                                 <tr><td>Státusz</td><td><?php echo $result['status']  ?></td></tr>
                                 <tr><td>Számlázás</td><td><?php echo $result['billing']  ?></td></tr>
                                 <tr><td>Ár</td><td><?php echo $result['price'] ?></td></tr>
@@ -122,8 +122,33 @@ if (isset($_GET['id'])):
 
                                          ?></div>
                                     <div class="repeat"><?php echo $row['repeat'] ?></div>
-                                    <div class="state"><?php echo $row['state'] ?></div>
-                                    <div class="priority"><?php echo $row['priority'] ?></div>
+                                    <div class="state">
+
+                                        <?php
+
+                                        $translate_from = array(
+                                            "open",
+                                            "in_progress",
+                                            "review",
+                                            "closed",
+                                            "medium",
+                                            "low",
+                                            "high",
+                                        );
+                                        $translate_to = array(
+                                            "Nyitott",
+                                            "Folyamatban",
+                                            "Átnézésre vár",
+                                            "Lezárva",
+                                            "Normál",
+                                            "Alacsony",
+                                            "Magas",
+                                        );
+
+
+                                        echo str_replace($translate_from, $translate_to,$row['state']); ?>
+                                       </div>
+                                    <div class="priority"><span class="exclamation-mark-icon-<?php echo $row['priority'] ?>"></span></div>
                                     <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
                                     <div class="actions">
                                         <span class="hoverIcon seeDetails details-icon" onclick="editTask('<?php echo $row['id'] ?>')"></span>
@@ -306,7 +331,7 @@ else:
                                 <?php setUserIconSpan(selectUserFromArray($row['users'], $userData)); ?>
                                </div>
                             <div class="category"><?php echo $row['category'] ?></div>
-                            <div class="client"><?php echo $row['client'] ?></div>
+                            <div class="client"><?php setUserIconSpan(selectUserFromArray($row['client'], $userData)) ?></div>
                             <div class="status"><?php echo $row['status'] ?></div>
                             <div class="billing"><?php echo $row['billing'] ?></div>
                             <div class="price"><?php echo $row['price'] ?></div>

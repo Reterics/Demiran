@@ -249,7 +249,7 @@ foreach ($project_tasks as $task) {
 
                                                         <?php /*echo $row['priority'] */ ?>
 
-                                                        <span class="exclamation-mark-icon-<?php echo $row['priority'] ?>" onclick="editTask('1')"></span>
+                                                        <span class="exclamation-mark-icon-<?php echo $row['priority'] ?>"></span>
 
                                                     </div>
                                                     <div class="date"><?php echo str_replace($search, $replace, $row['deadline']) ?></div>
