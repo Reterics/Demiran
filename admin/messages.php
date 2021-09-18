@@ -6,7 +6,7 @@
  * Time: 17:41
  */
 require('../config.php');
-include("auth.php");
+include("./auth.php");
 require_once("./template.php");
 
 

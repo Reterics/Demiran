@@ -301,7 +301,7 @@ require_once "process.php";
                                     }
                                     console.log(ipData);
                                 } else {
-                                    alert("Kérlek add meg egy értéket!");
+                                    Demiran.alert("Kérlek add meg egy értéket!");
                                 }
                             };
                         }
@@ -355,7 +355,7 @@ require_once "process.php";
                                     }
                                     console.log("Lat: "+lat+" Lon: "+lon+" Meter: "+meter);
                                 } else {
-                                    alert("Kérlek add meg egy értéket!");
+                                    Demiran.alert("Kérlek add meg egy értéket!");
                                 }
                             };
                             const coords = {

@@ -293,7 +293,7 @@ endif;
                         const working = !startIcon.classList.contains("inactive-icon");
                         home.log("Clicked Start, active: " + working);
                         if(working){
-                            Demiran.post("process.php", 'task=work&counter=start&starttime='+encodeURIComponent(nowDateTime)+'&user=<?php echo $currentUserId; ?>', function (e, result) {
+                            Demiran.call("manage_counter", 'task=work&counter=start&starttime='+encodeURIComponent(nowDateTime)+'&user=<?php echo $currentUserId; ?>', function (e, result) {
                                 console.log(result);
 
                                 stopIcon.classList.remove("inactive-icon");
@@ -308,7 +308,7 @@ endif;
                         const working = !stopIcon.classList.contains("inactive-icon");
                         home.log("Clicked Stop, active: " + working);
                         if(working){
-                            Demiran.post("process.php", 'task=work&counter=stop&starttime='+encodeURIComponent(nowDateTime)+'&user=<?php echo $currentUserId; ?>', function (e, result) {
+                            Demiran.call("manage_counter", 'task=work&counter=stop&starttime='+encodeURIComponent(nowDateTime)+'&user=<?php echo $currentUserId; ?>', function (e, result) {
                                 console.log(result);
                                 if(result === "ok"){
                                     clearInterval(userInterval);
@@ -321,7 +321,7 @@ endif;
                 }
 
                 if(elapsed){
-                    Demiran.post("process.php", 'task=work&counter=get'+'&user=<?php echo $currentUserId; ?>', function (e, result) {
+                    Demiran.call("manage_counter", 'task=work&counter=get'+'&user=<?php echo $currentUserId; ?>', function (e, result) {
                         home.log("Munkaidő válasz a szervertől: " + result);
 
                         if (result !== "00:00:00") {

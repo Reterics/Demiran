@@ -5,7 +5,7 @@
  * Date: 2020. 10. 13.
  * Time: 13:49
  */
-
+global $globalSettings;
 $timezone = $globalSettings->getSettingByName("timezone");
 if($timezone){
     date_default_timezone_set($timezone||'Europe/Budapest');
@@ -429,7 +429,7 @@ function admin_header_menu(){
             const working = !startIcon.classList.contains("inactive-icon");
             home.log("Clicked Start, active: " + working);
             if(working){
-                Demiran.post("process.php", 'task=work&counter=start&starttime='+encodeURIComponent(nowDateTime), function (e, result) {
+                Demiran.call("manage_counter", 'task=work&counter=start&starttime='+encodeURIComponent(nowDateTime), function (e, result) {
                     console.log(result);
 
                     stopIcon.classList.remove("inactive-icon");
@@ -444,7 +444,7 @@ function admin_header_menu(){
             const working = !stopIcon.classList.contains("inactive-icon");
             home.log("Clicked Stop, active: " + working);
             if(working){
-                Demiran.post("process.php", 'task=work&counter=stop&starttime='+encodeURIComponent(nowDateTime), function (e, result) {
+                Demiran.call("manage_counter", 'task=work&counter=stop&starttime='+encodeURIComponent(nowDateTime), function (e, result) {
                     console.log(result);
                     if(result === "ok"){
                         clearInterval(interval);
@@ -461,7 +461,7 @@ function admin_header_menu(){
     }
 
     if(elapsed){
-        Demiran.post("process.php", 'task=work&counter=get', function (e, result) {
+        Demiran.call("manage_counter", 'task=work&counter=get', function (e, result) {
             home.log("Munkaidő válasz a szervertől: " + result);
             const elapsed = document.querySelector(".elapsed-time");
             if(elapsed){
@@ -734,12 +734,12 @@ function add_task_form($project_id = null){
                                     if(form){
                                         const title = form.querySelector("#title");
                                         if(title && !title.value){
-                                            alert("Kérlek adj meg egy címet!");
+                                            Demiran.alert("Kérlek adj meg egy címet!");
                                             return;
                                         }
                                         const project_id = form.querySelector("#project_id");
                                         if(project_id && !project_id.value){
-                                            alert("Kérlek válassz ki egy projektet!");
+                                            Demiran.alert("Kérlek válassz ki egy projektet!");
                                             return;
                                         }
                                         form.submit();
@@ -747,7 +747,7 @@ function add_task_form($project_id = null){
                                         return;
                                     }
                                 }
-                                alert("Kritikus hiba a DOM-ban!");
+                                Demiran.alert("Kritikus hiba a DOM-ban!");
                             }
                         },
                         {

@@ -1,6 +1,6 @@
 <?php
 require_once('../config.php');
-require_once("auth.php");
+require_once("./auth.php");
 require_once("./template.php");
 
 ?>
@@ -131,7 +131,7 @@ if (isset($_GET['id'])):
                                             const new_pass_again_value = new_pass_again.value;
 
                                             if (!old_pass_value || !new_pass_value || ! new_pass_again_value) {
-                                                alert("Valamelyik mező hiányzik, kérlek pótold!");
+                                                Demiran.alert("Valamelyik mező hiányzik, kérlek pótold!");
                                                 return;
                                             }
                                             Demiran.openPopUp("Jóváhagyás", "Biztonsan meg szeretnéd változtatni a jelszavad?", [
@@ -139,11 +139,16 @@ if (isset($_GET['id'])):
                                                     value:"Igen",
                                                     onclick: (closeDialog)=>{
                                                         closeDialog();
-                                                        Demiran.post("process.php", 'change_user_pass=' + old_pass_value + '&new_pass=' + new_pass_value + '&new_pass_again=' + new_pass_again_value, function (e, result) {
+                                                        Demiran.call("change_user_pass", 'change_user_pass=' + old_pass_value + '&new_pass=' + new_pass_value + '&new_pass_again=' + new_pass_again_value, function (e, result) {
                                                             if (!e && result.trim() === "OK") {
-                                                                alert("Jelszó változtatás sikeres!");
+                                                                Demiran.alert("Jelszó változtatás sikeres!");
                                                             } else {
-                                                                alert("Jelszó változtatás sikertelen, nézd meg a konzolt a részletekért!");
+                                                                if(typeof result === "string"){
+                                                                    Demiran.alert(result);
+                                                                } else {
+                                                                    Demiran.alert("Jelszó változtatás sikertelen, nézd meg a konzolt a részletekért!");
+                                                                }
+
                                                             }
                                                         });
                                                     }

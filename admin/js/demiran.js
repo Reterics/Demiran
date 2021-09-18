@@ -208,6 +208,23 @@ const Demiran = {
         xHTTP.send(null);
     },
     /**
+     * This function connects the Frontend directly to Backend
+     * @param {string} task_name
+     * @param body
+     * @param callback
+     * @returns {boolean}
+     */
+    call: (task_name, body, callback = ()=>{})=>{
+        body = Demiran.convertToFormEncoded(body);
+        if(body.includes("&_call=")) {
+            body = body.replace("&_call=","&__call=")
+        } else if(body.startsWith("_call=")){
+            body = "_"+body;
+        }
+        body = "_call="+encodeURIComponent(task_name)+"&"+body;
+        return Demiran.post("process.php", body, callback);
+    },
+    /**
      * @param {string} parentSelector
      * @param {string} childSelector
      */
@@ -415,7 +432,7 @@ const Demiran = {
             content.appendChild(body);
         } else if(typeof body === "string" || typeof body === "number" || typeof body === "boolean"){
             content.innerHTML = body;
-            content.style.padding = "5px";
+            content.style.padding = "5px 10px";
         }
 
 
@@ -562,7 +579,9 @@ const Demiran = {
             node: modal,
             close: ()=>{
                 const modal = document.querySelector("#"+modalId);
-                modal.outerHTML = "";
+                if(modal){
+                    modal.outerHTML = "";
+                }
             },
             id: modalId
         };
@@ -595,6 +614,25 @@ const Demiran = {
         ];
         return this.openPopUp(title,body,buttons);
 
+    },
+    /**
+     * Replaces the original alert function
+     * @param {string} text
+     * @param title
+     */
+    alert: function (text, title) {
+        const alertBox =  this.openPopUp(title || "Üzenet", text, [{
+            value:"OK",
+            type:"close"
+        }]);
+        if(alertBox){
+            document.onkeyup = function (e){
+                if(e.key === "Enter" || e.which === 13 || e.keyCode === 13) {
+                    document.onkeyup = null;
+                    alertBox.close();
+                }
+            }
+        }
     },
     /**
      *
@@ -689,5 +727,5 @@ const removeTask = function (id, title) {
     return false;
 };
 const editTask = function (id) {
-    alert('Ez a funckió nincs implementálva az MVPben');
+    Demiran.alert('Ez a funckió nincs implementálva az MVPben');
 };
