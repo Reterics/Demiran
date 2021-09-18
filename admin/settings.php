@@ -441,9 +441,11 @@ require_once "process.php";
                                     });
                                     const form = document.querySelector("form");
                                     if(form){
-                                        Demiran.post("process.php",Demiran.convertToFormEncoded(form),function(error,data){
+                                        Demiran.call("save_main_settings",Demiran.convertToFormEncoded(form),function(error,data){
                                             if(!error){
-
+                                                Demiran.alert("Beállítások mentése sikeres!");
+                                            } else {
+                                                Demiran.alert("Hiba történt a beállítások mentése során!");
                                             }
                                             console.log(data,error);
                                         });

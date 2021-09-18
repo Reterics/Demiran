@@ -37,7 +37,15 @@ if (isset($_GET['id'])):
                         </div>
                         <div class="body">
                             <?php if(isset($result['image']) && $result['image'] != ""): ?>
-                            <img src="./uploads/<?php echo $result['image']; ?>" alt="profile-picture"
+                            <img <?php
+
+                            if(file_exists('./uploads/'.$result['image'])){
+                                echo 'src="./uploads/'.$result['image'].'"';
+                            } else {
+                                echo 'src=""';
+                            }
+
+                            ?> alt="profile-picture"
                                  style=" width: 100%;">
                             <?php
                             endif;
@@ -91,21 +99,21 @@ if (isset($_GET['id'])):
                                 <div class="form-group inline">
                                     <div class="col-sm-7">
                                         <label>Régi Jelszó
-                                            <input id="old_pass" type="password" class="form-control" value="">
+                                            <input id="old_pass" type="password" class="form-control" value="" autocomplete="on">
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group inline">
                                     <div class="col-sm-7">
                                         <label>Új Jelszó
-                                            <input id="new_pass" type="password" class="form-control" value="">
+                                            <input id="new_pass" type="password" class="form-control" value="" autocomplete="off">
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group inline">
                                     <div class="col-sm-7">
                                         <label>Új Jelszó Megerősítése
-                                            <input id="new_pass_again" type="password" class="form-control" value="">
+                                            <input id="new_pass_again" type="password" class="form-control" value="" autocomplete="off">
                                         </label>
                                     </div>
                                 </div>
@@ -303,7 +311,8 @@ else:
 
                                     if (fromTime && toTime && fromTime.value && toTime.value) {
                                         const id = fromTime.getAttribute("data-id") || toTime.getAttribute("data-id");
-                                        Demiran.post("process.php", 'updateworktime=1&from=' + fromTime.value + '&to=' + toTime.value + '&id=' + id, function (e, result) {
+
+                                        Demiran.call("update_worktime", 'updateworktime=1&from=' + fromTime.value + '&to=' + toTime.value + '&id=' + id, function (e, result) {
                                             console.log(result);
                                             if (result.trim() === "ok") {
                                                 staticColumn.innerHTML = fromTime.value + "-" + toTime.value;
@@ -334,7 +343,7 @@ else:
 
                             <label for="password">Jelszó
 
-                            <input type="password" class="form-control" name="password" id="password"
+                            <input type="password" class="form-control" name="password" id="password" autocomplete="on"
                                    placeholder="Jelszó"></label>
 
 
@@ -375,7 +384,7 @@ else:
                     const removeUser = function (id, username) {
                         Demiran.confirm("Jóváhagyás","Biztonsan törölni szeretnéd ezt a felhasználót az adatbázisból? <br> " + id + " - " + username,  result => {
                             if (result) {
-                                Demiran.post("process.php", 'deleteuser=' + id, function (e, result) {
+                                Demiran.call("delete_user", 'deleteuser=' + id, function (e, result) {
                                     console.log(result);
                                     if (result.trim() === "OK") {
                                         location.reload();
@@ -419,8 +428,17 @@ else:
                                                     console.log(work_time.value);
                                                 }
                                             }
-                                            form.submit();
                                             closeDialog();
+                                            Demiran.call("add_user",Demiran.convertToFormEncoded(form),function(error,result){
+                                                if(!error && result.trim() === "OK"){
+                                                    location.reload();
+                                                } else {
+                                                    Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                    console.log(result,error);
+                                                }
+                                            });
+                                            //form.submit();
+
                                         }
                                     },
                                     {

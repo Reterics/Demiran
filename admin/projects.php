@@ -316,12 +316,15 @@ else:
                                 value:"Igen",
                                 onclick: (closeDialog)=>{
                                     closeDialog();
-                                    Demiran.post("process.php", 'deleteproject=' + id, function (e, result) {
-                                        console.log(result);
-                                        if (result.trim() === "OK") {
+                                    Demiran.call("delete_project",Demiran.convertToFormEncoded(form),function(error,result){
+                                        if(!error && result.trim() === "OK"){
                                             location.reload();
+                                        } else {
+                                            Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                            console.log(result,error);
                                         }
                                     });
+
                                 }
                             },
                             {
@@ -353,8 +356,16 @@ else:
                                         onclick: (closeDialog, modalID)=>{
                                             const modal = document.querySelector("#"+modalID);
                                             const form = modal.querySelector("form");
-                                            form.submit();
+                                            //form.submit();
                                             closeDialog();
+                                            Demiran.call("add_project",Demiran.convertToFormEncoded(form),function(error,result){
+                                                if(!error && result.trim() === "OK"){
+                                                    location.reload();
+                                                } else {
+                                                    Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                    console.log(result,error);
+                                                }
+                                            });
                                         }
                                     },
                                     {
@@ -395,8 +406,8 @@ endif;
             echo "&filter_project=".$_GET['id'];
         }
         ?>', function (e, result) {
-        console.log(result);
-        console.log(JSON.parse(result));
+        //console.log(result);
+        //console.log(JSON.parse(result));
         const data = JSON.parse(result);
         const inputData = [];
         data.forEach(function(d){

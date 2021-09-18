@@ -214,7 +214,7 @@ function admin_head(){
                             span.classList.add("userSpan");
                             span.setAttribute("title",username);
                             span.innerHTML = username.charAt(0).toUpperCase() + username.charAt(1);
-                            console.log(Demiran.getStringColor(username));
+                            //console.log(Demiran.getStringColor(username));
                             span.style.backgroundColor = Demiran.getStringColor(username);
                             node.appendChild(span);
                         }
@@ -742,8 +742,16 @@ function add_task_form($project_id = null){
                                             Demiran.alert("Kérlek válassz ki egy projektet!");
                                             return;
                                         }
-                                        form.submit();
+                                        //form.submit();
                                         closeDialog();
+                                        Demiran.call("add_project_task",Demiran.convertToFormEncoded(form),function(error,result){
+                                            if(!error && result.trim() === "OK"){
+                                                location.reload();
+                                            } else {
+                                                Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                console.log(result,error);
+                                            }
+                                        });
                                         return;
                                     }
                                 }

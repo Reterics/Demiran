@@ -173,6 +173,7 @@ $Demiran->add_method("manage_counter", function (){
         }
     }
 });
+
 $Demiran->add_method("change_user_pass", function (){
     global $connection;
     // Security Vulnerability, because i handle passwords as plain text TODO: fix it
@@ -199,6 +200,7 @@ $Demiran->add_method("change_user_pass", function (){
         echo "A jelenlegi jelszó nem egyezik, bejelentkezés sikertelen!";
     }
 });
+
 $Demiran->add_method("get_task_details", function(){
     global $connection;
     $query = "SELECT * FROM `project_tasks` WHERE id=".$_POST['get_task_details']." LIMIT 1";
@@ -210,9 +212,8 @@ $Demiran->add_method("get_task_details", function(){
         echo "false";
     }
 });
-//add_backend_method(array("counter", "task", "role", "id"), );
 
-add_backend_method(array("deleteuser"), function () {
+$Demiran->add_method("delete_user", function () {
     global $connection;
     $query = "DELETE from `users` WHERE id=".$_POST['deleteuser'];
     $result = mysqli_query($connection, $query);
@@ -223,7 +224,7 @@ add_backend_method(array("deleteuser"), function () {
     }
 });
 
-add_backend_method(array("username", "adduser"), function () {
+$Demiran->add_method("add_user", function () {
     global $connection;
     $username = stripslashes($_REQUEST['username']);
     $username = mysqli_real_escape_string($connection, $username);
@@ -273,7 +274,7 @@ VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', '$role', '
     }
 });
 
-add_backend_method(array("addproject", "title"), function (){
+$Demiran->add_method("add_project", function (){
     global $connection;
     $users = "";
     $title = "";
@@ -327,7 +328,7 @@ VALUES ('$users', '$title', '$category', '$client', 'open', '$billing', '$price'
     }
 });
 
-add_backend_method(array("deleteproject"), function (){
+$Demiran->add_method("delete_project", function (){
     global $connection;
     $query = "DELETE from `project` WHERE id=".$_POST['deleteproject'];
     $result = mysqli_query($connection, $query);
@@ -338,7 +339,7 @@ add_backend_method(array("deleteproject"), function (){
     }
 });
 
-add_backend_method(array("deleteproject_task"), function (){
+$Demiran->add_method("delete_project_task", function (){
     global $connection;
     $query = "DELETE from `project_tasks` WHERE id=".$_POST['deleteproject_task'];
     $result = mysqli_query($connection, $query);
@@ -349,7 +350,7 @@ add_backend_method(array("deleteproject_task"), function (){
     }
 });
 
-add_backend_method(array("addpage", "title"), function () {
+$Demiran->add_method("add_page", function () {
     global $connection;
     $user = "";
     if(isset($_POST['user'])){
@@ -380,7 +381,7 @@ add_backend_method(array("addpage", "title"), function () {
     }
 });
 
-add_backend_method(array("deletepage"), function (){
+$Demiran->add_method("delete_page", function (){
     global $connection;
     $query = "DELETE from `pages` WHERE id=".$_POST['deletepage'];
     $result = mysqli_query($connection, $query);
@@ -391,7 +392,7 @@ add_backend_method(array("deletepage"), function (){
     }
 });
 
-add_backend_method(array("main-settings", "id1", "id2"), function (){
+$Demiran->add_method("save_main_settings", function (){
     global $connection;
     $ips = $_POST["id1"];
     $geo = $_POST["id2"];
@@ -402,7 +403,7 @@ add_backend_method(array("main-settings", "id1", "id2"), function (){
     echo "ok";
 });
 
-add_backend_method(array("updateworktime", "from", "to", "id"), function (){
+$Demiran->add_method("update_worktime", function (){
     global $connection;
     $work_time = $_POST['from']."-".$_POST['to'];
     if (isset($connection)) {
@@ -414,7 +415,7 @@ add_backend_method(array("updateworktime", "from", "to", "id"), function (){
     }
 });
 
-add_backend_method(array("addprojecttask", "title"), function (){
+$Demiran->add_method("add_project_task", function (){
     global $connection;
     $title = "";
     $users = "";
@@ -470,4 +471,3 @@ VALUES ('$users', '$title', '$project_id', 'all', '$repeat', '', '', '', '$state
         echo mysqli_connect_error();
     }
 });
-

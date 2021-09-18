@@ -340,7 +340,7 @@ const Demiran = {
 
         const hex1 = ("00000".substring(0, 6 - c.length) + c).toLowerCase();
         const hex2 = "ffffff";
-        console.log(hex1,hex2);
+        //console.log(hex1,hex2);
 
         //for each color pair
         let hexC11 = parseInt(hex1.slice(0,2), 16);
@@ -710,10 +710,12 @@ const removeTask = function (id, title) {
             value:"Igen",
             onclick: (closeDialog)=>{
                 closeDialog();
-                Demiran.post("process.php", 'deleteproject_task=' + id, function (e, result) {
-                    console.log(result);
-                    if (result.trim() === "OK") {
+                Demiran.call("delete_project_task",Demiran.convertToFormEncoded(form),function(error,result){
+                    if(!error && result.trim() === "OK"){
                         location.reload();
+                    } else {
+                        Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                        console.log(result,error);
                     }
                 });
             }

@@ -128,8 +128,16 @@ require_once "process.php";
                                             onclick: (closeDialog, modalID)=>{
                                                 const modal = document.querySelector("#"+modalID);
                                                 const form = modal.querySelector("form");
-                                                form.submit();
+                                                //form.submit();
                                                 closeDialog();
+                                                Demiran.call("add_page",Demiran.convertToFormEncoded(form),function(error,result){
+                                                    if(!error && result.trim() === "OK"){
+                                                        location.reload();
+                                                    } else {
+                                                        Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                        console.log(result,error);
+                                                    }
+                                                });
                                             }
                                         },
                                         {
@@ -152,10 +160,12 @@ require_once "process.php";
                                     value:"Igen",
                                     onclick: (closeDialog)=>{
                                         closeDialog();
-                                        Demiran.post("process.php", 'deletepage=' + id, function (e, result) {
-                                            console.log(result);
-                                            if (result.trim() === "OK") {
+                                        Demiran.call("delete_page","deletepage=" + id,function(error,result){
+                                            if(!error && result.trim() === "OK"){
                                                 location.reload();
+                                            } else {
+                                                Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                console.log(result,error);
                                             }
                                         });
                                     }
