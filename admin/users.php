@@ -91,30 +91,76 @@ if (isset($_GET['id'])):
                                 <div class="form-group inline">
                                     <div class="col-sm-7">
                                         <label>Régi Jelszó
-                                            <input type="text" class="form-control" value="">
+                                            <input id="old_pass" type="password" class="form-control" value="">
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group inline">
                                     <div class="col-sm-7">
                                         <label>Új Jelszó
-                                            <input type="text" class="form-control" value="">
+                                            <input id="new_pass" type="password" class="form-control" value="">
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group inline">
                                     <div class="col-sm-7">
                                         <label>Új Jelszó Megerősítése
-                                            <input type="text" class="form-control" value="">
+                                            <input id="new_pass_again" type="password" class="form-control" value="">
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group inline">
                                     <div class="col-sm-7">
-                                        <input type="submit" class="btn btn-outline-dark" value="Mentés">
+                                        <input type="button" class="btn btn-outline-dark password_change_button" value="Mentés">
                                     </div>
                                 </div>
                             </form>
+                            <script>
+                                const password_change_button = document.querySelector(".password_change_button");
+                                if (password_change_button) {
+                                    password_change_button.onclick = function (e){
+                                        e.preventDefault();
+
+                                        const old_pass = document.getElementById("old_pass");
+                                        const new_pass = document.getElementById("new_pass");
+                                        const new_pass_again = document.getElementById("new_pass_again");
+                                        if(old_pass && new_pass && new_pass_again) {
+                                            // Validate
+                                            const old_pass_value = old_pass.value;
+                                            const new_pass_value = new_pass.value;
+                                            const new_pass_again_value = new_pass_again.value;
+
+                                            if (!old_pass_value || !new_pass_value || ! new_pass_again_value) {
+                                                alert("Valamelyik mező hiányzik, kérlek pótold!");
+                                                return;
+                                            }
+                                            Demiran.openPopUp("Jóváhagyás", "Biztonsan meg szeretnéd változtatni a jelszavad?", [
+                                                {
+                                                    value:"Igen",
+                                                    onclick: (closeDialog)=>{
+                                                        closeDialog();
+                                                        Demiran.post("process.php", 'change_user_pass=' + old_pass_value + '&new_pass=' + new_pass_value + '&new_pass_again=' + new_pass_again_value, function (e, result) {
+                                                            if (!e && result.trim() === "OK") {
+                                                                alert("Jelszó változtatás sikeres!");
+                                                            } else {
+                                                                alert("Jelszó változtatás sikertelen, nézd meg a konzolt a részletekért!");
+                                                            }
+                                                        });
+                                                    }
+                                                },
+                                                {
+                                                    value:"Vissza",
+                                                    type:"close"
+                                                }
+                                            ]);
+
+
+                                        }
+
+                                    }
+                                }
+
+                            </script>
 
                         </div>
                     </div>

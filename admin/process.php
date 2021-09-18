@@ -3,6 +3,14 @@
 require_once('../config.php');
 require_once("auth.php");
 
+global $connection;
+function handlePassword($pass){
+    global $connection;
+    $password = stripslashes($pass);
+    $password = mysqli_real_escape_string($connection, $password);
+    return md5($password);
+}
+
 if(isset($_POST['deleteuser'])){
     $query = "DELETE from `users` WHERE id=".$_POST['deleteuser'];
     $result = mysqli_query($connection, $query);
@@ -306,4 +314,29 @@ VALUES ('$users', '$title', '$project_id', 'all', '$repeat', '', '', '', '$state
     } else {
         echo mysqli_connect_error();
     }
+} else if(isset($_POST["change_user_pass"])) {
+    // Security Vulnerability, because i handle passwords as plain text TODO: fix it
+    $old_pass = handlePassword($_POST["change_user_pass"]);
+    $new_pass = handlePassword($_POST["new_pass"]);
+    $new_pass_again = handlePassword($_POST["new_pass_again"]);
+    $username = $_SESSION["username"];
+    if($new_pass != $new_pass_again) {
+        echo "A jelszavak nem egyeznek";
+    }
+
+    $query = "SELECT * FROM `users` WHERE username='$username' and password='".$old_pass."'";
+    $result = mysqli_query($connection,$query) or die("Kapcsolódási hiba az adatbázissal");
+    $rows = mysqli_num_rows($result);
+    if($rows==1){
+        $query = "UPDATE `users` SET password='".$new_pass."' WHERE username='$username' and password='".$old_pass."'";
+        $result = mysqli_query($connection, $query) or die("Kapcsolódási hiba az adatbázissal");
+        if($result){
+            echo "OK";
+        } else {
+            echo "Jelszó módosítása sikertelen, kérlek vedd fel a kapcsolatot az adminisztrátorral";
+        }
+    } else {
+        echo "A jelenlegi jelszó nem egyezik, bejelentkezés sikertelen!";
+    }
+
 }
