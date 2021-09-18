@@ -727,5 +727,50 @@ const removeTask = function (id, title) {
     return false;
 };
 const editTask = function (id) {
-    Demiran.alert('Ez a funckió nincs implementálva az MVPben');
+    //alert('Ez a funckió nincs implementálva az MVPben');
+
+    const editTaskDivOuter = document.getElementById("editTaskDivOuter");
+    if(editTaskDivOuter){
+        Demiran.call("get_task_details", 'get_task_details=' + id, function (e, result) {
+            let json = null;
+            try {
+                json = JSON.parse(result);
+            }catch (e) {
+                alert('Rossz adat érkezett a szervertől!');
+                console.log(result);
+            }
+
+            if (json) {
+                const editTaskDivOuter = document.querySelector("#editTaskDivOuter form");
+                if (editTaskDivOuter) {
+                    const cln = editTaskDivOuter.cloneNode(true);
+                    const popup = Demiran.openPopUp("Feladat részletei", cln, [
+                        {
+                            value:"Mentés",
+                            onclick: (closeDialog, modalID)=>{
+                                const modal = document.querySelector("#"+modalID);
+                                if(modal){
+                                    const form = modal.querySelector("form");
+                                    if(form){
+
+                                        form.submit();
+                                        closeDialog();
+                                        return;
+                                    }
+                                }
+                                alert("Kritikus hiba a DOM-ban!");
+                            }
+                        },
+                        {
+                            value:"Vissza",
+                            type:"close"
+                        }
+                    ]);
+                }
+            }
+        });
+    } else {
+        alert('Az alábbi oldal nem támogatja ezt a műveletet!');
+    }
+    //Demiran.alert('Ez a funckió nincs implementálva az MVPben');
 };

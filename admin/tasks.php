@@ -282,7 +282,7 @@ foreach ($project_tasks as $task) {
     <div class="footer-function-buttons">
         <span class="plus-icon big-icon addTask"></span>
     </div>
-    <?php add_task_form(); ?>
+    <?php add_task_form();edit_task_form(); ?>
 </section>
 <?php footer(); ?>
 </body></html>

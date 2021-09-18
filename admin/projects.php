@@ -186,6 +186,7 @@ if (isset($_GET['id'])):
 
     <?php
     add_task_form($result['id']);
+    edit_task_form();
     ?>
 <?php
 else:

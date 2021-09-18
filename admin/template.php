@@ -762,3 +762,25 @@ function add_task_form($project_id = null){
     </script>
     <?php
 }
+
+function edit_task_form(){
+    ?>
+    <div id="editTaskDivOuter" style="display: none">
+        <form method="post" enctype="multipart/form-data">
+            <h3 class="task-title">Cím</h3>
+            <h5 class="task-project">Project</h5>
+            <div class="form-group">
+                <div class="task-users"></div>
+                <div class="task-repeat"></div>
+                <div class="task-priority"></div>
+                <div class="task-state"></div>
+                <div class="task-details"></div>
+            </div
+
+
+        </form>
+
+    </div>
+
+    <?php
+}

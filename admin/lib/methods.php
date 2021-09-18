@@ -61,7 +61,7 @@ function handlePassword($pass){
 }
 
 class DemiranBackend {
-    protected array $methods;
+    protected $methods;
 
     /**
      * @param {string} $task_name
@@ -199,7 +199,17 @@ $Demiran->add_method("change_user_pass", function (){
         echo "A jelenlegi jelszó nem egyezik, bejelentkezés sikertelen!";
     }
 });
-
+$Demiran->add_method("get_task_details", function(){
+    global $connection;
+    $query = "SELECT * FROM `project_tasks` WHERE id=".$_POST['get_task_details']." LIMIT 1";
+    $result = mysqli_query($connection, $query);
+    if($result) {
+        $row = mysqli_fetch_array($result);
+        echo json_encode($row);
+    } else {
+        echo "false";
+    }
+});
 //add_backend_method(array("counter", "task", "role", "id"), );
 
 add_backend_method(array("deleteuser"), function () {
