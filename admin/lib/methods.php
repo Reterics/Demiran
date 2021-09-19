@@ -226,12 +226,18 @@ $Demiran->add_method("delete_user", function () {
 
 $Demiran->add_method("add_user", function () {
     global $connection;
-    $username = stripslashes($_REQUEST['username']);
-    $username = mysqli_real_escape_string($connection, $username);
-    $email = stripslashes($_REQUEST['email']);
-    $email = mysqli_real_escape_string($connection, $email);
-    $password = stripslashes($_REQUEST['password']);
-    $password = mysqli_real_escape_string($connection, $password);
+    if(isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
+        $username = stripslashes($_POST['username']);
+        $username = mysqli_real_escape_string($connection, $username);
+        $email = stripslashes($_POST['email']);
+        $email = mysqli_real_escape_string($connection, $email);
+        $password = stripslashes($_POST['password']);
+        $password = mysqli_real_escape_string($connection, $password);
+    } else {
+        echo "Hiba a kérés feldolgozása során: Hiányzó adatok!";
+        return;
+    }
+
     $trn_date = date("Y-m-d H:i:s");
 
     $role = "member";

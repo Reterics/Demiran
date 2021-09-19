@@ -1,22 +1,40 @@
 <?php
 
-require_once "../config.php";
+if(file_exists(dirname(__FILE__).'/env.php')) {
+    header("Location: /index.php");
+    exit;
+}
 
-include("./auth.php");
 
 
-if(isset($_POST['addtables'])):
-    info("Installer", "MySQL adatok beállítása");
+if(isset($_POST['add_tables']) && isset($_POST['db_name']) && isset($_POST['database']) && isset($_POST['username']) && isset($_POST['password'])):
     /**
      * Add column:
      * ALTER TABLE Customers
     ADD Email varchar(255);
      */
 
+    $database = $_POST['database'];
+    $db_name = $_POST['db_name'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    mysqli_report(MYSQLI_REPORT_STRICT);
+    $connection = false;
+    try{
+        $connection = mysqli_connect($database, $username, $password, $db_name);
+    }catch(Exception $e) {
+
+    }
+    if(!$connection) {
+        header("Location: /install.php?error=sql");
+        exit;
+    }
+
 
     try {
         if (isset($connection) && $connection) {
-            mysqli_select_db($connection, $dbName);
+            mysqli_select_db($connection, $db_name);
             mysqli_query($connection, "SET NAMES UTF8");
 
             $addTable = "CREATE TABLE IF NOT EXISTS `users` (
@@ -141,13 +159,16 @@ INSERT IGNORE INTO users SET id=1,username='testadmin',email='test@test.com',pas
             $result = mysqli_multi_query($connection, $addTable);
 
             if($result){
-                info("Installer", "MySQL adatok beállítása sikeres!");
+                header("Location: /index.php");
+                exit;
 
             } else {
-                info("Installer", "MySQL adatok beállítása sikertelen");
+                header("Location: /install.php?error=sql");
+                exit;
             }
         } else {
-            die("Hiba történt az adatbázis kapcsolat során");
+            header("Location: /install.php?error=sql");
+            exit;
         }
     }catch (Exception $e){
         die($e->getMessage());
@@ -155,7 +176,6 @@ INSERT IGNORE INTO users SET id=1,username='testadmin',email='test@test.com',pas
 
 else:
 
-    require_once("./template.php");
 
     ?>
 
@@ -164,32 +184,63 @@ else:
     <html lang="hu">
     <head>
         <meta charset="utf-8">
-        <title>Oldalak</title>
-        <?php admin_head(); ?>
+        <title>Telepítés</title>
+        <link href="admin/css/bootstrap.min.css" rel="stylesheet">
+        <link href="admin/css/product.css" rel="stylesheet">
+        <?php
+        if(isset($_GET['theme'])){
+            echo "<link href=\"./css/theme-".$_GET['theme'].".css\" rel=\"stylesheet\">";
+        }
+        ?>
     </head>
     <body>
 
 
 
     <?php
-    admin_header_menu();
 
     ?>
 
     <div class="top_outer_div">
         <div class="row">
             <div class="col-md-12">
-                <div class="lio-modal">
+                <div class="logo" style="margin: auto;width: 300px;">
+                    <img src="admin/img/logo_black.svg" style="height: 100%; width: 100%;" alt="demiran Logo">
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 40px">
+            <div class="col-md-12">
+                <div class="lio-modal" style="display: block; margin: auto;width: 500px;">
                     <div class="header">
-                        <h5 class="title">Oldalak</h5>
+                        <h5 class="title">Telepítés</h5>
     <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
                         <span class="plus-icon addP"></span>
     <?php endif; ?>
                     </div>
-                    <div class="body">
+                    <div class="body" style="padding:5px">
+                        <p>Itt adhatjuk meg az adatbázis tulajdonságait. Amennyiben nem vagyunk biztosak bennük, fel kell venni a kapcsolatot a tárhely szolgáltatóval, vagy a rendszergazdával.</p>
                         <form method="post">
-                            <input type="hidden" value="true" name="addtables">
-                            <input type="button" class="btn btn-outline-black"  id="formButton" value="Adatbázis Telepítése">
+                            <label>
+                                Adatbázis kiszolgáló címe:
+                                <input name="database" type="text" class="form-control" placeholder="localhost">
+                            </label>
+                            <label>
+                                Felhasználónév:
+                                <input name="username" type="text" class="form-control" placeholder="root">
+                            </label>
+                            <label>
+                                Jelszó:
+                                <input name="password" type="text" class="form-control" placeholder="">
+                            </label>
+
+                            <label>
+                                Adatbázis neve:
+                                <input name="db_name" type="text" class="form-control" placeholder="dbname">
+                            </label>
+
+                            <input type="hidden" value="true" name="add_tables">
+                            <input type="submit" class="btn btn-outline-black" id="formButton" value="Adatbázis Telepítése">
                         </form>
 
 
@@ -197,7 +248,7 @@ else:
 
                         <script type="text/javascript">
 
-                            const formButton = document.getElementById("formButton");
+                            /*const formButton = document.getElementById("formButton");
                             if(formButton){
                                 formButton.onclick = function(e) {
                                     e.preventDefault();
@@ -209,17 +260,13 @@ else:
                                         console.log(data,error);
                                     });
                                 };
-                            }
+                            }*/
                         </script>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+<?php endif; ?>
 
-    <?php
-
-endif;
-
- footer(); ?>
     </body></html>

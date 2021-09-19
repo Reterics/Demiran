@@ -12,5 +12,3 @@ if(isset($_POST['_call'])) {
     // Backward compatibility, support version 1.1
     run_methods_for_obj($_POST);
 }
-
-

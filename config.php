@@ -1,5 +1,8 @@
 <?php
-
+if(!file_exists(dirname(__FILE__).'/env.php')) {
+    header("Location: /install.php");
+    exit;
+}
 require_once('env.php');
 
 mysqli_report(MYSQLI_REPORT_STRICT);
