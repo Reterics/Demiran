@@ -46,7 +46,7 @@ if (isset($_GET['id'])) :
         ?>
         <div class="top_outer_div">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-12">
                     <div class="lio-modal">
                         <div class="header">
                             <h5 class="title"> <?php echo $row['title']; ?></h5>

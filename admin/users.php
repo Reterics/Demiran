@@ -57,7 +57,6 @@ if (isset($_GET['id'])):
                             <tr><td>E-mail</td><td>" . $result['email'] . "</td></tr>
                             <tr><td>Szerep</td><td>" . $result['role'] . "</td></tr>
                             <tr><td>Beosztás</td><td>" . $result['job'] . "</td></tr>
-                            <tr><td>Szint</td><td>" . $result['level'] . "</td></tr>
                             <tr><td>Dátum</td><td>" . $result['trn_date'] . "</td></tr>";
 
                             echo "</table>";
@@ -222,6 +221,18 @@ else:
 
 
                     <?php
+                    $translate_from = array(
+                        "admin",
+                        "client",
+                        "member",
+                        "owner"
+                    );
+                    $translate_to = array(
+                        "Admin",
+                        "Megrendelő",
+                        "Tag",
+                        "Tulajdonos"
+                    );
                     $sql = "SELECT id,username,email,role,job,work_time,trn_date FROM users;";
 
                     if (isset($connection)) :
@@ -243,7 +254,7 @@ else:
                             <div class="id short"><?php echo $row['id']; ?></div>
                             <div class="name"><?php echo $row['username']; ?></div>
                             <div class="email long"><?php echo $row['email']; ?></div>
-                            <div class="role"><?php echo $row['role']; ?></div>
+                            <div class="role"><?php echo str_replace($translate_from, $translate_to,$row['role']); ?></div>
                             <div class="job"><?php echo $row['job']; ?></div>
                             <div class="static-column work_time" style="width: auto"><?php echo $row['work_time']; ?></div>
 
@@ -348,8 +359,6 @@ else:
                             <select class="form-control" name="role" id="role">
                                 <option value="member">Tag</option>
                                 <option value="client">Megrendelő</option>
-                                <option value="developer">Fejlesztő</option>
-                                <option value="tester">Tesztelő</option>
                                 <option value="owner">Tulajdonos</option>
                                 <option value="admin">Adminisztrátor</option>
                                 <option value="other">Egyéb</option>

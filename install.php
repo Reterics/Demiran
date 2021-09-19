@@ -74,7 +74,6 @@ if(isset($_POST['add_tables']) && isset($_POST['db_name']) && isset($_POST['data
          `users` varchar(50) NOT NULL,
          `title` varchar(50) NOT NULL,
          `project` varchar(50) NOT NULL,
-         `visibility` varchar(50) NOT NULL,
          `repeat` varchar(50) NOT NULL,
          `image` varchar(1500) NOT NULL,
          `details` varchar(5000) NOT NULL,
@@ -137,10 +136,10 @@ INSERT IGNORE INTO settings SET id=2,setting_name='geo_data',message='46.8877312
 INSERT IGNORE INTO settings SET id=3,setting_name='timezone',message='Europe/Budapest',extra='';
 INSERT IGNORE INTO settings SET id=4,setting_name='start_work_auto',message='true',extra='';
 INSERT IGNORE INTO settings SET id=5,setting_name='stop_work_auto',message='true',extra='';
-INSERT IGNORE INTO users SET id=1,username='testadmin',email='test@test.com',password='81dc9bdb52d04dc20036dbd8313ed055',role='admin',image='',job='',details='',trn_date='2021-01-26 12:36:46',work_time='';
+INSERT IGNORE INTO users SET id=1,username='admin',email='test@test.com',password='81dc9bdb52d04dc20036dbd8313ed055',role='admin',image='',job='',details='',trn_date='2021-01-26 12:36:46',work_time='';
 
 ";
-
+// Default User Credentials: admin, 1234
             $result = mysqli_multi_query($connection, $addTable);
 
             if($result){

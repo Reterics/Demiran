@@ -467,8 +467,8 @@ $Demiran->add_method("add_project_task", function (){
     if(isset($_POST['deadline'])){
         $end_date = $_POST['deadline'];
     }
-    $query = "INSERT into `project_tasks` (users, title, project, visibility, `repeat`, image, details, attachments, state, priority, start_time, deadline, `order`)
-VALUES ('$users', '$title', '$project_id', 'all', '$repeat', '', '', '', '$state', '$priority', '$start_date', '$end_date', '1')";
+    $query = "INSERT into `project_tasks` (users, title, project, `repeat`, image, details, attachments, state, priority, start_time, deadline, `order`)
+VALUES ('$users', '$title', '$project_id', '$repeat', '', '', '', '$state', '$priority', '$start_date', '$end_date', '1')";
     $result = mysqli_query($connection, $query);
     echo "$query";
     if ($result) {

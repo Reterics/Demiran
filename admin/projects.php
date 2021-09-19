@@ -65,7 +65,28 @@ if (isset($_GET['id'])):
                                 <tr><td>Felhasználók</td><td class='users'><?php setUserIconSpan(selectUserFromArray($result['users'], $userData)); ?></td></tr>
                                 <tr><td>Kategóriák</td><td><?php echo $result['category']  ?></td></tr>
                                 <tr><td>Megrendelő</td><td class='client'><?php setUserIconSpan(selectUserFromArray($result['client'], $userData))  ?></td></tr>
-                                <tr><td>Státusz</td><td><?php echo $result['status']  ?></td></tr>
+                                <tr><td>Státusz</td><td><?php
+                                        $translate_from = array(
+                                            "open",
+                                            "in_progress",
+                                            "review",
+                                            "closed",
+                                            "medium",
+                                            "low",
+                                            "high",
+                                        );
+                                        $translate_to = array(
+                                            "Nyitott",
+                                            "Folyamatban",
+                                            "Átnézésre vár",
+                                            "Lezárva",
+                                            "Normál",
+                                            "Alacsony",
+                                            "Magas",
+                                        );
+
+
+                                        echo str_replace($translate_from, $translate_to, $result['status']);  ?></td></tr>
                                 <tr><td>Számlázás</td><td><?php echo $result['billing']  ?></td></tr>
                                 <tr><td>Ár</td><td><?php echo $result['price'] ?></td></tr>
 
@@ -74,7 +95,7 @@ if (isset($_GET['id'])):
                                 <tr><td>Határidő</td><td><?php echo $result['deadline'] ?></td></tr>
                             </table>
 
-                            <div class='details-container'><?php echo $result['details'] ?></div>"
+                            <div class='details-container'><?php echo $result['details'] ?></div>
 
                         </div>
                     </div>
@@ -302,7 +323,7 @@ else:
                             <label>Határidő
                                 <input type="date" class="form-control" name="deadline" value="" min="2020-10-01" max="2030-12-31">
                             </label>
-                            <input type="text" class="form-control" name="addproject" style="display:none;" value="1"/>
+                            <input type="hidden" class="form-control" name="addproject" value="1"/>
 
                         </div>
 
