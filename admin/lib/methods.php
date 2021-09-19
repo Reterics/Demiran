@@ -270,8 +270,8 @@ $Demiran->add_method("add_user", function () {
         }
     }
 
-    $query = "INSERT into `users` (username, password, email, trn_date, role, image, job, details, exp, work_time, level)
-VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', '$role', '$image', '$job', '', '0', '$work_time' ,'1')";
+    $query = "INSERT into `users` (username, password, email, trn_date, role, image, job, details, work_time)
+VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', '$role', '$image', '$job', '', '0', '$work_time')";
     $result = mysqli_query($connection, $query);
     if ($result) {
         echo "OK";

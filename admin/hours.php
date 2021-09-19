@@ -177,8 +177,8 @@ endif;
                         <div class="role long">Kezdő idő</div>
                         <div class="job long">Vége idő</div>
                         <div class="job long">Munkaidő</div>
-                        <div class="exp">Jegyzet</div>
-                        <div class="level">Tevékenység típusa</div>
+                        <div>Jegyzet</div>
+                        <div>Tevékenység típusa</div>
                     </div>
 
 
@@ -195,8 +195,8 @@ endif;
                                 <div class="long"><?php echo $row['start_time'] ?></div>
                                 <div class="long"><?php echo $row['end_time'] ?></div>
                                 <div class="long"><?php echo $row['diff']->format( '%H:%I:%S' ); // -> 00:25:25 ?></div>
-                                <div class=""><?php echo $row['note'] ?></div>
-                                <div class=""><?php
+                                <div><?php echo $row['note'] ?></div>
+                                <div><?php
                                     if( $row['task'] == "work") {
                                         echo "Munkavégzés";
                                     } else {

@@ -46,26 +46,11 @@ if(isset($_POST['add_tables']) && isset($_POST['db_name']) && isset($_POST['data
          `image` varchar(1500) NOT NULL,
          `job` varchar(100) NOT NULL,
          `details` varchar(5000) NOT NULL,
-         `exp` varchar(50) NOT NULL,
-         `level` varchar(50) NOT NULL,
          `work_time` varchar(50),
          `trn_date` datetime NOT NULL,
          PRIMARY KEY (`id`)
          );
 
-        CREATE TABLE IF NOT EXISTS `todo` (
-         `id` int(11) NOT NULL AUTO_INCREMENT,
-         `users` varchar(50) NOT NULL,
-         `title` varchar(50) NOT NULL,
-         `category` varchar(50) NOT NULL,
-         `status` varchar(50) NOT NULL,
-         `details` varchar(5000) NOT NULL,
-         `image` varchar(5000) NOT NULL,
-         `level` varchar(50) NOT NULL,
-         `order` varchar(50) NOT NULL,
-         `creation_date` datetime NOT NULL,
-         PRIMARY KEY (`id`)
-         );
          
          CREATE TABLE IF NOT EXISTS `project` (
          `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -152,7 +137,7 @@ INSERT IGNORE INTO settings SET id=2,setting_name='geo_data',message='46.8877312
 INSERT IGNORE INTO settings SET id=3,setting_name='timezone',message='Europe/Budapest',extra='';
 INSERT IGNORE INTO settings SET id=4,setting_name='start_work_auto',message='true',extra='';
 INSERT IGNORE INTO settings SET id=5,setting_name='stop_work_auto',message='true',extra='';
-INSERT IGNORE INTO users SET id=1,username='testadmin',email='test@test.com',password='81dc9bdb52d04dc20036dbd8313ed055',role='admin',image='',job='',details='',exp='0',level='1',trn_date='2021-01-26 12:36:46',work_time='';
+INSERT IGNORE INTO users SET id=1,username='testadmin',email='test@test.com',password='81dc9bdb52d04dc20036dbd8313ed055',role='admin',image='',job='',details='',trn_date='2021-01-26 12:36:46',work_time='';
 
 ";
 

@@ -57,7 +57,6 @@ if (isset($_GET['id'])):
                             <tr><td>E-mail</td><td>" . $result['email'] . "</td></tr>
                             <tr><td>Szerep</td><td>" . $result['role'] . "</td></tr>
                             <tr><td>Beosztás</td><td>" . $result['job'] . "</td></tr>
-                            <tr><td>Exp</td><td>" . $result['exp'] . "</td></tr>
                             <tr><td>Szint</td><td>" . $result['level'] . "</td></tr>
                             <tr><td>Dátum</td><td>" . $result['trn_date'] . "</td></tr>";
 
@@ -215,7 +214,6 @@ else:
                         <div class="email long">E-mail</div>
                         <div class="role">Szerep</div>
                         <div class="job">Beosztás</div>
-                        <div class="exp" style="display: none">Tapasztalat</div>
                         <div class="work_time">Munkaidő</div>
                         <div class="date long">Dátum</div>
                         <div class="actions">Műveletek</div>
@@ -224,7 +222,7 @@ else:
 
 
                     <?php
-                    $sql = "SELECT id,username,email,role,job,exp,level,work_time,trn_date FROM users;";
+                    $sql = "SELECT id,username,email,role,job,work_time,trn_date FROM users;";
 
                     if (isset($connection)) :
                         $result = mysqli_query($connection, $sql);
@@ -247,15 +245,6 @@ else:
                             <div class="email long"><?php echo $row['email']; ?></div>
                             <div class="role"><?php echo $row['role']; ?></div>
                             <div class="job"><?php echo $row['job']; ?></div>
-                            <div class="exp" style="display: none">
-                                <div class="progress">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $row['exp']; ?>" style="width: <?php echo $row['exp'] ?>%" aria-valuemin="0" aria-valuemax="100">
-                                        <?php echo $row['exp']; ?>
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="level short" style="display: none"><?php echo $row['level']; ?></div>
                             <div class="static-column work_time" style="width: auto"><?php echo $row['work_time']; ?></div>
 
                             <div class="editable-column" style="width: auto">

@@ -22,8 +22,8 @@ if (isset($_REQUEST['username'])) {
     $password = stripslashes($_REQUEST['password']);
     $password = mysqli_real_escape_string($connection, $password);
     $trn_date = date("Y-m-d H:i:s");
-    $query = "INSERT into `users` (username, password, email, trn_date, role, image, job, details, exp, level)
-VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', 'member', '', '', '', '0', '1')";
+    $query = "INSERT into `users` (username, password, email, trn_date, role, image, job, details)
+VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', 'member', '', '', '')";
     $result = mysqli_query($connection, $query);
     if ($result) {
         echo "<div class='form'>
