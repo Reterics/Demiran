@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: RedAty
+ * Author: Attila Reterics
  * Date: 2020. 10. 11.
  * Time: 15:47
  */

@@ -15,6 +15,7 @@ require_once("./template.php");
 
 
 <?php
+require_once('./backend/main.php');
 admin_header_menu();
 require_once "process.php";
 

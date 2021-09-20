@@ -13,7 +13,7 @@ if(mysqli_connect_errno()){
     die("Failed to connect to MySQL: " . mysqli_connect_error());
 }
 
-require_once "admin/lib/settings.php";
+require_once "admin/backend/settings.php";
 $globalSettings = new Settings();
 $globalSettings->loadSettings();
 /**

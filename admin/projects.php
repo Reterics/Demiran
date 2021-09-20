@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: RedAty
+ * Author: Attila Reterics
  * Date: 2020. 10. 07.
  * Time: 18:29
  */
@@ -24,6 +24,7 @@ require_once("./template.php");
     </head>
     <body>
 <?php
+require_once('./backend/main.php');
 admin_header_menu();
 require_once "process.php";
 $search = array(" 00:00:00");

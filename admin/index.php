@@ -22,6 +22,7 @@ require_once("./template.php");
 <body>
 
 <?php
+require_once('./backend/main.php');
 admin_header_menu();
 
 
@@ -33,7 +34,13 @@ $ip = getIPAddress();
     <div class="col-sm-6">
         <div class="lio-modal">
             <div class="header">
-                <h5>Költségvetés</h5>
+                <h5><?php
+                    if($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin'){
+                        echo "Költségvetés";
+                    } else{
+                        echo "Roadmap";
+                    }
+                    ?></h5>
             </div>
             <div id="lineChartDiv" class="body" style="height: 190px">
 

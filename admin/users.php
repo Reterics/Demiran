@@ -13,6 +13,7 @@ require_once("./template.php");
     </head>
 <body>
 <?php
+require_once('./backend/main.php');
 admin_header_menu();
 require_once "process.php";
 

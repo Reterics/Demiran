@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: RedAty
+ * Author: Attila Reterics
  * Date: 2020. 10. 13.
  * Time: 13:49
  */
@@ -138,41 +138,24 @@ function load_tiny_mce(){
     <?php
 }
 function admin_head(){
-?>
 
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
-    <link href="./css/product.css" rel="stylesheet">
+    echo "<style type='text/css'>".
+        file_get_contents("./css/bootstrap.min.css").
+        "\n".
+        file_get_contents("./css/product.css").
+        "</style>";
+    ?>
+    <!-- <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/product.css" rel="stylesheet"> -->
     <?php
     if(isset($_GET['theme'])){
         echo "<link href=\"./css/theme-".$_GET['theme'].".css\" rel=\"stylesheet\">";
     }
     ?>
 
-<script>
-
-    const somequeryString = window.location.search;
-    const someurlParams = new URLSearchParams(somequeryString);
-
-    const allSe = someurlParams.get('se');
-    const allK = someurlParams.get('k');
-
-    document.querySelectorAll("a").forEach(n=>{
-        const href = n.getAttribute("href");
-        if(href && !href.startsWith("#")){
-            if(href.includes("?")){
-                n.setAttribute("href", href+"&se="+allSe+"&k="+allK);
-            } else {
-                n.setAttribute("href", href+"?se="+allSe+"&k="+allK);
-            }
-        }
-    });
-</script>
-
-    <script src="./js/demiran.js"></script>
-    <script>
-
-
-
+    <!-- <script src="./js/demiran.js"></script> -->
+    <script type="text/javascript">
+        <?php echo file_get_contents("./js/demiran.js"); ?>
         const navigate = function (url) {
             location.href = url;
         };
@@ -241,13 +224,15 @@ function admin_head(){
 }
 
 function admin_header_menu(){
-
     ?>
 
 <header class="main">
     <nav class="navbar navbar-expand-lg navbar-dark"><a
                 class="navbar-brand" href="#">
-            <img class="d-inline-block align-top" height="30" src="./img/logo.svg" style="height: 35px; width: 100%;" alt="demiran Logo">
+            <?php
+                echo file_get_contents("./img/logo.svg");
+            ?>
+            <!-- <img class="d-inline-block align-top" height="30" src="./img/logo.svg" style="height: 35px; width: 100%;" alt="demiran Logo"> -->
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#headerMenu"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigatiopn"><span
@@ -333,7 +318,6 @@ function admin_header_menu(){
         })
     }
     activateNavigationDropdown();
-
 
     let con;
 
@@ -454,14 +438,16 @@ function admin_header_menu(){
                 });
             }
         };
-
-
-
-
     }
 
     if(elapsed){
-        Demiran.call("manage_counter", 'task=work&counter=get', function (e, result) {
+        <?php global $Demiran;
+
+        echo "let result = \"";
+        $Demiran->call("manage_counter",array("counter"=>"get", "task"=>"work"));
+        echo "\"\n";
+        ?>
+        //Demiran.call("manage_counter", 'task=work&counter=get', function (e, result) {
             home.log("Munkaidő válasz a szervertől: " + result);
             const elapsed = document.querySelector(".elapsed-time");
             if(elapsed){
@@ -653,7 +639,7 @@ function admin_header_menu(){
 
 
             //elapsed.innerHTML = result;
-        });
+        //});
     }
 </script>
 

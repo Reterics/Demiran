@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: RedAty
+ * Author: Attila Reterics
  * Date: 2020. 10. 19.
  * Time: 17:41
  */
@@ -86,6 +86,7 @@ die();
 </head>
 <body>
 <?php
+require_once('./backend/main.php');
 admin_header_menu();
 $userID = $_SESSION['id'];
 $userName = $_SESSION['username'];
