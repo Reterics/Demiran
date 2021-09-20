@@ -18,8 +18,8 @@ $globalSettings = new Settings();
 $globalSettings->loadSettings();
 /**
  * Ezzel a függvénnyel írok ki részleteket az oldalra fejlesztés során
- * @param string $title
- * @param string $content
+ * @param {string} $title
+ * @param {string} $content
  */
 function info($title, $content) {
     print "<br><strong>".$title.":</strong>".$content;

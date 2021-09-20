@@ -422,13 +422,13 @@ endif;
     </div>
 </div>
 <script type="text/javascript">
-    Demiran.post("lib/charts.js.php", 'get_project_times=true<?php
+    Demiran.call("get_project_times", 'get_project_times=true<?php
         if(isset($_GET['id'])) {
             echo "&filter_project=".$_GET['id'];
         }
         ?>', function (e, result) {
         //console.log(result);
-        //console.log(JSON.parse(result));
+        console.log(JSON.parse(result));
         const data = JSON.parse(result);
         const inputData = [];
         data.forEach(function(d){

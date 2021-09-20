@@ -183,11 +183,7 @@ const drawCalendar = function(options){
         .attr("text-decoration", "underline")
         .text("Click on category to select/deselect days");
 
-
-
-
     return svg.node();
-
 };
 
 

@@ -6,7 +6,7 @@ require_once "config.php";
 <head>
     <meta charset="utf-8">
     <title>Demiran CRM és Munkaerőnyilvántartó rendszer</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./style.css" />
     <?php head(); ?>
 </head>
 <body>

@@ -477,3 +477,110 @@ VALUES ('$users', '$title', '$project_id', '$repeat', '', '', '', '$state', '$pr
         echo mysqli_connect_error();
     }
 });
+
+$Demiran->add_method("get_project_times", function (){
+    global $connection;
+    $sql = "SELECT * FROM project_tasks;";
+    $filterUser = null;
+    if (isset($_POST['filter_user']) && $_POST['filter_user'] != "") {
+        $filterUser = $_POST['filter_user'];
+    }
+    $filterProject = null;
+    if (isset($_POST['filter_project']) && $_POST['filter_project'] != "") {
+        $filterProject = $_POST['filter_project'];
+    }
+    echo "[";
+    $query = mysqli_query($connection,$sql);
+    if ($query) {
+        $i = 0;
+        $found = false;
+        while ($row = mysqli_fetch_array($query)) {
+            if ($filterUser == null || isset($row["users"])) {
+                if(
+                    ($filterProject != null && isset($row["project"]) && $row["project"] == $filterProject)
+                    || $filterProject == null) {
+
+                    $pieces = explode(",", $row['users']);
+
+                    foreach ($pieces as $userID) {
+                        if ($filterUser == null || $filterUser == $userID) {
+                            $found = true;
+                        }
+                    }
+
+                    if ($found || $filterUser == null) {
+                        if ($i != 0) {
+                            echo ",";
+                        }
+                        echo '{"start_time":"'.$row['start_time'].'","deadline":"'.$row['deadline'].'","id":"'.$row['id'].'"}';
+                        $i = $i + 1;
+                    }
+                }
+
+
+            }
+        }
+    }
+    echo "]";
+});
+
+$Demiran->add_method("get_project_prices", function (){
+    global $connection;
+    $sql = "SELECT id, users, price, deadline FROM project";
+    $filterUser = null;
+    if (isset($_POST['filter_user']) && $_POST['filter_user'] != "") {
+        $filterUser = $_POST['filter_user'];
+    }
+    echo "[";
+    $query = mysqli_query($connection,$sql);
+    if ($query) {
+        $i = 0;
+        $found = false;
+        while ($row = mysqli_fetch_array($query)) {
+            if ($filterUser == null || isset($row["users"])) {
+                $pieces = explode(",", $row['users']);
+
+                foreach ($pieces as $userID) {
+                    if ($filterUser == null || $filterUser == $userID) {
+                        $found = true;
+                    }
+                }
+
+                if ($found || $filterUser == null) {
+                    if ($i != 0) {
+                        echo ",";
+                    }
+                    echo '{"price":"'.$row['price'].'","deadline":"'.$row['deadline'].'","id":"'.$row['id'].'"}';
+                    $i = $i + 1;
+                }
+            }
+        }
+    }
+    echo "]";
+});
+
+
+$Demiran->add_method("get_project_hours", function (){
+    global $connection;
+    $sql = "SELECT shift_list.id, shift_list.user as user, shift_list.start_time as start_time, shift_list.end_time as end_time, users.username as username FROM shift_list LEFT JOIN users ON shift_list.user=users.id";
+    $filterUser = null;
+    if (isset($_POST['filter_user']) && $_POST['filter_user'] != "") {
+        $sql .= " WHERE user=".$_POST['filter_user'];
+    }
+    echo "[";
+    $query = mysqli_query($connection,$sql);
+    if ($query) {
+        $i = 0;
+        $found = false;
+        while ($row = mysqli_fetch_array($query)) {
+            if ($i != 0) {
+                echo ",";
+            }
+            echo '{"username":"'.$row['username'].'","start_time":"'.$row['start_time'].'","end_time":"'.$row['end_time'].'"}';
+            $i = $i + 1;
+
+        }
+    }
+    echo "]";
+});
+
