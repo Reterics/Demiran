@@ -478,7 +478,7 @@ require_once "process.php";
 
                     <div class="body">
                     <?php
-                        require_once "./lib/version.php";
+                        require_once "./backend/version.php";
                     ?>
                     </div>
 
@@ -491,7 +491,7 @@ require_once "process.php";
 
     </div>
     </div>
-    <script>
+    <script type="text/javascript">
         const tabParent = document.querySelector(".lio-vertical-tabs");
         if (tabParent) {
             const modals = tabParent.querySelectorAll(".lio-modal");

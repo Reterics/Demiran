@@ -9,7 +9,7 @@
 
 $author = "Attila Reterics";
 $email = "reterics.attila@gmail.com";
-$version = 1.0;
+$version = 1.2;
 
 
 
