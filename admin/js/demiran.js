@@ -670,6 +670,39 @@ const Demiran = {
 
             }
         });
+    },
+    /**
+     * This function initiates a file download
+     * @param {string} file_name
+     * @param {string} string
+     * @param file_type
+     */
+    downloadData: function (file_name, string, file_type = '') {
+        if(!file_type){
+            file_type =  'text/plain';
+        }
+        if(!file_name) {
+            file_name = Math.floor(new Date().getTime()/360000) + ".txt";
+        }
+        try {
+            let textToSaveAsBlob = new Blob([string], {type: file_type});
+            let textToSaveAsURL = window.URL.createObjectURL(textToSaveAsBlob);
+            let fileNameToSaveAs = file_name;
+
+            let downloadLink = document.createElement('a');
+            downloadLink.download = fileNameToSaveAs;
+            downloadLink.innerHTML = 'Download As File';
+            downloadLink.href = textToSaveAsURL;
+            downloadLink.style.display = 'none';
+            document.body.appendChild(downloadLink);
+
+            downloadLink.click();
+            downloadLink.outerHTML = '';
+
+
+        }catch (e) {
+            console.error(e.message);
+        }
     }
 };
 

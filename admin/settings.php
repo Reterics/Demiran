@@ -38,6 +38,7 @@ require_once "process.php";
                     <div class="tab-line active">Általános</div>
                     <div class="tab-line">Bejelentkezés</div>
                     <div class="tab-line">Névjegy</div>
+                    <div class="tab-line">Import / Export</div>
                 </div>
 
                 <div class="lio-modal">
@@ -471,9 +472,6 @@ require_once "process.php";
                 <div class="lio-modal" style="display: none;">
                     <div class="header">
                         <h5 class="title">Névjegyek</h5>
-
-
-
                     </div>
 
                     <div class="body">
@@ -481,10 +479,33 @@ require_once "process.php";
                         require_once "./backend/version.php";
                     ?>
                     </div>
+                </div>
 
+                <div class="lio-modal" style="display: none">
+                    <div class="header">
+                        <h5 class="title">Import / Export</h5>
+                    </div>
+                    <div class="body">
 
+                        <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-1 input-lg setting_label">
+                                Biztonsági mentés készítése a szerver adatairól
+                            </div>
+                            <div class="col-sm-7 control-label">
+                                <select id="sql_tables" multiple>
+                                    <option value="users" selected>Felhasználók</option>
+                                    <option value="pages" selected>Oldalak</option>
+                                    <option value="project" selected>Projektek</option>
+                                    <option value="project_tasks" selected>Feladatok</option>
+                                    <option value="settings" selected>Beállítások</option>
+                                    <option value="shift_list" selected>Óraszámok</option>
+                                </select>
+                                <label class="pull-left" for="sql_tables"></label>
+                                <input id="export_button" class="btn btn-outline-black" type="button" value="Export indítása">
+                            </div>
+                        </div>
 
-
+                    </div>
                 </div>
         </div>
 
@@ -538,6 +559,46 @@ require_once "process.php";
         } else{
             console.error("Tab Parent has not found.");
         }
+
+
+        const startExport = function () {
+            const sql_tables = document.getElementById('sql_tables');
+
+            if(sql_tables){
+                let queryString = "";
+                for (const option of sql_tables.options)
+                {
+                    if (option.selected) {
+                        queryString += "&tables[]=" + option.value;
+                    }
+                }
+
+                Demiran.confirm("Jóváhagyás","Biztonsan exportálod a kiválasztott adatokat az adatbázisból?",  result => {
+                    if (result) {
+                        Demiran.call("backup_db", 'backup_db=' + queryString, function (e, result) {
+                            console.log(result);
+                            if (result) {
+                                Demiran.downloadData("export-"+Math.floor(new Date().getTime()/360000)+".sql", result, "application/sql");
+                            }
+                        });
+                    }
+                });
+            } else {
+                Demiran.alert("Az SQL Tábla választó Selector nem található!");
+            }
+
+
+
+
+            return false;
+        };
+        const export_button = document.getElementById("export_button");
+        if(export_button){
+            export_button.onclick = function(){
+                startExport();
+            };
+        }
+
     </script>
     <div class="row" style="margin-top: 10px">
         <div class="col-md-12">

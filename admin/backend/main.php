@@ -96,7 +96,22 @@ class DemiranBackend {
             global $connection;
             if(isset($arguments) && is_array($arguments)) {
                 foreach($arguments as $key => $value) {
-                    $filtered_arguments[$key] = mysqli_real_escape_string($connection, stripslashes($value));
+                    if(is_string($value)) {
+                        $filtered_arguments[$key] = mysqli_real_escape_string($connection, stripslashes($value));
+                    } else if(is_array($value)){
+                        $filtered_arguments[$key] = array();
+                        foreach($value as $v) {
+                            if(is_numeric($v) || is_bool($v)){
+                                array_push($filtered_arguments[$key], mysqli_real_escape_string($connection, $v));
+                            } else if(is_string($v)) {
+                                array_push($filtered_arguments[$key], mysqli_real_escape_string($connection, stripslashes($v)));
+                            } //else {
+                                //Everything else is unsupported
+                            //}
+                        }
+                    } else if(is_numeric($value) || is_bool($value)){
+                        $filtered_arguments[$key] = mysqli_real_escape_string($connection, $value);
+                    }
                 }
             }
             $this->methods[$task_name]($filtered_arguments, $connection);
