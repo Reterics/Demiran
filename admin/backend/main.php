@@ -6,58 +6,6 @@
  * Time: 10:38
  */
 
-$methods = array();
-
-/**
- * @deprecated
- * @param {array} $object - Ideally thi sis
- * @return array
- */
-function get_functions_for_obj($object) {
-    global $methods;
-    $selected = array();
-    foreach ($methods as $method_details) {
-        if (is_array($method_details['vars']) && count($method_details['vars']) > 0) {
-            $match = true;
-            foreach ($method_details['vars'] as $variable) {
-                if (!isset($object[$variable])) {
-                    $match = false;
-                }
-            }
-            if ($match && isset($method_details['method'])) {
-                array_push($selected, $method_details['method']);
-            }
-        }
-    }
-    return $selected;
-}
-
-/**
- * @deprecated
- * @param $object
- */
-function run_methods_for_obj($object) {
-    $method_list = get_functions_for_obj($object);
-    foreach ($method_list as $method) {
-        if(is_callable($method)) {
-            $method($object);
-        }
-    }
-}
-/**
- * @deprecated
- * @param {array} $variables
- * @param {function} $method
- */
-function add_backend_method($variables, $method) {
-    global $methods;
-    $method_object = array(
-        "vars" => $variables,
-        "method" => $method
-    );
-    array_push($methods, $method_object);
-}
-
 
 class DemiranBackend {
     protected $methods;
@@ -96,21 +44,23 @@ class DemiranBackend {
             global $connection;
             if(isset($arguments) && is_array($arguments)) {
                 foreach($arguments as $key => $value) {
-                    if(is_string($value)) {
-                        $filtered_arguments[$key] = mysqli_real_escape_string($connection, stripslashes($value));
-                    } else if(is_array($value)){
-                        $filtered_arguments[$key] = array();
-                        foreach($value as $v) {
-                            if(is_numeric($v) || is_bool($v)){
-                                array_push($filtered_arguments[$key], mysqli_real_escape_string($connection, $v));
-                            } else if(is_string($v)) {
-                                array_push($filtered_arguments[$key], mysqli_real_escape_string($connection, stripslashes($v)));
-                            } //else {
-                                //Everything else is unsupported
-                            //}
+                    if(strlen($key) < 30 && strpos($key, ".") === false) {
+                        if(is_string($value)) {
+                            $filtered_arguments[$key] = mysqli_real_escape_string($connection, stripslashes($value));
+                        } else if(is_array($value)){
+                            $filtered_arguments[$key] = array();
+                            foreach($value as $v) {
+                                if(is_numeric($v) || is_bool($v)){
+                                    array_push($filtered_arguments[$key], mysqli_real_escape_string($connection, $v));
+                                } else if(is_string($v)) {
+                                    array_push($filtered_arguments[$key], mysqli_real_escape_string($connection, stripslashes($v)));
+                                } //else {
+                                    //Everything else is unsupported
+                                //}
+                            }
+                        } else if(is_numeric($value) || is_bool($value)){
+                            $filtered_arguments[$key] = mysqli_real_escape_string($connection, $value);
                         }
-                    } else if(is_numeric($value) || is_bool($value)){
-                        $filtered_arguments[$key] = mysqli_real_escape_string($connection, $value);
                     }
                 }
             }

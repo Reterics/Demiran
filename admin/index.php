@@ -190,7 +190,7 @@ $ip = getIPAddress();
                 }
 
             }
-        })
+        });
 
 
         Demiran.call("get_project_prices","", function(e,r){

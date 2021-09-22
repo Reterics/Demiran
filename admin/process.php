@@ -17,7 +17,4 @@ if(isset($_POST['_call'])) {
     }
 
     $Demiran->call($task_name, $_POST);
-} else {
-    // Backward compatibility, support version 1.1
-    run_methods_for_obj($_POST);
 }

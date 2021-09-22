@@ -492,7 +492,7 @@ require_once "process.php";
                                 Biztonsági mentés készítése a szerver adatairól
                             </div>
                             <div class="col-sm-7 control-label">
-                                <select id="sql_tables" multiple>
+                                <select id="sql_tables" multiple class="form-control">
                                     <option value="users" selected>Felhasználók</option>
                                     <option value="pages" selected>Oldalak</option>
                                     <option value="project" selected>Projektek</option>
@@ -504,7 +504,19 @@ require_once "process.php";
                                 <input id="export_button" class="btn btn-outline-black" type="button" value="Export indítása">
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-1 input-lg setting_label">
+                                Biztonsági mentés importálása külső forrásból
+                            </div>
+                            <div class="col-sm-7 control-label">
+                                <form action="#" method="post" enctype="multipart/form-data">
+                                    <input id="import_file" name="import_file" type="file" class="form-control" accept="application/sql">
+                                    <input type="hidden" value="upload_sql" name="_call">
+                                    <label class="pull-left" for="sql_tables"></label>
+                                    <input id="import_button" class="btn btn-outline-black" type="button" value="Import indítása">
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
         </div>
@@ -560,6 +572,35 @@ require_once "process.php";
             console.error("Tab Parent has not found.");
         }
 
+        const import_file = document.querySelector('#import_file');
+
+        if(import_file){
+            import_file.onchange = function () {
+                const first_file = import_file.files[0];
+                if(first_file &&
+                    ((first_file.type !== "application/sql" && first_file.type !== "" ) || !first_file.name.endsWith(".sql"))) {
+                    import_file.value = '';
+                    Demiran.alert("Csak SQL Fájl tölthető fel");
+                }
+            };
+        }
+        const import_button = document.querySelector('#import_button');
+        if(import_button && import_file) {
+            import_button.onclick = function () {
+                const first_file = import_file.files[0];
+                if(first_file) {
+                    if(import_button.parentElement.tagName.toLowerCase() === "form" && import_button.parentElement.submit) {
+                        Demiran.confirm("Jóváhagyás","Biztosan feltöltöd a kiválasztott fájlt felülírva ezzel az eredeti adatbázist?",  result => {
+                            if (result) {
+                                import_button.parentElement.submit();
+                            }
+                        });
+                    }
+                } else {
+                    Demiran.alert("Kérlek válassz ki egy fájlt a feltöltéshez!");
+                }
+            };
+        }
 
         const startExport = function () {
             const sql_tables = document.getElementById('sql_tables');
