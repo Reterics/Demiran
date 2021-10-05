@@ -38,7 +38,7 @@ class DemiranBackend {
         return $success;
     }
 
-    function call($task_name, $arguments) {
+    function call($task_name, $arguments, $files = array()) {
         if(isset($this->methods[$task_name]) && is_callable($this->methods[$task_name])) {
             $filtered_arguments = array();
             global $connection;
@@ -64,7 +64,7 @@ class DemiranBackend {
                     }
                 }
             }
-            $this->methods[$task_name]($filtered_arguments, $connection);
+            $this->methods[$task_name]($filtered_arguments, $connection, $files);
         } else {
             echo "There is no function with name: ".$task_name;
         }

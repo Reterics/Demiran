@@ -16,5 +16,5 @@ if(isset($_POST['_call'])) {
         require_once(dirname(__FILE__).'/backend/lib/'.$task_name.'.php');
     }
 
-    $Demiran->call($task_name, $_POST);
+    $Demiran->call($task_name, $_POST, $_FILES);
 }

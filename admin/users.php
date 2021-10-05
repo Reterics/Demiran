@@ -267,10 +267,13 @@ else:
 
                             <div class="date long"><?php echo $row['trn_date']; ?></div>
                             <div class="actions">
-                                <span class="hoverIcon seeDetails details-icon" onclick="editUser('<?php echo $row['id'] ?>')"></span>
+                                <span class="hoverIcon seeDetails details-icon" onclick="openUser('<?php echo $row['id'] ?>')"></span>
 
                                 <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
+                                    <span class="hoverIcon removeLine edit-icon" onclick="editUser('<?php echo $row['id'] ?>','<?php echo $row['username'] ?>')"></span>
+
                                     <span class="hoverIcon removeLine remove-icon" onclick="removeUser('<?php echo $row['id'] ?>','<?php echo $row['username'] ?>')"></span>
+
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -347,6 +350,10 @@ else:
                             <input type="password" class="form-control" name="password" id="password" autocomplete="on"
                                    placeholder="Jelszó"></label>
 
+                            <label for="password_confirmation">Jelszó Megerősítése
+                            <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" autocomplete="on"
+                                   placeholder="Jelszó Megerősítése"></label>
+
 
                             <label for="image">Kép
                             <input type="file" class="form-control" id="file-selector" name="image"
@@ -395,8 +402,96 @@ else:
                         return false;
                     };
 
-                    const editUser = function (id) {
+                    const openUser = function (id) {
                         navigate("./users.php?id=" + id);
+                        return false;
+                    };
+
+                    const editUser = function (id) {
+                        const form = document.querySelector(".registerForm form");
+                        if (form) {
+
+                            Demiran.call("get_user", 'userid=' + id, function (e, result) {
+                                console.log(result);
+                                let json = null;
+                                try {
+                                    json = JSON.parse(result);
+                                }catch (e) {
+                                    console.error(e);
+                                }
+
+                                if(json){
+                                    const cln = form.cloneNode(true);
+
+                                    const imageInput = cln.querySelector("#file-selector");
+                                    const imageDropArea = cln.querySelector("#drop-area");
+                                    const username = cln.querySelector("#username");
+                                    const email = cln.querySelector("#email");
+                                    const role = cln.querySelector("#role");
+                                    const fromNode = cln.querySelector("#from");
+                                    const to = cln.querySelector("#to");
+                                    const job = cln.querySelector("#job");
+
+                                    const idNode = document.createElement("input");
+                                    idNode.setAttribute("type", "hidden");
+                                    idNode.setAttribute("name", "id");
+                                    idNode.value = id;
+                                    cln.appendChild(idNode);
+                                    if(imageInput) {
+                                        imageInput.parentElement.outerHTML = "";
+                                    }
+                                    if(imageDropArea){
+                                        imageDropArea.outerHTML = "";
+                                    }
+                                    if(username && email && role && fromNode && to && job) {
+                                        username.value = json.username;
+                                        email.value = json.email;
+                                        role.value = json.role;
+                                        fromNode.value = json.from;
+                                        to.value = json.to;
+                                        job.value = json.job;
+                                    }
+                                    const popup = Demiran.openPopUp(json.username, cln, [
+                                        {
+                                            value:"Frissítés",
+                                            onclick: (closeDialog, modalID)=>{
+                                                const modal = document.querySelector("#"+modalID);
+                                                const form = modal.querySelector("form");
+
+                                                if(form){
+                                                    const fromTime = form.querySelector("#from");
+                                                    const toTime = form.querySelector("#to");
+                                                    const work_time = form.querySelector("#work_time");
+                                                    if (fromTime && toTime && work_time && fromTime.value && toTime.value) {
+                                                        work_time.setAttribute("value", fromTime.value + "-" + toTime.value);
+                                                        console.log(work_time.value);
+                                                    }
+                                                }
+                                                closeDialog();
+                                                Demiran.call("update_user",Demiran.convertToFormEncoded(form),function(error,result){
+                                                    if(!error && result.trim() === "OK"){
+                                                        Demiran.alert("Adatok mentése sikeres!");
+                                                    } else {
+                                                        Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                        console.log(result,error);
+                                                    }
+                                                });
+                                                //form.submit();
+
+                                            }
+                                        },
+                                        {
+                                            value:"Bezárás",
+                                            type:"close"
+                                        }
+                                    ]);
+
+                                } else {
+                                    Demiran.alert("Hibás adat érkezett a szervertől.");
+                                }
+                            });
+
+                        }
                         return false;
                     };
 

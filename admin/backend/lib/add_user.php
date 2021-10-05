@@ -6,11 +6,17 @@
  * Time: 19:37
  */
 
-$Demiran->add_method("add_user", function ($arguments, $connection){
-    if(isset($arguments['username']) && isset($arguments['email']) && isset($arguments['password'])) {
+$Demiran->add_method("add_user", function ($arguments, $connection, $files){
+    if(isset($arguments['username']) && isset($arguments['email']) && isset($arguments['password']) && isset($arguments['password_confirmation'])) {
         $username = $arguments['username'];
         $email = $arguments['email'];
         $password = $arguments['password'];
+        $password_confirmation = $arguments['password_confirmation'];
+
+        if($password_confirmation != $password) {
+            echo "A jelszavak nem egyeznek!";
+            return;
+        }
     } else {
         echo "Hiba a kérés feldolgozása során: Hiányzó adatok!";
         return;
@@ -35,13 +41,18 @@ $Demiran->add_method("add_user", function ($arguments, $connection){
         $work_time = $arguments['work_time'];
     }
 
-    if (isset($_FILES['image'])) {
+    if (isset($files['image'])) {
+
         $time = date("Ymdhis");
-        $image = $time . basename($_FILES['image']['name']);
+        $image = $time . basename($files['image']['name']);
 
-        $target = "./uploads/" . $image;
+        $imageFolder = "../../uploads/";
+        if (!file_exists($imageFolder)) {
+            mkdir($imageFolder, 0777, true);
+        }
+        $target = $imageFolder . $image;
 
-        if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+        if (move_uploaded_file($files['image']['tmp_name'], $target)) {
             $msg = "Image uploaded successfully";
         } else {
             $msg = "Failed to upload image";
@@ -49,7 +60,8 @@ $Demiran->add_method("add_user", function ($arguments, $connection){
     }
 
     $query = "INSERT into `users` (username, password, email, trn_date, role, image, job, details, work_time)
-VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', '$role', '$image', '$job', '', '0', '$work_time')";
+VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', '$role', '$image', '$job', '', '$work_time')";
+
     $result = mysqli_query($connection, $query);
     if ($result) {
         echo "OK";
