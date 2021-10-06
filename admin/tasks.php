@@ -257,8 +257,10 @@ foreach ($project_tasks as $task) {
                                                     <div class="date"><?php echo str_replace($search, $replace, $row['deadline']) ?></div>
                                                     <div class="actions">
                                                         <span class="hoverIcon seeDetails details-icon"
-                                                              onclick="editTask('<?php echo $row['id'] ?>')"></span>
+                                                              onclick="editTask('<?php echo $row['id'] ?>', true)"></span>
                                                         <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
+                                                            <span class="hoverIcon seeDetails edit-icon"
+                                                                  onclick="editTask('<?php echo $row['id'] ?>', false)"></span>
                                                             <span class="hoverIcon removeLine remove-icon"
                                                                   onclick="removeTask('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
                                                         <?php endif; ?>

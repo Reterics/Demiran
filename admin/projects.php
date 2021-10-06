@@ -187,7 +187,7 @@ if (isset($_GET['id'])):
                 </div>
             </div>
 
-            <div class="row" style="margin-top: 10px">
+            <div class="row" style="margin-top: 10px; display: none;">
                 <div class="col-md-4">
                     <div class="lio-modal" style="opacity: 0.1">
                         <div class="header">

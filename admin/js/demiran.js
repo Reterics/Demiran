@@ -761,8 +761,7 @@ const removeTask = function (id, title) {
 
     return false;
 };
-const editTask = function (id) {
-    //alert('Ez a funckió nincs implementálva az MVPben');
+const editTask = function (id, viewOnly = true) {
 
     const editTaskDivOuter = document.getElementById("editTaskDivOuter");
     if(editTaskDivOuter){
@@ -771,37 +770,112 @@ const editTask = function (id) {
             try {
                 json = JSON.parse(result);
             }catch (e) {
-                alert('Rossz adat érkezett a szervertől!');
-                console.log(result);
+                console.error(e);
+                console.error(result);
             }
-
+            console.log(json);
             if (json) {
                 const editTaskDivOuter = document.querySelector("#editTaskDivOuter form");
                 if (editTaskDivOuter) {
                     const cln = editTaskDivOuter.cloneNode(true);
-                    const popup = Demiran.openPopUp("Feladat részletei", cln, [
-                        {
-                            value:"Mentés",
-                            onclick: (closeDialog, modalID)=>{
-                                const modal = document.querySelector("#"+modalID);
-                                if(modal){
-                                    const form = modal.querySelector("form");
-                                    if(form){
+                    const idNode = document.createElement("input");
+                    idNode.setAttribute("type", "hidden");
+                    idNode.setAttribute("name", "id");
+                    idNode.value = id;
+                    cln.appendChild(idNode);
 
-                                        form.submit();
-                                        closeDialog();
-                                        return;
-                                    }
-                                }
-                                alert("Kritikus hiba a DOM-ban!");
-                            }
-                        },
-                        {
-                            value:"Vissza",
-                            type:"close"
+                    const title = cln.querySelector("[name=title]");
+                    const project_id = cln.querySelector("[name=project_id]");
+                    const users = cln.querySelector("#task-users");
+                    const repeat = cln.querySelector("[name=repeat]");
+                    const priority = cln.querySelector("[name=priority]");
+                    const state = cln.querySelector("[name=state]");
+                    const start_time = cln.querySelector("[name=start_time]");
+                    const deadline = cln.querySelector("[name=deadline]");
+
+                    if(title && project_id && users && repeat && priority && state && start_time && deadline){
+
+
+                        title.value = json.title;
+                        project_id.value = json.project;
+                        repeat.value = json.repeat;
+                        priority.value = json.priority;
+                        state.value = json.state;
+                        start_time.value = json.start_time.split(" ")[0];
+                        deadline.value = json.deadline.split(" ")[0];
+
+                        if(viewOnly){
+                            title.disabled = true;
+                            project_id.disabled = true;
+                            repeat.disabled = true;
+                            priority.disabled = true;
+                            state.disabled = true;
+                            start_time.disabled = true;
+                            deadline.disabled = true;
                         }
-                    ]);
+
+
+                        const userNames = [];
+                        const options = users.querySelectorAll("option");
+                        (json.users || "").split(",").forEach(function(user){
+                            options.forEach(function (option){
+                                console.log(option.getAttribute("value"), user);
+                                if(option.getAttribute("value") === user && user) {
+                                    option.setAttribute("selected", "true");
+                                    userNames.push(option.innerHTML);
+                                }
+                            })
+                        });
+                        if(viewOnly){
+                            users.outerHTML = "<div>"+userNames.join(", ")+"</div>";
+                        }
+
+                    } else {
+                        console.log("HTML Elemek hiányoznak az ablakból.");
+                    }
+
+                    if(viewOnly) {
+                        const popup = Demiran.openPopUp("Feladat részletei", cln, [
+                            {
+                                value:"Bezárás",
+                                type:"close"
+                            }
+                        ]);
+                    } else {
+                        const popup = Demiran.openPopUp("Feladat részletei", cln, [
+                            {
+                                value:"Mentés",
+                                onclick: (closeDialog, modalID)=>{
+                                    const modal = document.querySelector("#"+modalID);
+                                    if(modal){
+                                        const form = modal.querySelector("form");
+                                        if(form){
+                                            closeDialog();
+                                            Demiran.call("update_project_task",Demiran.convertToFormEncoded(form),function(error,result){
+                                                if(!error && result.trim() === "OK"){
+                                                    Demiran.alert("Adatok mentése sikeres!");
+                                                } else {
+                                                    Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                    console.log(result,error);
+                                                }
+                                            });
+                                        }
+                                    } else {
+                                        Demiran.alert("Kritikus hiba a DOM-ban!");
+                                    }
+
+                                }
+                            },
+                            {
+                                value:"Vissza",
+                                type:"close"
+                            }
+                        ]);
+                    }
+
                 }
+            } else {
+                Demiran.alert("Hibás adat érkezett a szervertől.");
             }
         });
     } else {

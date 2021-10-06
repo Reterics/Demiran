@@ -789,20 +789,53 @@ function add_task_form($project_id = null){
     <?php
 }
 
-function edit_task_form(){
+function edit_task_form($project_id = null){
     ?>
     <div id="editTaskDivOuter" style="display: none">
         <form method="post" enctype="multipart/form-data">
-            <h3 class="task-title">Cím</h3>
-            <h5 class="task-project">Project</h5>
             <div class="form-group">
-                <div class="task-users"></div>
-                <div class="task-repeat"></div>
-                <div class="task-priority"></div>
-                <div class="task-state"></div>
-                <div class="task-details"></div>
-            </div
+                <label>Cím
+                    <input type="text" class="form-control" name="title" placeholder="Cím" required/>
+                </label>
+                <label for="task-project_id">Projekt</label>
+                <select class="form-control" name="project_id" id="task-project_id" >
+                    <?php echo geProjectsAsOptions($project_id); ?>
+                </select>
+                <label for="task-users">Hozzárendelt felhasználók</label>
 
+                <select class="form-control" name="users[]" id="task-users" multiple>
+                    <?php echo geUsersAsOptions(); ?>
+                </select>
+
+
+                <label>Ismétlés
+                    <select class="form-control" name="repeat" >
+                        <option value="once">Egyszeri</option>
+                        <option value="frequently">Rendszeres</option>
+                    </select></label>
+
+                <label>Prioritás
+                    <select class="form-control" name="priority" >
+                        <option value="low">Alacsony</option>
+                        <option value="medium">Közepes</option>
+                        <option value="high">Magas</option>
+                    </select></label>
+
+                <label>Státusz
+                    <select class="form-control" name="state" >
+                        <option value="open">Nyitott</option>
+                        <option value="in_progress">Folyamatban</option>
+                        <option value="review">Átnézésre vár</option>
+                        <option value="closed">Lezárt</option>
+                    </select></label>
+
+                <label>Kezdés
+                    <input type="date" class="form-control" name="start_time" value="<?php echo date("Y-m-d"); ?>" min="2020-10-01" max="2030-12-31">
+                </label>
+                <label>Határidő
+                    <input type="date" class="form-control" name="deadline" value="<?php echo date("Y-m-d",strtotime('first day of +1 month')); ?>" min="2020-10-01" max="2030-12-31">
+                </label>
+            </div>
 
         </form>
 
