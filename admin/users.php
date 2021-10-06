@@ -412,7 +412,6 @@ else:
                         if (form) {
 
                             Demiran.call("get_user", 'userid=' + id, function (e, result) {
-                                console.log(result);
                                 let json = null;
                                 try {
                                     json = JSON.parse(result);
@@ -422,6 +421,11 @@ else:
 
                                 if(json){
                                     const cln = form.cloneNode(true);
+                                    const idNode = document.createElement("input");
+                                    idNode.setAttribute("type", "hidden");
+                                    idNode.setAttribute("name", "id");
+                                    idNode.value = id;
+                                    cln.appendChild(idNode);
 
                                     const imageInput = cln.querySelector("#file-selector");
                                     const imageDropArea = cln.querySelector("#drop-area");
@@ -432,11 +436,7 @@ else:
                                     const to = cln.querySelector("#to");
                                     const job = cln.querySelector("#job");
 
-                                    const idNode = document.createElement("input");
-                                    idNode.setAttribute("type", "hidden");
-                                    idNode.setAttribute("name", "id");
-                                    idNode.value = id;
-                                    cln.appendChild(idNode);
+
                                     if(imageInput) {
                                         imageInput.parentElement.outerHTML = "";
                                     }

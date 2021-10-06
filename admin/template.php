@@ -96,11 +96,32 @@ function geProjectsAsOptions($selected = null){
     return $html;
 }
 
+/**
+ * @param $id
+ * @param $array
+ * @return array
+ */
 function selectUserFromArray($id, $array) {
-    $selectedUser = null;
+    $selectedUser = array();
+
+    $has_comma = strpos($id, ",");
+    if($has_comma !== false) {
+        $id = explode(",", $id);
+    }
+
     foreach($array as $user) {
-        if (isset($user["id"]) && $user["id"] == $id ){
-            $selectedUser =  $user;
+        if(is_array($id)) {
+            foreach($id as $i) {
+                if (isset($user["id"]) && $user["id"] == $i ){
+                    if(!in_array($user, $selectedUser)) {
+                        array_push($selectedUser, $user);
+                    }
+                }
+            }
+        } else {
+            if (isset($user["id"]) && $user["id"] == $id ){
+                array_push($selectedUser, $user);
+            }
         }
     }
     return $selectedUser;
@@ -115,14 +136,25 @@ function stringToColorCode($str) {
 
 function setUserIconSpan($userData) {
     if(!isset($userData) || $userData == null || $userData == "") {
-        return "";
+        return;
     }
-    ?>
-    <span class="userSpan" title="<?php echo $userData["username"]; ?>" style="background-color:<?php echo "#D1".stringToColorCode($userData["username"]); ?>">
-        <?php echo strtoupper(substr($userData["username"], 0,1)) . substr($userData["username"], 1,1); ?>
-    </span>
-    <?php
-    return "";
+
+    if(is_array($userData)) :
+        foreach($userData as $user):
+            ?>
+            <span class="userSpan" title="<?php echo $user["username"]; ?>" style="background-color:<?php echo "#D1".stringToColorCode($user["username"]); ?>">
+                <?php echo strtoupper(substr($user["username"], 0,1)) . substr($user["username"], 1,1); ?>
+            </span>
+            <?php
+        endforeach;
+    else:
+        ?>
+        <span class="userSpan" title="<?php echo $userData["username"]; ?>" style="background-color:<?php echo "#D1".stringToColorCode($userData["username"]); ?>">
+            <?php echo strtoupper(substr($userData["username"], 0,1)) . substr($userData["username"], 1,1); ?>
+        </span>
+        <?php
+    endif;
+    return;
 }
 
 function load_tiny_mce(){

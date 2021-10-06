@@ -263,9 +263,11 @@ else:
                             <div class="price"><?php echo $row['price'] ?></div>
                             <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
                             <div class="actions">
-                                <span class="hoverIcon seeDetails details-icon" onclick="editProject('<?php echo $row['id'] ?>')"></span>
+                                <span class="hoverIcon seeDetails details-icon" onclick="openProject('<?php echo $row['id'] ?>')"></span>
                                 <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-                                <span class="hoverIcon removeLine remove-icon" onclick="removeProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
+                                    <span class="hoverIcon removeLine edit-icon" onclick="editProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
+
+                                    <span class="hoverIcon removeLine remove-icon" onclick="removeProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
                                 <?php endif; ?>
                             </div>
 
@@ -358,9 +360,91 @@ else:
                         return false;
                     };
 
-                    const editProject = function (id) {
+                    const openProject = function (id) {
                         navigate("./projects.php?id="+id);
                         return false;
+                    };
+
+                    const editProject = function (id) {
+                        const form = document.querySelector(".addProject form");
+
+                        if (form) {
+                            Demiran.call("get_project", 'projectid=' + id, function (e, result) {
+
+                                let json = null;
+                                try {
+                                    json = JSON.parse(result);
+                                }catch (e) {
+                                    console.error(e);
+                                }
+                                console.log(json);
+                                if(json){
+                                    const cln = form.cloneNode(true);
+                                    const idNode = document.createElement("input");
+                                    idNode.setAttribute("type", "hidden");
+                                    idNode.setAttribute("name", "id");
+                                    idNode.value = id;
+                                    cln.appendChild(idNode);
+
+                                    const title = cln.querySelector("#title");
+                                    const users = cln.querySelector("#users");
+                                    const category = cln.querySelector("#category");
+                                    const client = cln.querySelector("#client");
+                                    const billing = cln.querySelector("#billing");
+                                    const price = cln.querySelector("#price");
+                                    const start_time = cln.querySelector("[name=start_time]");
+                                    const deadline = cln.querySelector("[name=deadline]");
+                                    if(title && users && category && client && billing && price && start_time && deadline) {
+                                        title.value = json.title;
+                                        category.value = json.category;
+                                        client.value = json.client;
+                                        billing.value = json.billing;
+                                        price.value = json.price;
+                                        start_time.value = json.start_time.split(" ")[0];
+                                        deadline.value = json.deadline.split(" ")[0];
+
+                                        const options = users.querySelectorAll("option");
+                                        (json.users || "").split(",").forEach(function(user){
+                                            options.forEach(function (option){
+                                                console.log(option.getAttribute("value"), user);
+                                                if(option.getAttribute("value") === user && user) {
+                                                    option.setAttribute("selected", "true");
+                                                }
+                                            })
+                                        });
+                                    } else {
+                                        console.log("HTML Elemek hiányoznak az ablakból.");
+                                    }
+                                    const popup = Demiran.openPopUp(json.title, cln, [
+                                        {
+                                            value:"Frissítés",
+                                            onclick: (closeDialog, modalID)=>{
+                                                const modal = document.querySelector("#"+modalID);
+                                                const form = modal.querySelector("form");
+
+                                                closeDialog();
+                                                Demiran.call("update_project",Demiran.convertToFormEncoded(form),function(error,result){
+                                                    if(!error && result.trim() === "OK"){
+                                                        Demiran.alert("Adatok mentése sikeres!");
+                                                    } else {
+                                                        Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                        console.log(result,error);
+                                                    }
+                                                });
+                                                //form.submit();
+
+                                            }
+                                        },
+                                        {
+                                            value:"Bezárás",
+                                            type:"close"
+                                        }
+                                    ]);
+                                } else {
+                                    Demiran.alert("Hibás adat érkezett a szervertől.");
+                                }
+                            });
+                        }
                     };
 
 
