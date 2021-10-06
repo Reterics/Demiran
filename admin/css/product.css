@@ -1157,7 +1157,7 @@ header nav.navbar {
     top: 50%;
     width: 64px;
     height: 64px;
-    background-image: url(../img/loading.png);
+    background-image: url(./img/loading.png);
     z-index: 999;
     background-size: contain;
     background-position: center;

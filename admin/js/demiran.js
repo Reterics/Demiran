@@ -149,6 +149,23 @@ const Demiran = {
         return new FormData(htmlFormElement);
     },
     /**
+     * @returns {HTMLElement}
+     */
+    createLoading: ()=>{
+        let loading = document.getElementById("loading");
+        if(!loading) {
+            loading = document.createElement("div");
+            loading.id = "loading";
+            const loadingImage = document.createElement("div");
+            loadingImage.className = "loadingImage";
+            loading.appendChild(loadingImage);
+            document.body.appendChild(loading);
+        } else {
+            loading.style.display = null;
+        }
+        return loading;
+    },
+    /**
      *
      * @param {string} url
      * @param {object|FormData|HTMLFormElement|string} body
@@ -157,11 +174,18 @@ const Demiran = {
      */
     post: (url, body, callback = ()=>{}) => {
         const xHTTP = new XMLHttpRequest();
+        const loadingNode = Demiran.createLoading();
         xHTTP.onreadystatechange = function () {
             // code
             if (this.readyState === 4 && this.status === 200) {
+                if(loadingNode){
+                    loadingNode.style.display = "none";
+                }
                 callback(false, xHTTP.response, this.status);
             } else if (this.readyState === 4) {
+                if(loadingNode){
+                    loadingNode.style.display = "none";
+                }
                 callback(true, xHTTP.response, this.status);
             }
         };
@@ -177,6 +201,9 @@ const Demiran = {
         } else if (body instanceof HTMLFormElement) {
             body = new FormData(body);
         } else {
+            if(loadingNode){
+                loadingNode.style.display = "none";
+            }
             callback("Invalid input body");
             return false;
         }
@@ -185,6 +212,9 @@ const Demiran = {
             const requestBody = typeof body === "string" || body instanceof FormData ? body : body.toString();
             xHTTP.send(requestBody);
         } catch (e) {
+            if(loadingNode){
+                loadingNode.style.display = "none";
+            }
             callback(e.message);
         }
     },
@@ -194,15 +224,22 @@ const Demiran = {
      */
     get: (url, callback = ()=>{}) => {
         const xHTTP = new XMLHttpRequest();
+        const loadingNode = Demiran.createLoading();
 
         xHTTP.open('GET', url, true);
 
         xHTTP.onload = function () {
+            if(loadingNode){
+                loadingNode.style.display = "none";
+            }
             callback(null, xHTTP.response)
         };
         try {
             xHTTP.send(null);
         } catch (e) {
+            if(loadingNode){
+                loadingNode.style.display = "none";
+            }
             callback(e.message);
         }
         xHTTP.send(null);
@@ -773,7 +810,6 @@ const editTask = function (id, viewOnly = true) {
                 console.error(e);
                 console.error(result);
             }
-            console.log(json);
             if (json) {
                 const editTaskDivOuter = document.querySelector("#editTaskDivOuter form");
                 if (editTaskDivOuter) {

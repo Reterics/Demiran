@@ -377,7 +377,6 @@ else:
                                 }catch (e) {
                                     console.error(e);
                                 }
-                                console.log(json);
                                 if(json){
                                     const cln = form.cloneNode(true);
                                     const idNode = document.createElement("input");
