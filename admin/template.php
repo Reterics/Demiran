@@ -287,12 +287,16 @@ function admin_header_menu(){
                 <li class="nav-item"><a class="nav-link tasks" href="tasks.php">Feladatok</a></li>
                 <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
                     <li class="nav-item"><a class="nav-link users" href="users.php">Felhasználók</a></li>
-                    <li class="nav-item"><a class="nav-link projects" href="projects.php">Projektek</a></li>
+                <?php endif; ?>
+                <li class="nav-item"><a class="nav-link projects" href="projects.php">Projektek</a></li>
+                <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
                     <li class="nav-item"><a class="nav-link pages" href="pages.php">Oldalak</a></li>
-
                 <?php endif; ?>
 
-                <li class="nav-item"><a class="nav-link hours" href="hours.php">Óraszámok</a></li>
+                <?php if(isset($_SESSION['role']) && $_SESSION['role'] != 'client'): ?>
+                    <li class="nav-item"><a class="nav-link pages" href="pages.php">Oldalak</a></li>
+                    <li class="nav-item"><a class="nav-link hours" href="hours.php">Óraszámok</a></li>
+                <?php endif; ?>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php echo $_SESSION['username']; ?>
@@ -300,7 +304,9 @@ function admin_header_menu(){
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="users.php?id=<?php echo $_SESSION['id'];?>">Profilom</a>
                         <a class="dropdown-item hidden" href="messages.php">Üzenetek</a>
-                        <a class="dropdown-item" href="settings.php">Beállítások</a>
+                        <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
+                            <a class="dropdown-item" href="settings.php">Beállítások</a>
+                        <?php endif; ?>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="logout.php">Kijelentkezés</a>
                     </div>

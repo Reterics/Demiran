@@ -241,9 +241,19 @@ else:
                     </div>
 
                     <?php
-                    $sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project;";
 
-                    $projects = sqlGetAll($sql);
+                    $whereClause = "";
+                    $currentUserId = $_SESSION['id'];
+                    $currentUserName = $_SESSION["username"];
+
+                    if($_SESSION['role'] == 'client'){
+                        $whereClause = "WHERE client='".$currentUserId."' ";
+                    } else if($_SESSION['role'] != 'owner' && $_SESSION['role'] != 'admin' && $_SESSION['role'] != 'client'){
+                        $whereClause = "WHERE users LIKE '".$currentUserId.",%'	OR users LIKE '%,".$currentUserId."' OR users LIKE ',".$currentUserId.",'";
+                    }
+                    $projects_sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project ".$whereClause."LIMIT 100;";
+
+                    $projects = sqlGetAll($projects_sql);
                     $userIDs = getUserIDs($projects);
                     $userData = getUsersByIDs($userIDs);
                     foreach($projects as $row) :

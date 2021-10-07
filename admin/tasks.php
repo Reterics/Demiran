@@ -27,17 +27,28 @@ require_once "process.php";
 $search = array(" 00:00:00");
 $replace = array("");
 
-$sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project LIMIT 100;";
+$whereClause = "";
+$currentUserId = $_SESSION['id'];
+$currentUserName = $_SESSION["username"];
 
-$projects = sqlGetAll($sql);
+$tasks_sql = "SELECT id,users,title,`repeat`,image, state, priority, deadline,`order`,project FROM project_tasks LIMIT 100;";
+
+if($_SESSION['role'] == 'client'){
+    $whereClause = "WHERE client='".$currentUserId."' ";
+} else if($_SESSION['role'] != 'owner' && $_SESSION['role'] != 'admin' && $_SESSION['role'] != 'client'){
+    $whereClause = "WHERE users LIKE '".$currentUserId.",%'	OR users LIKE '%,".$currentUserId."' OR users LIKE ',".$currentUserId.",'";
+    $tasks_sql = "SELECT id,users,title,`repeat`,image, state, priority, deadline,`order`,project FROM project_tasks ".$whereClause."LIMIT 100;";
+}
+
+$projects_sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project ".$whereClause."LIMIT 100;";
+
+$projects = sqlGetAll($projects_sql);
 $userIDs = getUserIDs($projects);
 
 //$userData = getUsersByIDs($userIDs);
 
+$project_tasks = sqlGetAll($tasks_sql);
 
-$sql = "SELECT id,users,title,`repeat`,image, state, priority, deadline,`order`,project FROM project_tasks LIMIT 100;";
-
-$project_tasks = sqlGetAll($sql);
 $userIDList = getUserIDs($project_tasks);
 foreach ($userIDList as $userID) {
     if (!in_array($userID, $userIDs)) {
@@ -69,7 +80,6 @@ if (isset($_GET['assign']) && in_array($_GET['assign'], $availableAssign)) {
 if (isset($_GET['project']) && $_GET['project'] !== "") {
     $selectedProject = $_GET['project'];
 }
-
 $groupList = array();
 foreach ($project_tasks as $task) {
     if($selectedProject === null || ($selectedProject !== null && $task['project'] === $selectedProject)) {
@@ -160,12 +170,10 @@ foreach ($project_tasks as $task) {
     </form>
 
     <div class="main_content <?php echo $currentType; ?>">
-
         <?php
 
         foreach ($projects as $project) :
             if($selectedProject === null || ($selectedProject !== null && $project['id'] === $selectedProject)):
-
             ?>
             <div class="project_container lio-modal">
                 <div class="project_head header">
@@ -173,6 +181,7 @@ foreach ($project_tasks as $task) {
                 </div>
                 <div class="project_body body">
                     <?php
+                    $count = 0;
                     foreach ($groupList as $projectID => $groupKeys) :
                         //sort($groupKeys, SORT_STRING );
 
@@ -229,10 +238,9 @@ foreach ($project_tasks as $task) {
 
                                     <div class="project_body tasks">
                                         <?php
-
-
                                         foreach ($project_tasks as $row) :
                                             if ($project['id'] == $row['project'] && $row[$groupBy] == $group):
+                                                $count++;
                                                 ?>
                                                 <div class="project_task <?php echo $row['state'] ?>" data-order="<?php echo $row['order'] ?>">
                                                     <div class="id short"><?php echo $row['id'] ?></div>
@@ -269,10 +277,14 @@ foreach ($project_tasks as $task) {
                                                 </div>
 
 
-                                            <?php endif;endforeach; ?>
+                                        <?php endif;endforeach;?>
                                     </div>
                                 </div>
-                            <?php endif; endforeach; endforeach; ?>
+                            <?php endif; endforeach; endforeach;
+                    if($count == 0) {
+                        echo "<div>Az adott projekthez nincs elérhető feladat!</div>";
+                    }
+                    ?>
                 </div>
             </div>
         <?php
