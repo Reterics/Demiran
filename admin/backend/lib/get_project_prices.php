@@ -7,7 +7,7 @@
  */
 
 $Demiran->add_method("get_project_prices", function ($arguments, $connection){
-    $sql = "SELECT id, users, price, deadline FROM project";
+    $sql = "SELECT id, users, price, deadline, category FROM project";
     $filterUser = null;
     if (isset($arguments['filter_user']) && $arguments['filter_user'] != "") {
         $filterUser = $arguments['filter_user'];
@@ -32,10 +32,10 @@ $Demiran->add_method("get_project_prices", function ($arguments, $connection){
                         echo ",";
                     }
                     if($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin'){
-                        echo '{"price":"'.$row['price'].'","deadline":"'.$row['deadline'].'","id":"'.$row['id'].'"}';
+                        echo '{"price":"'.$row['price'].'","deadline":"'.$row['deadline'].'","id":"'.$row['id'].'","category":"'.$row['category'].'"}';
 
                     } else {
-                        echo '{"price":1,"deadline":"'.$row['deadline'].'","id":"'.$row['id'].'"}';
+                        echo '{"price":1,"deadline":"'.$row['deadline'].'","id":"'.$row['id'].'","category":"'.$row['category'].'"}';
 
                     }
                     $i = $i + 1;

@@ -20,6 +20,7 @@ require_once("./template.php");
         <script src="./js/charts/d3v5.js" ></script>
         <script src="./js/charts/d3color.js" ></script>
         <script src="./js/charts/calendar.js" ></script>
+        <script src="./js/charts/forceChart.js" ></script>
 
     </head>
     <body>
@@ -215,286 +216,317 @@ else:
     ?>
 
     <div class="top_outer_div">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="lio-modal">
-                <div class="header">
-                    <h5 class="title">Projektek</h5>
-                    <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-                    <span class="plus-icon addP"></span>
-                    <?php endif; ?>
+        <div class="row" style="margin-bottom: 1em;">
+            <div class="col-md-12">
+                <div class="lio-modal">
+                    <div class="header">
+                        <h5 class="title">Projekt Ábra</h5>
+                    </div>
+                    <div class="body" style="height: 20vh">
+                        <div id="force" style="display: flex;justify-content: center;height:100%"></div>
+                    </div>
                 </div>
-                <div class="body users drag-container" style="overflow-x: hidden;overflow-y: scroll;max-height: 70vh;">
+            </div>
+        </div>
+        <script type="application/javascript">
+            Demiran.call("get_project_flow", "", function(error,result){
+                if(!error && result){
+                    let json = null;
+                    try{
+                        json = JSON.parse(result);
 
-                    <div class="dragTitle">
-                        <button class="dragButton"><span class="toggler-icon"></span></button>
-                        <div class="id short">ID</div>
-                        <div class="title">Név</div>
-                        <div class="users">Felhasználók</div>
-                        <div class="category">Kategória</div>
-                        <div class="client">Megrendelő</div>
-                        <div class="status">Állapot</div>
-                        <div class="billing">Számlázás</div>
-                        <div class="price">Ár</div>
-                        <div class="date long">Határidő</div>
-                        <div class="actions">Műveletek</div>
+
+                        drawForceChart({
+                            selector:"#force",
+                            data:json
+                        })
+                    }catch(e){
+                        console.error(e);
+                    }
+                }
+
+            })
+        </script>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="lio-modal">
+                    <div class="header">
+                        <h5 class="title">Projektek</h5>
+                        <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
+                        <span class="plus-icon addP"></span>
+                        <?php endif; ?>
+                    </div>
+                    <div class="body users drag-container" style="overflow-x: hidden;overflow-y: scroll;max-height: 70vh;">
+
+                        <div class="dragTitle">
+                            <button class="dragButton"><span class="toggler-icon"></span></button>
+                            <div class="id short">ID</div>
+                            <div class="title">Név</div>
+                            <div class="users">Felhasználók</div>
+                            <div class="category">Kategória</div>
+                            <div class="client">Megrendelő</div>
+                            <div class="status">Állapot</div>
+                            <div class="billing">Számlázás</div>
+                            <div class="price">Ár</div>
+                            <div class="date long">Határidő</div>
+                            <div class="actions">Műveletek</div>
+                        </div>
+
+                        <?php
+
+                        $whereClause = "";
+                        $currentUserId = $_SESSION['id'];
+                        $currentUserName = $_SESSION["username"];
+
+                        if($_SESSION['role'] == 'client'){
+                            $whereClause = "WHERE client='".$currentUserId."' ";
+                        } else if($_SESSION['role'] != 'owner' && $_SESSION['role'] != 'admin' && $_SESSION['role'] != 'client'){
+                            $whereClause = "WHERE users LIKE '".$currentUserId.",%'	OR users LIKE '%,".$currentUserId."' OR users LIKE ',".$currentUserId.",'";
+                        }
+                        $projects_sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project ".$whereClause."LIMIT 100;";
+
+                        $projects = sqlGetAll($projects_sql);
+                        $userIDs = getUserIDs($projects);
+                        $userData = getUsersByIDs($userIDs);
+                        foreach($projects as $row) :
+                            ?>
+                            <div class="dragged" data-order="<?php echo $row['order'] ?>">
+                                <button class="dragButton"><span class="toggler-icon"></span></button>
+
+                                <div class="id short"><?php echo $row['id'] ?></div>
+                                <div class="title"><?php echo $row['title'] ?></div>
+                                <div class="users" data-id="<?php echo $row['id'] ?>">
+                                    <?php setUserIconSpan(selectUserFromArray($row['users'], $userData)); ?>
+                                   </div>
+                                <div class="category"><?php echo $row['category'] ?></div>
+                                <div class="client"><?php setUserIconSpan(selectUserFromArray($row['client'], $userData)) ?></div>
+                                <div class="status"><?php echo $row['status'] ?></div>
+                                <div class="billing"><?php echo $row['billing'] ?></div>
+                                <div class="price"><?php echo $row['price'] ?></div>
+                                <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
+                                <div class="actions">
+                                    <span class="hoverIcon seeDetails details-icon" onclick="openProject('<?php echo $row['id'] ?>')"></span>
+                                    <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
+                                        <span class="hoverIcon removeLine edit-icon" onclick="editProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
+
+                                        <span class="hoverIcon removeLine remove-icon" onclick="removeProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
+                                    <?php endif; ?>
+                                </div>
+
+                            </div>
+                            <?php
+                        endforeach;
+                        ?>
+
+
+
+
+
+       <!-- <script>
+            Demiran.applyDragNDrop(".drag-container", ".dragged");
+        </script> -->
+                    </div>
+                    <div class="footer btn-group mr-2" style="display:none;">
+                        <button class="btn btn-outline-dark mb-2 mr-sm-2 addP" type="button">Új Projekt Felvétele</button>
                     </div>
 
-                    <?php
 
-                    $whereClause = "";
-                    $currentUserId = $_SESSION['id'];
-                    $currentUserName = $_SESSION["username"];
+                    <div class="addProject" style="display: none">
+                        <form style="padding: 10px 15px;" method="post" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="title">Cím
+                                <input type="text" class="form-control" name="title" id="title" placeholder="Cím" required/>
+                                </label>
+                                <label for="users">Hozzárendelt felhasználók</label>
+                                <select class="form-control" name="users[]" id="users" multiple>
+                                    <?php echo geUsersAsOptions(); ?>
+                                </select>
 
-                    if($_SESSION['role'] == 'client'){
-                        $whereClause = "WHERE client='".$currentUserId."' ";
-                    } else if($_SESSION['role'] != 'owner' && $_SESSION['role'] != 'admin' && $_SESSION['role'] != 'client'){
-                        $whereClause = "WHERE users LIKE '".$currentUserId.",%'	OR users LIKE '%,".$currentUserId."' OR users LIKE ',".$currentUserId.",'";
-                    }
-                    $projects_sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project ".$whereClause."LIMIT 100;";
+                                <label for="category">Kategória
+                                <input type="text" class="form-control" name="category" id="category" placeholder="Kategóriák">
+                                </label>
+                                <label for="client">Megrendelő
+                                <select class="form-control"  name="client" id="client" >
+                                    <?php echo getClientsAsOptions(); ?>
+                                </select>
+                                </label>
 
-                    $projects = sqlGetAll($projects_sql);
-                    $userIDs = getUserIDs($projects);
-                    $userData = getUsersByIDs($userIDs);
-                    foreach($projects as $row) :
-                        ?>
-                        <div class="dragged" data-order="<?php echo $row['order'] ?>">
-                            <button class="dragButton"><span class="toggler-icon"></span></button>
+                                <label for="billing">Számlázás
+                                <select class="form-control" name="billing" id="billing" >
+                                    <option value="fixed">Fix</option>
+                                    <option value="time-based">Időarányos</option>
+                                </select></label>
 
-                            <div class="id short"><?php echo $row['id'] ?></div>
-                            <div class="title"><?php echo $row['title'] ?></div>
-                            <div class="users" data-id="<?php echo $row['id'] ?>">
-                                <?php setUserIconSpan(selectUserFromArray($row['users'], $userData)); ?>
-                               </div>
-                            <div class="category"><?php echo $row['category'] ?></div>
-                            <div class="client"><?php setUserIconSpan(selectUserFromArray($row['client'], $userData)) ?></div>
-                            <div class="status"><?php echo $row['status'] ?></div>
-                            <div class="billing"><?php echo $row['billing'] ?></div>
-                            <div class="price"><?php echo $row['price'] ?></div>
-                            <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
-                            <div class="actions">
-                                <span class="hoverIcon seeDetails details-icon" onclick="openProject('<?php echo $row['id'] ?>')"></span>
-                                <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-                                    <span class="hoverIcon removeLine edit-icon" onclick="editProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
+                                <label for="price">Ár/Ársáv
+                                <input type="text" class="form-control" name="price" id="price" placeholder="100,000Ft">
+                                </label>
 
-                                    <span class="hoverIcon removeLine remove-icon" onclick="removeProject('<?php echo $row['id'] ?>','<?php echo $row['title'] ?>')"></span>
-                                <?php endif; ?>
+
+                                <label>Kezdés
+                                    <input type="date" class="form-control" name="start_time" value="" min="2020-10-01" max="2030-12-31">
+                                </label>
+                                <label>Határidő
+                                    <input type="date" class="form-control" name="deadline" value="" min="2020-10-01" max="2030-12-31">
+                                </label>
+                                <input type="hidden" class="form-control" name="addproject" value="1"/>
+
                             </div>
 
-                        </div>
-                        <?php
-                    endforeach;
-                    ?>
+                        </form>
+                    </div>
+                    <script>
 
-
-
-
-
-   <!-- <script>
-        Demiran.applyDragNDrop(".drag-container", ".dragged");
-    </script> -->
-                </div>
-                <div class="footer btn-group mr-2" style="display:none;">
-                    <button class="btn btn-outline-dark mb-2 mr-sm-2 addP" type="button">Új Projekt Felvétele</button>
-                </div>
-
-
-                <div class="addProject" style="display: none">
-                    <form style="padding: 10px 15px;" method="post" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="title">Cím
-                            <input type="text" class="form-control" name="title" id="title" placeholder="Cím" required/>
-                            </label>
-                            <label for="users">Hozzárendelt felhasználók</label>
-                            <select class="form-control" name="users[]" id="users" multiple>
-                                <?php echo geUsersAsOptions(); ?>
-                            </select>
-
-                            <label for="category">Kategória
-                            <input type="text" class="form-control" name="category" id="category" placeholder="Kategóriák">
-                            </label>
-                            <label for="client">Megrendelő
-                            <select class="form-control"  name="client" id="client" >
-                                <?php echo getClientsAsOptions(); ?>
-                            </select>
-                            </label>
-
-                            <label for="billing">Számlázás
-                            <select class="form-control" name="billing" id="billing" >
-                                <option value="fixed">Fix</option>
-                                <option value="time-based">Időarányos</option>
-                            </select></label>
-
-                            <label for="price">Ár/Ársáv
-                            <input type="text" class="form-control" name="price" id="price" placeholder="100,000Ft">
-                            </label>
-
-
-                            <label>Kezdés
-                                <input type="date" class="form-control" name="start_time" value="" min="2020-10-01" max="2030-12-31">
-                            </label>
-                            <label>Határidő
-                                <input type="date" class="form-control" name="deadline" value="" min="2020-10-01" max="2030-12-31">
-                            </label>
-                            <input type="hidden" class="form-control" name="addproject" value="1"/>
-
-                        </div>
-
-                    </form>
-                </div>
-                <script>
-
-                    const removeProject = function (id, title) {
-                       Demiran.openPopUp("Jóváhagyás", "Biztonsan törölni szeretnéd ezt a projektet az adatbázisból? <br> " + id + " - " + title, [
-                            {
-                                value:"Igen",
-                                onclick: (closeDialog)=>{
-                                    closeDialog();
-                                    Demiran.call("delete_project",Demiran.convertToFormEncoded(form),function(error,result){
-                                        if(!error && result.trim() === "OK"){
-                                            location.reload();
-                                        } else {
-                                            Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
-                                            console.log(result,error);
-                                        }
-                                    });
-
-                                }
-                            },
-                            {
-                                value:"Vissza",
-                                type:"close"
-                            }
-                        ]);
-
-                        return false;
-                    };
-
-                    const openProject = function (id) {
-                        navigate("./projects.php?id="+id);
-                        return false;
-                    };
-
-                    const editProject = function (id) {
-                        const form = document.querySelector(".addProject form");
-
-                        if (form) {
-                            Demiran.call("get_project", 'projectid=' + id, function (e, result) {
-
-                                let json = null;
-                                try {
-                                    json = JSON.parse(result);
-                                }catch (e) {
-                                    console.error(e);
-                                }
-                                if(json){
-                                    const cln = form.cloneNode(true);
-                                    const idNode = document.createElement("input");
-                                    idNode.setAttribute("type", "hidden");
-                                    idNode.setAttribute("name", "id");
-                                    idNode.value = id;
-                                    cln.appendChild(idNode);
-
-                                    const title = cln.querySelector("#title");
-                                    const users = cln.querySelector("#users");
-                                    const category = cln.querySelector("#category");
-                                    const client = cln.querySelector("#client");
-                                    const billing = cln.querySelector("#billing");
-                                    const price = cln.querySelector("#price");
-                                    const start_time = cln.querySelector("[name=start_time]");
-                                    const deadline = cln.querySelector("[name=deadline]");
-                                    if(title && users && category && client && billing && price && start_time && deadline) {
-                                        title.value = json.title;
-                                        category.value = json.category;
-                                        client.value = json.client;
-                                        billing.value = json.billing;
-                                        price.value = json.price;
-                                        start_time.value = json.start_time.split(" ")[0];
-                                        deadline.value = json.deadline.split(" ")[0];
-
-                                        const options = users.querySelectorAll("option");
-                                        (json.users || "").split(",").forEach(function(user){
-                                            options.forEach(function (option){
-                                                console.log(option.getAttribute("value"), user);
-                                                if(option.getAttribute("value") === user && user) {
-                                                    option.setAttribute("selected", "true");
-                                                }
-                                            })
+                        const removeProject = function (id, title) {
+                           Demiran.openPopUp("Jóváhagyás", "Biztonsan törölni szeretnéd ezt a projektet az adatbázisból? <br> " + id + " - " + title, [
+                                {
+                                    value:"Igen",
+                                    onclick: (closeDialog)=>{
+                                        closeDialog();
+                                        Demiran.call("delete_project",Demiran.convertToFormEncoded(form),function(error,result){
+                                            if(!error && result.trim() === "OK"){
+                                                location.reload();
+                                            } else {
+                                                Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                console.log(result,error);
+                                            }
                                         });
-                                    } else {
-                                        console.log("HTML Elemek hiányoznak az ablakból.");
+
                                     }
-                                    const popup = Demiran.openPopUp(json.title, cln, [
+                                },
+                                {
+                                    value:"Vissza",
+                                    type:"close"
+                                }
+                            ]);
+
+                            return false;
+                        };
+
+                        const openProject = function (id) {
+                            navigate("./projects.php?id="+id);
+                            return false;
+                        };
+
+                        const editProject = function (id) {
+                            const form = document.querySelector(".addProject form");
+
+                            if (form) {
+                                Demiran.call("get_project", 'projectid=' + id, function (e, result) {
+
+                                    let json = null;
+                                    try {
+                                        json = JSON.parse(result);
+                                    }catch (e) {
+                                        console.error(e);
+                                    }
+                                    if(json){
+                                        const cln = form.cloneNode(true);
+                                        const idNode = document.createElement("input");
+                                        idNode.setAttribute("type", "hidden");
+                                        idNode.setAttribute("name", "id");
+                                        idNode.value = id;
+                                        cln.appendChild(idNode);
+
+                                        const title = cln.querySelector("#title");
+                                        const users = cln.querySelector("#users");
+                                        const category = cln.querySelector("#category");
+                                        const client = cln.querySelector("#client");
+                                        const billing = cln.querySelector("#billing");
+                                        const price = cln.querySelector("#price");
+                                        const start_time = cln.querySelector("[name=start_time]");
+                                        const deadline = cln.querySelector("[name=deadline]");
+                                        if(title && users && category && client && billing && price && start_time && deadline) {
+                                            title.value = json.title;
+                                            category.value = json.category;
+                                            client.value = json.client;
+                                            billing.value = json.billing;
+                                            price.value = json.price;
+                                            start_time.value = json.start_time.split(" ")[0];
+                                            deadline.value = json.deadline.split(" ")[0];
+
+                                            const options = users.querySelectorAll("option");
+                                            (json.users || "").split(",").forEach(function(user){
+                                                options.forEach(function (option){
+                                                    console.log(option.getAttribute("value"), user);
+                                                    if(option.getAttribute("value") === user && user) {
+                                                        option.setAttribute("selected", "true");
+                                                    }
+                                                })
+                                            });
+                                        } else {
+                                            console.log("HTML Elemek hiányoznak az ablakból.");
+                                        }
+                                        const popup = Demiran.openPopUp(json.title, cln, [
+                                            {
+                                                value:"Frissítés",
+                                                onclick: (closeDialog, modalID)=>{
+                                                    const modal = document.querySelector("#"+modalID);
+                                                    const form = modal.querySelector("form");
+
+                                                    closeDialog();
+                                                    Demiran.call("update_project",Demiran.convertToFormEncoded(form),function(error,result){
+                                                        if(!error && result.trim() === "OK"){
+                                                            Demiran.alert("Adatok mentése sikeres!");
+                                                        } else {
+                                                            Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
+                                                            console.log(result,error);
+                                                        }
+                                                    });
+                                                    //form.submit();
+
+                                                }
+                                            },
+                                            {
+                                                value:"Bezárás",
+                                                type:"close"
+                                            }
+                                        ]);
+                                    } else {
+                                        Demiran.alert("Hibás adat érkezett a szervertől.");
+                                    }
+                                });
+                            }
+                        };
+
+
+                        const registerButton = document.querySelector(".addP");
+                        if(registerButton){
+                            registerButton.onclick = function () {
+                                const form = document.querySelector(".addProject form");
+
+                                if(form){
+                                    const cln = form.cloneNode(true);
+
+                                    const popup = Demiran.openPopUp("Hozzáadás", cln, [
                                         {
-                                            value:"Frissítés",
+                                            value:"Hozzáad",
                                             onclick: (closeDialog, modalID)=>{
                                                 const modal = document.querySelector("#"+modalID);
                                                 const form = modal.querySelector("form");
-
+                                                //form.submit();
                                                 closeDialog();
-                                                Demiran.call("update_project",Demiran.convertToFormEncoded(form),function(error,result){
+                                                Demiran.call("add_project",Demiran.convertToFormEncoded(form),function(error,result){
                                                     if(!error && result.trim() === "OK"){
-                                                        Demiran.alert("Adatok mentése sikeres!");
+                                                        location.reload();
                                                     } else {
                                                         Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
                                                         console.log(result,error);
                                                     }
                                                 });
-                                                //form.submit();
-
                                             }
                                         },
                                         {
-                                            value:"Bezárás",
+                                            value:"Vissza",
                                             type:"close"
                                         }
                                     ]);
-                                } else {
-                                    Demiran.alert("Hibás adat érkezett a szervertől.");
                                 }
-                            });
-                        }
-                    };
-
-
-                    const registerButton = document.querySelector(".addP");
-                    if(registerButton){
-                        registerButton.onclick = function () {
-                            const form = document.querySelector(".addProject form");
-
-                            if(form){
-                                const cln = form.cloneNode(true);
-
-                                const popup = Demiran.openPopUp("Hozzáadás", cln, [
-                                    {
-                                        value:"Hozzáad",
-                                        onclick: (closeDialog, modalID)=>{
-                                            const modal = document.querySelector("#"+modalID);
-                                            const form = modal.querySelector("form");
-                                            //form.submit();
-                                            closeDialog();
-                                            Demiran.call("add_project",Demiran.convertToFormEncoded(form),function(error,result){
-                                                if(!error && result.trim() === "OK"){
-                                                    location.reload();
-                                                } else {
-                                                    Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
-                                                    console.log(result,error);
-                                                }
-                                            });
-                                        }
-                                    },
-                                    {
-                                        value:"Vissza",
-                                        type:"close"
-                                    }
-                                ]);
                             }
                         }
-                    }
-                </script>
+                    </script>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 <?php
 
@@ -509,7 +541,7 @@ endif;
             <div class="header">
                 <h5 class="title">Naptár</h5>
             </div>
-            <div class="body" style="height:30vh">
+            <div class="body" style="height:20vh">
                 <div class="v" style="display: flex;justify-content: center;"></div>
             </div>
         </div>
@@ -540,8 +572,6 @@ endif;
                     });
                 }
             }
-
-
         });
         drawCalendar2({
             selector:".v",

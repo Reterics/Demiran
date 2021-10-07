@@ -294,7 +294,6 @@ function admin_header_menu(){
                 <?php endif; ?>
 
                 <?php if(isset($_SESSION['role']) && $_SESSION['role'] != 'client'): ?>
-                    <li class="nav-item"><a class="nav-link pages" href="pages.php">Oldalak</a></li>
                     <li class="nav-item"><a class="nav-link hours" href="hours.php">Óraszámok</a></li>
                 <?php endif; ?>
                 <li class="nav-item dropdown">

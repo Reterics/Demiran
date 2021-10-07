@@ -15,7 +15,7 @@ const drawLineChart = function (options) {
     const valueKey = options.value ? options.value : "value";
     const colorKey = options.color ? options.color : "color";
 
-    const inputData = options.data.sort((a, b) => a[dateKey] - b[dateKey]);
+    const inputData = options.data.sort((a, b) => b[dateKey] - a[dateKey]);
 
     const {width, height} = node.getBoundingClientRect();
 
@@ -35,11 +35,9 @@ const drawLineChart = function (options) {
     console.log("Domain: ", [inputData[0][dateKey], inputData[inputData.length-1][dateKey]]);
     console.log("Width: ", innerWidth);
 
-
     const y = d3.scaleLinear().range([innerHeight, 0]);
 
     y.domain(d3.extent(inputData, function(d) { return d[valueKey]; }));
-
 
     const valueline = d3.line()
         .x(function(d) {    return x(d[dateKey]); })
@@ -88,4 +86,4 @@ const drawLineChart = function (options) {
         .text(function(d) {return d[valueKey]; });
 
 
-}
+};

@@ -18,6 +18,7 @@ require_once("./template.php");
     <script src="./js/charts/calendar.js" ></script>
     <script src="./js/charts/lineChart.js" ></script>
     <script src="./js/charts/barChart.js" ></script>
+    <script src="./js/charts/pieChart.js" ></script>
 </head>
 <body>
 
@@ -72,12 +73,9 @@ $ip = getIPAddress();
             </div>
             <div class="body">
                 <p>IP címed: <?php echo $ip; ?>  </p>
-                <p><a href="index.php">Index</a></p>
-                <p><a href="users.php">Felhasználók</a></p>
-                <a href="logout.php">Logout</a>
                 <p id = "status"></p>
                 <a id = "map-link" target="_blank"></a>
-                <div id = "map" style = "height: 580px"></div>
+                <div id = "map" style = "height: 250px"></div>
             </div>
         </div>
 
@@ -89,9 +87,9 @@ $ip = getIPAddress();
     <div class="col-sm-6">
         <div class="lio-modal">
             <div class="header">
-                <h3>Konzol</h3>
+                <h3>Projekt Kategóriák</h3>
             </div>
-            <div class="body">
+            <div id="pieChartDiv" class="body">
                 <div class="console">
 
                 </div>
@@ -202,22 +200,54 @@ $ip = getIPAddress();
                     console.warn(e);
                 }
                 if(json && Array.isArray(json)){
-                    const lineChartData = [];
+                    let lineChartData = [];
+                    let pieChartData = [];
                     let currentPrice = 0;
+                    console.log(json);
+                    json.push({
+                        deadline: new Date().getTime(),
+                        price: 0
+                    });
+                    json.sort(function(a,b){
+                        // Turn your strings into dates, and then subtract them
+                        // to get a value that is either negative, positive, or zero.
+                        return new Date(b.deadline) - new Date(a.deadline);
+                    });
+                    const categories = {};
                     json.forEach(function (d){
                         currentPrice += Number.parseInt(d.price);
                         lineChartData.push({
                             price: currentPrice,
                             deadline: new Date(d.deadline)
                         });
-                    });
+                        if(d.category){
+                            if(categories[d.category]){
+                                categories[d.category]++;
+                            } else {
+                                categories[d.category] = 1;
+                            }
 
+                        }
+                    });
+                    Object.keys(categories).forEach(function(category){
+                        pieChartData.push({
+                            price: categories[category],
+                            name:category
+                        })
+                    });
                     if(lineChartData.length > 1){
                         drawLineChart({
                             selector: "#lineChartDiv",
                             date: "deadline",
                             value: "price",
                             data: lineChartData
+                        });
+
+                        drawPieChart({
+                            selector: "#pieChartDiv",
+                            value:"price",
+                            name: "name",
+                            data: pieChartData
                         })
                     }
                 }
