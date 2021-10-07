@@ -1157,7 +1157,8 @@ header nav.navbar {
     top: 50%;
     width: 64px;
     height: 64px;
-    background-image: url(./img/loading.png);
+    /*background-image: url(./img/loading.png);*/
+    background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' standalone='no'%3F%3E%3Csvg version='1.0' xmlns='http://www.w3.org/2000/svg' width='64.000000pt' height='64.000000pt' viewBox='0 0 64.000000 64.000000' preserveAspectRatio='xMidYMid meet'%3E%3Cg transform='translate(0.000000,64.000000) scale(0.100000,-0.100000)'%0Afill='%23000000' stroke='none'%3E%3Cpath d='M223 622 c-109 -39 -178 -112 -210 -221 -29 -102 4 -228 82 -306 122%0A-121 328 -121 450 0 91 92 118 241 64 356 -69 146 -241 223 -386 171z m219%0A-30 c59 -26 124 -91 151 -151 30 -64 30 -178 0 -242 -27 -60 -92 -125 -152%0A-152 -64 -30 -178 -30 -242 0 -129 59 -202 206 -169 342 43 180 242 278 412%0A203z'/%3E%3Cpath d='M132 464 c-45 -31 -13 -94 48 -94 36 0 70 27 70 55 0 28 -34 55 -70%0A55 -14 0 -36 -7 -48 -16z m89 -20 c20 -24 -1 -49 -41 -49 -40 0 -61 25 -41 49%0A8 9 26 16 41 16 15 0 33 -7 41 -16z'/%3E%3Cpath d='M432 454 c-12 -8 -22 -24 -22 -34 0 -24 37 -50 70 -50 33 0 70 26 70%0A50 0 24 -37 50 -70 50 -14 0 -36 -7 -48 -16z m88 -19 c17 -21 -4 -45 -40 -45%0A-15 0 -33 7 -40 15 -17 21 4 45 40 45 15 0 33 -7 40 -15z'/%3E%3Cpath d='M115 210 c-4 -6 20 -23 52 -38 80 -37 207 -39 301 -3 34 13 62 27 62%0A32 0 12 0 12 -87 -17 -100 -34 -192 -31 -270 9 -32 17 -54 23 -58 17z'/%3E%3C/g%3E%3C/svg%3E%0A");
     z-index: 999;
     background-size: contain;
     background-position: center;

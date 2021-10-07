@@ -85,7 +85,7 @@ if (isset($_GET['id'])):
 
                                 </div>
                                 <div class="col-sm-7">
-                                    <input type="button" class="btn btn-outline-dark" value="Adatok letöltése">
+                                    <input id="gdpr_data_download" type="button" class="btn btn-outline-dark" value="Adatok letöltése">
                                 </div>
                             </div>
                             <div class="form-group inline">
@@ -169,6 +169,34 @@ if (isset($_GET['id'])):
 
                                         }
 
+                                    }
+                                }
+
+                                const gdpr_data_download = document.getElementById("gdpr_data_download");
+                                if(gdpr_data_download) {
+                                    gdpr_data_download.onclick = function (e) {
+                                        e.preventDefault();
+                                        Demiran.openPopUp("Jóváhagyás", "Biztonsan le szeretnéd tölteni az összes hozzád kapcsolódó anyagot?", [
+                                            {
+                                                value:"Igen",
+                                                onclick: (closeDialog)=>{
+                                                    closeDialog();
+                                                    Demiran.call("get_gdpr_data", "", function (e, result) {
+                                                        if(result && !e) {
+                                                            const timeId = Math.floor(new Date().getTime()/360000);
+                                                            Demiran.downloadData("adatok-"+timeId+"-.demiran.json", result, "text/plain");
+                                                        } else {
+                                                            Demiran.alert("Az adatok lekérése sikertelen! Kérlek vedd fel a kapcsolatot a rendszergazdával!");
+                                                        }
+
+                                                    });
+                                                }
+                                            },
+                                            {
+                                                value:"Vissza",
+                                                type:"close"
+                                            }
+                                        ]);
                                     }
                                 }
 
