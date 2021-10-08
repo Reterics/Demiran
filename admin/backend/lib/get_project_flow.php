@@ -9,6 +9,12 @@
 $Demiran->add_method("get_project_flow", function ($arguments, $connection){
     $sql = "SELECT p.id as id, p.users as users, p.price as price, p.deadline as deadline, p.category as category, p.client as client, p.title as title, u.full_name as client_name FROM project as p LEFT JOIN users as u ON u.id = p.client";
 
+    if(!isset($_SESSION['role']) || ($_SESSION['role'] != 'owner' && $_SESSION['role'] != 'admin' && $_SESSION['role'] != 'client'))
+    {
+        echo "{}";
+        return;
+    }
+
     $userList = [];
     $projectList = [];
     $categories = [];
@@ -20,7 +26,7 @@ $Demiran->add_method("get_project_flow", function ($arguments, $connection){
     $query = mysqli_query($connection,$sql);
     if ($query) {
         while ($row = mysqli_fetch_array($query)) {
-            if ( isset($row["users"])) {
+            if ( isset($row["users"]) && $row["users"] != "" && ($_SESSION['role'] != 'client' || $_SESSION['id'] == $row["client"])) {
                 $pieces = explode(",", $row['users']);
 
                 foreach ($pieces as $userID) {

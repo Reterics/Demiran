@@ -563,9 +563,11 @@ const Demiran = {
         const background = document.createElement("div");
         background.style.position = "absolute";
         background.style.height = "100vh";
-        background.style.width = "100%";
+        background.style.width = document.body.offsetWidth + "px";
         background.style.top = "0";
         background.style.left = "0";
+        background.style.overflowY = "hidden";
+        background.style.overflowX = "hidden";
         background.style.backgroundColor = "rgba(255,255,255,0.4)";
         background.id = modalId;
 

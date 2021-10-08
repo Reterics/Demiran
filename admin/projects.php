@@ -218,7 +218,7 @@ else:
     ?>
 
     <div class="top_outer_div">
-        <div class="row" style="margin-bottom: 1em;">
+        <div id="force_row" class="row" style="margin-bottom: 1em;">
             <div class="col-md-12">
                 <div class="lio-modal">
                     <div class="header">
@@ -236,13 +236,12 @@ else:
             </div>
         </div>
         <script type="application/javascript">
+            const force_row = document.getElementById("force_row");
             Demiran.call("get_project_flow", "", function(error,result){
                 if(!error && result){
                     let json = null;
                     try{
                         json = JSON.parse(result);
-
-
                         /*drawForceChart({
                             selector:"#force",
                             data:json
@@ -264,24 +263,33 @@ else:
                                     link.source = nodeContainer[link.source];
                                 }
                             })
-
-
                         }
-                        drawSankeyChart({
-                            selector:"#force",
-                            data:json,
-                            fillKey: "group",
-                            fills: [
-                                "#fc8d62",
-                                "#8da0cb",
-                                "#66c2a5",
-                                "#a6d854",
-                                "#e78ac3",
-                                "#ffd92f"]
-                        })
+                        if(!json || !json.links || !json.nodes){
+                            if(force_row){
+                                force_row.style.display = "none";
+                            }
+                        } else {
+                            drawSankeyChart({
+                                selector:"#force",
+                                data:json,
+                                fillKey: "group",
+                                fills: [
+                                    "#fc8d62",
+                                    "#8da0cb",
+                                    "#66c2a5",
+                                    "#a6d854",
+                                    "#e78ac3",
+                                    "#ffd92f"]
+                            });
+                        }
+
                     }catch(e){
                         console.error(e);
+                        if(force_row){
+                            force_row.style.display = "none";
+                        }
                     }
+
                 }
 
             })
@@ -576,7 +584,7 @@ endif;
 
 
 ?>
-<div class="row" style="padding:0 1em">
+<div> <!-- class="row" style="padding:0 1em" -->
     <div class="col-md-12">
         <div class="lio-modal">
             <div class="header">
