@@ -9,10 +9,9 @@ require('../config.php');
 include("./auth.php");
 require_once("./template.php");
 
-
 function base64_to_image($base64_string)
 {
-    echo "Base64 data:".$base64_string."\n";
+    //echo "Base64 data:".$base64_string."\n";
     $output_file = "./uploads/" . round(microtime(true) * 1000);
     $extension = "";
 
@@ -45,6 +44,10 @@ if (isset($_POST['target']) && isset($_POST['message']) && isset($_POST['attachm
         //In this case the target is a username or email
         $sql = "SELECT id FROM users WHERE 'email'='".$_POST['user-input']."' OR 'username'='".$_POST['user-input']."';";
     }
+    $msg_id = "";
+    if(isset($_POST['msg_id'])){
+        $msg_id = $_POST['msg_id'];
+    }
 
     $message = mysqli_real_escape_string($connection, stripslashes($_POST['message']));
     //$attachment = $_POST['attachment'];
@@ -65,13 +68,19 @@ if (isset($_POST['target']) && isset($_POST['message']) && isset($_POST['attachm
         $imgTarget = base64_to_image($_POST['attachment']);
     }
 
-
     $create = date("Y-m-d H:i:s");
-    $query = "INSERT into `messages` (source, target, created, message, status, project, attachment)
-VALUES ('$source', '$target', '$create', '$message', 'sent', '', '$imgTarget')";
-echo $query;
-die();
-    //$result = mysqli_query($connection, $query);
+    $query = "INSERT into `messages` (source, target, created, message, status, project, attachment, msg_id)
+VALUES ('$source', '$target', '$create', '$message', 'sent', '', '$imgTarget', '$msg_id')";
+
+    $result = mysqli_query($connection, $query);
+    if($result) {
+        echo "OK";
+    } else {
+        echo mysqli_connect_error();
+        echo $query;
+        //header('HTTP/1.1 500 Internal Server Error', true, 500);
+    }
+    die();
     //echo $result;
     //echo var_dump(mysqli_fetch_array($result));
 }
@@ -90,6 +99,12 @@ require_once('./backend/main.php');
 admin_header_menu();
 $userID = $_SESSION['id'];
 $userName = $_SESSION['username'];
+
+$myFullName = $userName;
+if(isset($_SESSION['full_name']) && $_SESSION['full_name'] != "") {
+    $myFullName = $_SESSION['full_name'] . " (".$_SESSION['username'].")";
+}
+
 //$senderSQL = "SELECT DISTINCT `source` FROM `messages` WHERE target=".$userID." OR `source`=".$userID.";";
 
 $senderSQL = "SELECT id, `source`, target, message, created, `status`
@@ -106,7 +121,7 @@ $senderSQL = "SELECT id, `source`, target, message, created, `status`
 function getUserName($id)
 {
     global $connection;
-    $sql = "SELECT username FROM users WHERE id=" . $id . ";";
+    $sql = "SELECT username, full_name FROM users WHERE id=" . $id . ";";
 
     $result = mysqli_query($connection, $sql);
     if (!$result) {
@@ -115,6 +130,9 @@ function getUserName($id)
     }
 
     $userData = mysqli_fetch_array($result);
+    if(isset($userData['username']) && isset($userData['full_name']) && $userData['full_name'] != ""){
+        return $userData['full_name'] . " (".$userData['username'].")";
+    }
     return $userData['username'];
 
 }
@@ -131,10 +149,15 @@ function getUsers($array)
     global $connection;
     $output = [];
     if (count($array)) {
-        $sql = "SELECT id,username FROM users WHERE id IN (" . implode(", ", $array) . ")";
+        $sql = "SELECT id,username,full_name FROM users WHERE id IN (" . implode(", ", $array) . ")";
         $result = mysqli_query($connection, $sql);
         while ($row = mysqli_fetch_array($result)) {
-            $output[$row['id']] = $row['username'];
+            if(isset($row['username']) && isset($row['full_name']) && $row['full_name'] != ""){
+                $output[$row['id']] = $row['full_name'] . " (".$row['username'].")";
+            } else {
+                $output[$row['id']] = $row['username'];
+            }
+
         }
     }
     return $output;
@@ -143,6 +166,10 @@ function getUsers($array)
 $sources = sqlGetAll($senderSQL);
 
 $sourceCount = count($sources);
+$new_message = false;
+if(isset($_GET['new_message'])){
+    $new_message = true;
+}
 
 
 ?>
@@ -153,6 +180,13 @@ $sourceCount = count($sources);
             <div class="lio-modal">
                 <div class="header">
                     <h5 class="title">Üzenetek</h5>
+                    <?php
+                    if(!$new_message):
+                    ?>
+                        <input type="button" class="btn btn-success" value="Új Üzenet" onclick="location.href=location.href.split('?')[0]+'?new_message'">
+                    <?php
+                    endif;
+                    ?>
                 </div>
                 <div class="body">
 
@@ -168,6 +202,8 @@ $sourceCount = count($sources);
                         }
                         if (isset($_GET['source'])) {
                             $selectedSource = $_GET['source'];
+                        }else if($new_message){
+                            $selectedSource = null;
                         }
 
                         $userIDs = array();
@@ -204,7 +240,7 @@ $sourceCount = count($sources);
                             ?>
 
                             <div class="message-menu<?php
-                            if ($selectedSource == $otherGuyID) {
+                            if ($selectedSource == $otherGuyID && !$new_message) {
                                 echo " active";
                             }
                             ?>" data-id="<?php echo $otherGuyID; ?>">
@@ -217,9 +253,9 @@ $sourceCount = count($sources);
                                         <?php
 
                                         if ($amISource) {
-                                            echo $_SESSION['username'] . " - " . $userIDs[$sourceData['target']];
+                                            echo $myFullName . " - " . $userIDs[$sourceData['target']];
                                         } else {
-                                            echo $userIDs[$sourceData['source']] . " - " . $_SESSION['username'];
+                                            echo $userIDs[$sourceData['source']] . " - " . $myFullName;
                                         }
                                         ?>
                                     </div>
@@ -243,13 +279,13 @@ $sourceCount = count($sources);
                     endif;
 
 
-                    $messages = sqlGetAll(getMessagesSQL($selectedSource));
+                    $messages = $new_message ? null : sqlGetAll(getMessagesSQL($selectedSource));
                     $messagesCount = 0;
                     if($messages){
                         $messagesCount = count($messages);
                     }
 
-                    $targetUser = getUserName($selectedSource);
+                    $targetUser = $new_message ? null : getUserName($selectedSource);
                     ?>
 
 
@@ -259,9 +295,17 @@ $sourceCount = count($sources);
         <div class="col-md-8">
             <div class="lio-modal">
                 <div class="header">
-                    <h5 class="title"><?php echo $targetUser; ?></h5>
+                    <h5 class="title"><?php
+
+                        if(isset($targetUser) && $targetUser != "") {
+                            echo $targetUser;
+                        } else {
+                            echo  "új üzenet küldése";
+                        }
+                         ?></h5>
+
                 </div>
-                <div class="body messages-list" style="max-height: 50vh;overflow-y: scroll;">
+                <div class="body messages-list" style="max-height: 50vh;overflow-y: scroll;    min-height: 75px;padding:5px">
 
                     <?php
 
@@ -271,7 +315,7 @@ $sourceCount = count($sources);
                             if ($userID == $message['source']) {
                                 ?>
                                 <div class='message-right'>
-                                    <span class='message-title'><?php echo $_SESSION['username']; ?></span>
+                                    <span class='message-title'><?php echo $myFullName; ?></span>
                                     <div class='message-box'><?php echo $message['message']; ?></div>
                                     <?php if(isset($message['attachment']) && $message['attachment'] != ""){
                                         echo "<div class='message-box'><img alt='' src='".$message['attachment']."' height='300' /></div>";
@@ -306,18 +350,73 @@ $sourceCount = count($sources);
 
                     Demiran.imageViewer(".message-box > img");
                 </script>
-                <div class="footer mr-2 btn-group">
+                <div class="footer mr-2 btn-group" style="min-height: 110px;">
                     <form id="message-sender-form" class="form-inline" method="post" action=""
                           style="width: 100%;    justify-content: space-between;">
 
-                        <div class="icons" style="flex: auto;height: 80px;">
-                            <div id="drop-area" class="image-icon" style="height: 30px;flex: auto;"></div>
-                        </div>
+                        <div class="form-group autocomplete" style="width: 100%;margin-bottom:5px;display: inline-block;position: relative;">
+                            <input<?php
 
-                        <div class="input" style="width: 70%;">
+                            if(!$selectedSource){
+                                echo " type=\"text\" placeholder=\"Címzett\"";
+                            } else {
+                                echo " type=\"hidden\"";
+                            }
+
+                            ?> name="target-name" value="<?php echo $selectedSource; ?>" style="width:100%" class="form-control" autocomplete="off">
+                            <input type="hidden" name="target" value="<?php echo $selectedSource; ?>">
+                            <?php
+
+
+                            ?>
+                        </div>
+                        <?php
+                        if(!$selectedSource){
+                            echo "<input type=\"hidden\" name=\"user-input\" value=\"yes\" />";
+                        }
+                        ?>
+
+                        <style>
+                            .autocomplete-items {
+                                position: absolute;
+                                border: 1px solid #d4d4d4;
+                                border-bottom: none;
+                                border-top: none;
+                                z-index: 99;
+                                /*position the autocomplete items to be the same width as the container:*/
+                                top: 100%;
+                                left: 0;
+                                right: 0;
+                            }
+                            .autocomplete-items div {
+                                padding: 10px;
+                                cursor: pointer;
+                                background-color: #fff;
+                                border-bottom: 1px solid #d4d4d4;
+                            }
+                            .autocomplete-items div:hover {
+                                /*when hovering an item:*/
+                                background-color: #e9e9e9;
+                            }
+                            .autocomplete-active {
+                                /*when navigating through the items using the arrow keys:*/
+                                background-color: DodgerBlue !important;
+                                color: #ffffff;
+                            }
+                        </style>
+
+                        <div class="form-group" style="width: 100%">
+                            <div class="icons form-inline" style="height: 30px;width:40px">
+                                <div id="drop-area" class="image-icon" style="height: 30px;  width: 32px; margin-left: auto;margin-right: auto;"></div>
+                            </div>
+                            <div class="input form-inline" style="flex: 1">
                             <textarea class="form-control" type="text" placeholder="Ide írhatsz" name="message"
                                       style="width: 100%;"></textarea>
+                            </div>
+                            <input class="btn btn-outline-black" style="margin-left: 5px" value="Hozzáad" type="submit">
+
                         </div>
+
 
 
                         <input id="image" type="file" style="display: none" accept="image/png, image/jpeg, image/jpg">
@@ -325,21 +424,8 @@ $sourceCount = count($sources);
                         <input type="hidden" id="msg_id" name="msg_id"/>
 
 
-                        <button class="btn btn-outline-black" style="margin-left: 5px">Hozzáad</button>
-                        <input<?php
 
-                        if(!$selectedSource){
-                            echo " type=\"text\" placeholder=\"Címzett vagy E-mail\"";
-                        } else {
-                            echo " type=\"hidden\"";
-                        }
 
-                        ?> name="target" value="<?php echo $selectedSource; ?>" style="width:100%"> <?php
-
-                        if(!$selectedSource){
-                            echo "<input type=\"hidden\" name=\"user-input\" value=\"yes\" />";
-                        }
-                        ?>
                     </form>
 
                 </div>
@@ -347,7 +433,111 @@ $sourceCount = count($sources);
         </div>
     </div>
 </div>
-<script> function openPerson(a) {
+<script>
+    const loadedUserList = {};
+
+    function autocomplete(inp, arr) {
+        let currentFocus;
+        inp.oninput = function(e){
+            let a, b, i, val = this.value;
+            closeAllLists();
+            if (!val) { return false;}
+            currentFocus = -1;
+            /*create a DIV element that will contain the items (values):*/
+            a = document.createElement("DIV");
+            a.setAttribute("id", this.id + "autocomplete-list");
+            a.setAttribute("class", "autocomplete-items");
+            /*append the DIV element as a child of the autocomplete container:*/
+            this.parentNode.appendChild(a);
+            /*for each item in the array...*/
+            for (i = 0; i < arr.length; i++) {
+                let text = "";
+                if(typeof(arr[i]) === "string" || typeof(arr[i]) === "number" || typeof(arr[i]) === "boolean") {
+                    text = arr[i];
+                } else if(typeof(arr[i]) === "object") {
+                    if(arr[i].full_name) {
+                        text = arr[i].full_name + " (" + arr[i].username + ")";
+                        if(!loadedUserList[text]){
+                            loadedUserList[text] = arr[i].id;
+                        }
+                        if(!loadedUserList[arr[i].username]){
+                            loadedUserList[arr[i].username] = arr[i].id;
+                        }
+                    } else {
+                        text = arr[i].username;
+                        if(!loadedUserList[text]){
+                            loadedUserList[text] = arr[i].id;
+                        }
+                    }
+
+                }
+                if (text.substr(0, val.length).toUpperCase() === val.toUpperCase()) {
+                    /*create a DIV element for each matching element:*/
+                    b = document.createElement("DIV");
+                    /*make the matching letters bold:*/
+                    b.innerHTML = "<strong>" + text.substr(0, val.length) + "</strong>";
+                    b.innerHTML += text.substr(val.length);
+                    /*insert a input field that will hold the current array item's value:*/
+                    b.innerHTML += "<input type='hidden' value='" + text + "'>";
+                    /*execute a function when someone clicks on the item value (DIV element):*/
+                    b.addEventListener("click", function(e) {
+                        /*insert the value for the autocomplete text field:*/
+                        inp.value = this.getElementsByTagName("input")[0].value;
+                        /*close the list of autocompleted values,
+                        (or any other open lists of autocompleted values:*/
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                }
+            }
+        };
+        inp.onkeydown = function (e){
+            const list = document.getElementById(this.id + "autocomplete-list");
+            let x;
+            if (list) {
+                x = list.getElementsByTagName("div");
+            }
+            if (e.keyCode === 40) {
+                currentFocus++;
+                addActive(x);
+            } else if (e.keyCode === 38) {
+                currentFocus--;
+                addActive(x);
+            } else if (e.keyCode === 13) {
+                e.preventDefault();
+                if (currentFocus > -1) {
+                    if (x) x[currentFocus].click();
+                }
+            }
+        };
+        function addActive(x) {
+            if (!x) return false;
+            removeActive(x);
+            if (currentFocus >= x.length) currentFocus = 0;
+            if (currentFocus < 0) currentFocus = (x.length - 1);
+            x[currentFocus].classList.add("autocomplete-active");
+        }
+        function removeActive(x) {
+            for (let i = 0; i < x.length; i++) {
+                x[i].classList.remove("autocomplete-active");
+            }
+        }
+        function closeAllLists(elmnt) {
+            const x = document.getElementsByClassName("autocomplete-items");
+            for (let i = 0; i < x.length; i++) {
+                if (elmnt !== x[i] && elmnt !== inp) {
+                    x[i].parentNode.removeChild(x[i]);
+                }
+            }
+        }
+        /*execute a function when someone clicks in the document:*/
+        document.addEventListener("click", function (e) {
+            closeAllLists(e.target);
+        });
+
+    }
+
+    function openPerson(a) {
         location.href = location.protocol + "//" + location.host + location.pathname + "?source=" + a
     }
 
@@ -357,17 +547,44 @@ $sourceCount = count($sources);
     if(form){
         form.onsubmit = function(e){
             e.preventDefault();
-            Demiran.post("",Demiran.convertToFormEncoded(form),function(error,data){
-                if(!error){
 
+            const targetNameNode = form.querySelector("[name=target-name]");
+            const targetNode = form.querySelector("[name=target]");
+            if(targetNameNode && targetNode) {
+                const targetName = targetNameNode.value;
+                if(targetName && loadedUserList[targetName]) {
+                    targetNode.value = loadedUserList[targetName];
+                } else if(!Number.isNaN(Number.parseInt(targetName))) {
+                    targetNode.value = targetName;
                 }
-                console.log(data,error);
+            }
+
+
+            Demiran.post("",Demiran.convertToFormEncoded(form),function(error,result){
+                if(!error && result.trim() === "OK"){
+                    location.reload();
+                }
+                console.log(result,error);
             });
         }
     }
+    Demiran.call("get_user_list", "", function(error,result){
+        if(!error && result){
+            let json = null;
+            try {
+                json = JSON.parse(result);
+            }catch (e){
+                console.error(e);
+            }
+            if(Array.isArray(json)){
+                autocomplete(document.querySelector(".autocomplete input"),json);
+            }
+
+        }
+    });
     const msg_id = document.getElementById("msg_id");
     if(msg_id){
-        msg_id.value = d
+       msg_id.value = new Date().getTime();
     }
 </script>
 <?php footer(); ?>

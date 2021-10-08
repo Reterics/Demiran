@@ -28,6 +28,9 @@ if (isset($_POST['username']) && isset($connection)){
         if($row && isset($row['role'])){
             $_SESSION['role'] = $row['role'];
         }
+        if($row && isset($row['full_name'])){
+            $_SESSION['full_name'] = $row['full_name'];
+        }
         if($row && isset($row['work_time'])){
             $_SESSION['work_time'] = $row['work_time'];
         }
