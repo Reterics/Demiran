@@ -438,53 +438,49 @@ if(isset($_GET['new_message'])){
 
     function autocomplete(inp, arr) {
         let currentFocus;
+        const textList = [];
+        for (let i = 0; i < arr.length; i++) {
+            let text = "";
+            if(typeof(arr[i]) === "string" || typeof(arr[i]) === "number" || typeof(arr[i]) === "boolean") {
+                text = arr[i];
+                textList.push(text);
+            } else if(typeof(arr[i]) === "object") {
+                if(arr[i].full_name) {
+                    text = arr[i].full_name + " (" + arr[i].username + ")";
+                    if(!loadedUserList[text]){
+                        loadedUserList[text] = arr[i].id;
+                    }
+                    if(!loadedUserList[arr[i].username]){
+                        loadedUserList[arr[i].username] = arr[i].id;
+                    }
+                } else {
+                    text = arr[i].username;
+                    if(!loadedUserList[text]){
+                        loadedUserList[text] = arr[i].id;
+                    }
+                }
+                textList.push(text);
+            }
+        }
+
         inp.oninput = function(e){
             let a, b, i, val = this.value;
             closeAllLists();
             if (!val) { return false;}
             currentFocus = -1;
-            /*create a DIV element that will contain the items (values):*/
             a = document.createElement("DIV");
             a.setAttribute("id", this.id + "autocomplete-list");
             a.setAttribute("class", "autocomplete-items");
-            /*append the DIV element as a child of the autocomplete container:*/
             this.parentNode.appendChild(a);
-            /*for each item in the array...*/
-            for (i = 0; i < arr.length; i++) {
-                let text = "";
-                if(typeof(arr[i]) === "string" || typeof(arr[i]) === "number" || typeof(arr[i]) === "boolean") {
-                    text = arr[i];
-                } else if(typeof(arr[i]) === "object") {
-                    if(arr[i].full_name) {
-                        text = arr[i].full_name + " (" + arr[i].username + ")";
-                        if(!loadedUserList[text]){
-                            loadedUserList[text] = arr[i].id;
-                        }
-                        if(!loadedUserList[arr[i].username]){
-                            loadedUserList[arr[i].username] = arr[i].id;
-                        }
-                    } else {
-                        text = arr[i].username;
-                        if(!loadedUserList[text]){
-                            loadedUserList[text] = arr[i].id;
-                        }
-                    }
-
-                }
+            for (i = 0; i < textList.length; i++) {
+                const text = textList[i];
                 if (text.substr(0, val.length).toUpperCase() === val.toUpperCase()) {
-                    /*create a DIV element for each matching element:*/
                     b = document.createElement("DIV");
-                    /*make the matching letters bold:*/
                     b.innerHTML = "<strong>" + text.substr(0, val.length) + "</strong>";
                     b.innerHTML += text.substr(val.length);
-                    /*insert a input field that will hold the current array item's value:*/
                     b.innerHTML += "<input type='hidden' value='" + text + "'>";
-                    /*execute a function when someone clicks on the item value (DIV element):*/
                     b.addEventListener("click", function(e) {
-                        /*insert the value for the autocomplete text field:*/
                         inp.value = this.getElementsByTagName("input")[0].value;
-                        /*close the list of autocompleted values,
-                        (or any other open lists of autocompleted values:*/
                         closeAllLists();
                     });
                     a.appendChild(b);
