@@ -9,82 +9,6 @@ require('../config.php');
 include("./auth.php");
 require_once("./template.php");
 
-function base64_to_image($base64_string)
-{
-    //echo "Base64 data:".$base64_string."\n";
-    $output_file = "./uploads/" . round(microtime(true) * 1000);
-    $extension = "";
-
-
-    $data = explode(',', $base64_string);
-
-    if (count($data)) {
-        $new = str_replace(array("data:", ";base64"), array("", ""), $data[0]);
-        $parts = explode("/", $new);
-        if (count($parts) > 1) {
-            $extension = "." . $parts[1];
-        }
-
-        $ifp = fopen($output_file . $extension, 'wb');
-        fwrite($ifp, base64_decode($data[1]));
-
-        fclose($ifp);
-        return $output_file . $extension;
-    } else {
-        return null;
-    }
-}
-
-if (isset($_POST['target']) && isset($_POST['message']) && isset($_POST['attachment']) && ($_POST['message'] != "" || $_POST['attachment'] != "")) {
-    $source = $_SESSION['id'];
-    $target = $_POST['target'];
-
-
-    if(isset($_POST['user-input']) && $_POST['user-input'] == "yes") {
-        //In this case the target is a username or email
-        $sql = "SELECT id FROM users WHERE 'email'='".$_POST['user-input']."' OR 'username'='".$_POST['user-input']."';";
-    }
-    $msg_id = "";
-    if(isset($_POST['msg_id'])){
-        $msg_id = $_POST['msg_id'];
-    }
-
-    $message = mysqli_real_escape_string($connection, stripslashes($_POST['message']));
-    //$attachment = $_POST['attachment'];
-    /*if (isset($_FILES['attachment'])) {
-        $time = date("Ymdhis");
-        $attachment = $time . "-" .basename($_FILES['attachment']['name']);
-
-        $target = "./uploads/" . $attachment;
-
-        if (move_uploaded_file($_FILES['attachment']['tmp_name'], $target)) {
-            $msg = "Image uploaded successfully";
-        } else {
-            $msg = "Failed to upload image";
-        }
-    }*/
-    $imgTarget = "";
-    if($_POST['attachment'] != ""){
-        $imgTarget = base64_to_image($_POST['attachment']);
-    }
-
-    $create = date("Y-m-d H:i:s");
-    $query = "INSERT into `messages` (source, target, created, message, status, project, attachment, msg_id)
-VALUES ('$source', '$target', '$create', '$message', 'sent', '', '$imgTarget', '$msg_id')";
-
-    $result = mysqli_query($connection, $query);
-    if($result) {
-        echo "OK";
-    } else {
-        echo mysqli_connect_error();
-        echo $query;
-        //header('HTTP/1.1 500 Internal Server Error', true, 500);
-    }
-    die();
-    //echo $result;
-    //echo var_dump(mysqli_fetch_array($result));
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="hu">
@@ -105,8 +29,6 @@ if(isset($_SESSION['full_name']) && $_SESSION['full_name'] != "") {
     $myFullName = $_SESSION['full_name'] . " (".$_SESSION['username'].")";
 }
 
-//$senderSQL = "SELECT DISTINCT `source` FROM `messages` WHERE target=".$userID." OR `source`=".$userID.";";
-
 $senderSQL = "SELECT id, `source`, target, message, created, `status`
   FROM messages 
  WHERE id IN (
@@ -114,9 +36,6 @@ $senderSQL = "SELECT id, `source`, target, message, created, `status`
                  FROM messages 
                 GROUP BY `source`, target
              )";
-
-
-//$senderSQL = "SELECT DISTINCT `source` FROM `messages` WHERE target=".$userID." UNION ALL SELECT DISTINCT `target` FROM `messages` WHERE `source`=".$userID.";";
 
 function getUserName($id)
 {
@@ -300,7 +219,7 @@ if(isset($_GET['new_message'])){
                         if(isset($targetUser) && $targetUser != "") {
                             echo $targetUser;
                         } else {
-                            echo  "új üzenet küldése";
+                            echo  "Új üzenet küldése";
                         }
                          ?></h5>
 
@@ -556,9 +475,11 @@ if(isset($_GET['new_message'])){
             }
 
 
-            Demiran.post("",Demiran.convertToFormEncoded(form),function(error,result){
+            Demiran.call("send_new_message", Demiran.convertToFormEncoded(form),function(error,result){
                 if(!error && result.trim() === "OK"){
                     location.reload();
+                } else {
+                    Demiran.alert(result, "Hiba");
                 }
                 console.log(result,error);
             });

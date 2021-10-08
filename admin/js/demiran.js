@@ -606,7 +606,7 @@ const Demiran = {
             }
         };
 
-        background.onmousemove=()=>{
+        background.onmousemove=(event)=>{
             if(moveStarted){
                 const currentPosition = {
                     x: event.clientX,

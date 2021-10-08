@@ -311,7 +311,7 @@ function admin_header_menu(){
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="users.php?id=<?php echo $_SESSION['id'];?>">Profilom</a>
-                        <a class="dropdown-item hidden" href="messages.php">Üzenetek</a>
+                        <a class="dropdown-item" href="messages.php">Üzenetek</a>
                         <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
                             <a class="dropdown-item" href="settings.php">Beállítások</a>
                         <?php endif; ?>
