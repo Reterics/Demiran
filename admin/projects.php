@@ -21,6 +21,8 @@ require_once("./template.php");
         <script src="./js/charts/d3color.js" ></script>
         <script src="./js/charts/calendar.js" ></script>
         <script src="./js/charts/forceChart.js" ></script>
+        <script src="./js/charts/sankey.js" ></script>
+        <script src="./js/charts/sankeyChart.js" ></script>
 
     </head>
     <body>
@@ -220,10 +222,15 @@ else:
             <div class="col-md-12">
                 <div class="lio-modal">
                     <div class="header">
-                        <h5 class="title">Projekt Ábra</h5>
+                        <div style="width:100%;  padding: 0 20px;height: 24px;font-weight: 500;">
+                            <div style="width:33%;float:left; text-align: left;">Felhasználók</div>
+                            <div style="width:33%;float:left; text-align: center">Projektek</div>
+                            <div style="width:33%;float:left; text-align: end">Megrendelők</div>
+                        </div>
                     </div>
                     <div class="body" style="height: 20vh">
-                        <div id="force" style="display: flex;justify-content: center;height:100%"></div>
+
+                        <div id="force" style="height: calc(100% - 34px)"></div>
                     </div>
                 </div>
             </div>
@@ -236,9 +243,41 @@ else:
                         json = JSON.parse(result);
 
 
-                        drawForceChart({
+                        /*drawForceChart({
                             selector:"#force",
                             data:json
+                        })*/
+                        console.log(json);
+                        if(json.links && json.nodes){
+                            const nodeContainer = {};
+                            json.nodes.forEach(function(node,i){
+                                nodeContainer[node.id] = i;
+                                node._id = node.id;
+                                node.id = i;
+                            });
+
+                            json.links.forEach(function(link,i){
+                                if(typeof nodeContainer[link.target] == "number"){
+                                    link.target = nodeContainer[link.target];
+                                }
+                                if(typeof nodeContainer[link.source] == "number"){
+                                    link.source = nodeContainer[link.source];
+                                }
+                            })
+
+
+                        }
+                        drawSankeyChart({
+                            selector:"#force",
+                            data:json,
+                            fillKey: "group",
+                            fills: [
+                                "#fc8d62",
+                                "#8da0cb",
+                                "#66c2a5",
+                                "#a6d854",
+                                "#e78ac3",
+                                "#ffd92f"]
                         })
                     }catch(e){
                         console.error(e);
@@ -449,7 +488,8 @@ else:
                                                 options.forEach(function (option){
                                                     console.log(option.getAttribute("value"), user);
                                                     if(option.getAttribute("value") === user && user) {
-                                                        option.setAttribute("selected", "true");
+                                                        option.selected = true;
+                                                        //option.setAttribute("selected", "true");
                                                     }
                                                 })
                                             });
@@ -467,6 +507,7 @@ else:
                                                     Demiran.call("update_project",Demiran.convertToFormEncoded(form),function(error,result){
                                                         if(!error && result.trim() === "OK"){
                                                             Demiran.alert("Adatok mentése sikeres!");
+                                                            location.reload();
                                                         } else {
                                                             Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
                                                             console.log(result,error);

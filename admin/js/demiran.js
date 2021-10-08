@@ -114,7 +114,16 @@ const Demiran = {
             json = {};
             for (const [key, value] of formData.entries()) {
                 console.log(key, value);
-                json[key] = value;
+                if(key.endsWith("[]")){
+                    if(Array.isArray(json[key])){
+                        json[key].push(value);
+                    } else {
+                        json[key] = [value];
+                    }
+                } else {
+                    json[key] = value;
+                }
+
             }
         }
         if(!json || typeof json != "object") {
@@ -134,6 +143,12 @@ const Demiran = {
                 case "object":
                     if(!value){
                         uri+="&"+key+"=";
+                    } else if(Array.isArray(value)){
+                        let text = "";
+                        value.forEach(v=>{
+                            text+="&"+key+"="+v;
+                        });
+                        uri+=text;
                     }
                     break;
             }
@@ -890,6 +905,7 @@ const editTask = function (id, viewOnly = true) {
                                             Demiran.call("update_project_task",Demiran.convertToFormEncoded(form),function(error,result){
                                                 if(!error && result.trim() === "OK"){
                                                     Demiran.alert("Adatok mentése sikeres!");
+                                                    location.reload();
                                                 } else {
                                                     Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
                                                     console.log(result,error);

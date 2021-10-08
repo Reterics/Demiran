@@ -8,7 +8,7 @@
 
 $Demiran->add_method("get_user", function ($arguments){
     if(isset($arguments["userid"])) {
-        $sql = "SELECT id,username,email,role,image,job,details,work_time FROM users WHERE id='".$arguments["userid"]."' LIMIT 1;";
+        $sql = "SELECT id,username,full_name,email,role,image,job,details,work_time FROM users WHERE id='".$arguments["userid"]."' LIMIT 1;";
 
         $users = sqlGetFirst($sql);
         if(isset($users['work_time']) && $users['work_time'] != "") {

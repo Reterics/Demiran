@@ -7,7 +7,7 @@
  */
 
 $Demiran->add_method("get_project_flow", function ($arguments, $connection){
-    $sql = "SELECT p.id as id, p.users as users, p.price as price, p.deadline as deadline, p.category as category, p.client as client, p.title as title, u.username as client_name FROM project as p LEFT JOIN users as u ON u.id = p.client";
+    $sql = "SELECT p.id as id, p.users as users, p.price as price, p.deadline as deadline, p.category as category, p.client as client, p.title as title, u.full_name as client_name FROM project as p LEFT JOIN users as u ON u.id = p.client";
 
     $userList = [];
     $projectList = [];
@@ -54,7 +54,7 @@ $Demiran->add_method("get_project_flow", function ($arguments, $connection){
                 array_push($graph['links'], $link);
             }
         }
-        $sql = "SELECT id,username FROM users WHERE id IN (".implode(",", $userList).")";
+        $sql = "SELECT id,full_name as username FROM users WHERE id IN (".implode(",", $userList).")";
         $query = mysqli_query($connection,$sql);
         if ($query) {
             while ($row = mysqli_fetch_array($query)) {

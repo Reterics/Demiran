@@ -16,14 +16,16 @@ require_once('config.php');
 headerHTML();
 if (isset($_REQUEST['username'])) {
     $username = stripslashes($_REQUEST['username']);
+    $full_name = stripslashes($_REQUEST['full_name']);
     $username = mysqli_real_escape_string($connection, $username);
+    $full_name = mysqli_real_escape_string($connection, $full_name);
     $email = stripslashes($_REQUEST['email']);
     $email = mysqli_real_escape_string($connection, $email);
     $password = stripslashes($_REQUEST['password']);
     $password = mysqli_real_escape_string($connection, $password);
     $trn_date = date("Y-m-d H:i:s");
-    $query = "INSERT into `users` (username, password, email, trn_date, role, image, job, details)
-VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', 'member', '', '', '')";
+    $query = "INSERT into `users` (username, full_name, password, email, trn_date, role, image, job, details)
+VALUES ('$username', '$full_name', '" . md5($password) . "', '$email', '$trn_date', 'member', '', '', '')";
     $result = mysqli_query($connection, $query);
     if ($result) {
         echo "<div class='form'>
@@ -45,6 +47,9 @@ VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', 'member', 
                 <h1>Regisztráció</h1>
                 <label>Felhasználói név:
                     <input type="text" class="form-control" name="username" id="username" placeholder="Felhasználói név"
+                           required/></label>
+                <label>Teljes név:
+                    <input type="text" class="form-control" name="full_name" id="full_name" placeholder="Teljes név"
                            required/></label>
                 <label>E-mail
                     <input type="text" class="form-control" name="email" placeholder="Email"></label>

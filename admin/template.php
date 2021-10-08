@@ -59,21 +59,30 @@ function getUsersByIDs($array){
 
 function getClientsAsOptions(){
     global $connection;
-    $sql = "SELECT id,username FROM users WHERE role = 'client'";
+    $sql = "SELECT id,username,full_name FROM users WHERE role = 'client'";
     $result = mysqli_query($connection, $sql);
     $html = "";
     while ($row = mysqli_fetch_array($result)) {
-        $html .= "<option value='".$row['id']."'>".$row['username']."</option>";
+        if(isset($row['full_name']) && $row['full_name'] != ""){
+            $html .= "<option value='".$row['id']."'>".$row['full_name']."</option>";
+        } else {
+            $html .= "<option value='".$row['id']."'>".$row['username']."</option>";
+        }
     }
     return $html;
 }
 function geUsersAsOptions(){
     global $connection;
-    $sql = "SELECT id,username FROM users WHERE role != 'client'";
+    $sql = "SELECT id,username,full_name FROM users WHERE role != 'client'";
     $result = mysqli_query($connection, $sql);
     $html = "";
     while ($row = mysqli_fetch_array($result)) {
-        $html .= "<option value='".$row['id']."'>".$row['username']."</option>";
+        if(isset($row['full_name']) && $row['full_name'] != ""){
+            $html .= "<option value='".$row['id']."'>".$row['full_name']."</option>";
+        } else {
+            $html .= "<option value='".$row['id']."'>".$row['username']."</option>";
+        }
+
     }
     return $html;
 }

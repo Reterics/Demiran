@@ -40,6 +40,7 @@ if(isset($_POST['add_tables']) && isset($_POST['db_name']) && isset($_POST['data
             $addTable = "CREATE TABLE IF NOT EXISTS `users` (
          `id` int(11) NOT NULL AUTO_INCREMENT,
          `username` varchar(50) NOT NULL,
+         `full_name` varchar(50) NOT NULL,
          `email` varchar(50) NOT NULL,
          `password` varchar(50) NOT NULL,
          `role` varchar(50) NOT NULL,

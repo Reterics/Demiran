@@ -41,6 +41,11 @@ $Demiran->add_method("add_user", function ($arguments, $connection, $files){
         $work_time = $arguments['work_time'];
     }
 
+    $full_name = "";
+    if (isset($arguments['full_name'])) {
+        $full_name = $arguments['full_name'];
+    }
+
     if (isset($files['image'])) {
 
         $time = date("Ymdhis");
@@ -59,8 +64,8 @@ $Demiran->add_method("add_user", function ($arguments, $connection, $files){
         }
     }
 
-    $query = "INSERT into `users` (username, password, email, trn_date, role, image, job, details, work_time)
-VALUES ('$username', '" . md5($password) . "', '$email', '$trn_date', '$role', '$image', '$job', '', '$work_time')";
+    $query = "INSERT into `users` (username, full_name, password, email, trn_date, role, image, job, details, work_time)
+VALUES ('$username', '$full_name', '" . md5($password) . "', '$email', '$trn_date', '$role', '$image', '$job', '', '$work_time')";
 
     $result = mysqli_query($connection, $query);
     if ($result) {

@@ -370,6 +370,10 @@ else:
                             <input type="text" class="form-control" name="username" id="username"
                                    placeholder="Felhasználói név" required/></label>
 
+                            <label for="full_name">Teljes Név
+                            <input type="text" class="form-control" name="full_name" id="full_name"
+                                   placeholder="Teljes név" required/></label>
+
                             <label for="email">E-mail
                             <input type="text" class="form-control" name="email" id="email" placeholder="Email"></label>
 
@@ -458,6 +462,7 @@ else:
                                     const imageInput = cln.querySelector("#file-selector");
                                     const imageDropArea = cln.querySelector("#drop-area");
                                     const username = cln.querySelector("#username");
+                                    const full_name = cln.querySelector("#full_name");
                                     const email = cln.querySelector("#email");
                                     const role = cln.querySelector("#role");
                                     const fromNode = cln.querySelector("#from");
@@ -471,13 +476,14 @@ else:
                                     if(imageDropArea){
                                         imageDropArea.outerHTML = "";
                                     }
-                                    if(username && email && role && fromNode && to && job) {
+                                    if(username && email && role && fromNode && to && job && full_name) {
                                         username.value = json.username;
                                         email.value = json.email;
                                         role.value = json.role;
                                         fromNode.value = json.from;
                                         to.value = json.to;
                                         job.value = json.job;
+                                        full_name.value = json.full_name;
                                     }
                                     const popup = Demiran.openPopUp(json.username, cln, [
                                         {
@@ -499,6 +505,7 @@ else:
                                                 Demiran.call("update_user",Demiran.convertToFormEncoded(form),function(error,result){
                                                     if(!error && result.trim() === "OK"){
                                                         Demiran.alert("Adatok mentése sikeres!");
+                                                        location.reload();
                                                     } else {
                                                         Demiran.alert("Hiba merült fel! Kérlek ellenőrizd a konzolt...", "Hiba");
                                                         console.log(result,error);

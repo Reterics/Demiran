@@ -51,7 +51,11 @@ $Demiran->add_method("update_user", function ($arguments, $connection, $files){
     if (isset($arguments['work_time'])) {
         $work_time = $arguments['work_time'];
     }
-    $query .= ", role='".$role."', job='".$job."', work_time='".$work_time."'";
+    $full_name = "";
+    if (isset($arguments['full_name'])) {
+        $full_name = $arguments['full_name'];
+    }
+    $query .= ", role='".$role."', job='".$job."', work_time='".$work_time."', full_name='".$full_name."'";
 
     $query .= "WHERE id='".$arguments['id']."'";
 
