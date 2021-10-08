@@ -33,6 +33,29 @@ require_once "process.php";
 $search = array(" 00:00:00");
 $replace = array("");
 
+$translate_from = array(
+    "open",
+    "in_progress",
+    "review",
+    "closed",
+    "medium",
+    "low",
+    "high",
+    "fixed",
+    "time-based"
+);
+$translate_to = array(
+    "Nyitott",
+    "Folyamatban",
+    "Átnézésre vár",
+    "Lezárva",
+    "Normál",
+    "Alacsony",
+    "Magas",
+    "Fix",
+    "Időarányos"
+);
+
 if (isset($_GET['id'])):
 
     $sql = "SELECT * FROM project WHERE id='".$_GET['id']."';";
@@ -69,29 +92,8 @@ if (isset($_GET['id'])):
                                 <tr><td>Felhasználók</td><td class='users'><?php setUserIconSpan(selectUserFromArray($result['users'], $userData)); ?></td></tr>
                                 <tr><td>Kategóriák</td><td><?php echo $result['category']  ?></td></tr>
                                 <tr><td>Megrendelő</td><td class='client'><?php setUserIconSpan(selectUserFromArray($result['client'], $userData))  ?></td></tr>
-                                <tr><td>Státusz</td><td><?php
-                                        $translate_from = array(
-                                            "open",
-                                            "in_progress",
-                                            "review",
-                                            "closed",
-                                            "medium",
-                                            "low",
-                                            "high",
-                                        );
-                                        $translate_to = array(
-                                            "Nyitott",
-                                            "Folyamatban",
-                                            "Átnézésre vár",
-                                            "Lezárva",
-                                            "Normál",
-                                            "Alacsony",
-                                            "Magas",
-                                        );
-
-
-                                        echo str_replace($translate_from, $translate_to, $result['status']);  ?></td></tr>
-                                <tr><td>Számlázás</td><td><?php echo $result['billing']  ?></td></tr>
+                                <tr><td>Státusz</td><td><?php echo str_replace($translate_from, $translate_to, $result['status']);  ?></td></tr>
+                                <tr><td>Számlázás</td><td><?php echo str_replace($translate_from, $translate_to, $result['billing']);  ?></td></tr>
                                 <tr><td>Ár</td><td><?php echo $result['price'] ?></td></tr>
 
                                 <tr><td>Készült</td><td><?php echo $result['created']  ?></td></tr>
@@ -150,24 +152,6 @@ if (isset($_GET['id'])):
 
                                         <?php
 
-                                        $translate_from = array(
-                                            "open",
-                                            "in_progress",
-                                            "review",
-                                            "closed",
-                                            "medium",
-                                            "low",
-                                            "high",
-                                        );
-                                        $translate_to = array(
-                                            "Nyitott",
-                                            "Folyamatban",
-                                            "Átnézésre vár",
-                                            "Lezárva",
-                                            "Normál",
-                                            "Alacsony",
-                                            "Magas",
-                                        );
 
 
                                         echo str_replace($translate_from, $translate_to,$row['state']); ?>
@@ -329,6 +313,8 @@ else:
                             $whereClause = "WHERE client='".$currentUserId."' ";
                         } else if($_SESSION['role'] != 'owner' && $_SESSION['role'] != 'admin' && $_SESSION['role'] != 'client'){
                             $whereClause = "WHERE users LIKE '".$currentUserId.",%'	OR users LIKE '%,".$currentUserId."' OR users LIKE ',".$currentUserId.",'";
+                            $row['billing'] = "-";
+                            $row['price'] = "-";
                         }
                         $projects_sql = "SELECT id,users,title,category,client,status,billing,price,created,start_time,deadline,`order` FROM project ".$whereClause."LIMIT 100;";
 
@@ -347,8 +333,8 @@ else:
                                    </div>
                                 <div class="category"><?php echo $row['category'] ?></div>
                                 <div class="client"><?php setUserIconSpan(selectUserFromArray($row['client'], $userData)) ?></div>
-                                <div class="status"><?php echo $row['status'] ?></div>
-                                <div class="billing"><?php echo $row['billing'] ?></div>
+                                <div class="status"><?php echo str_replace($translate_from, $translate_to, $row['status']);  ?></div>
+                                <div class="billing"><?php echo str_replace($translate_from, $translate_to, $row['billing']);  ?></div>
                                 <div class="price"><?php echo $row['price'] ?></div>
                                 <div class="date long"><?php echo str_replace($search,$replace,$row['deadline']) ?></div>
                                 <div class="actions">
