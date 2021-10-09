@@ -29,13 +29,7 @@ if(isset($_SESSION['full_name']) && $_SESSION['full_name'] != "") {
     $myFullName = $_SESSION['full_name'] . " (".$_SESSION['username'].")";
 }
 
-$senderSQL = "SELECT id, `source`, target, message, created, `status`
-  FROM messages 
- WHERE id IN (
-               SELECT MAX(id)
-                 FROM messages 
-                GROUP BY `source`, target
-             )";
+$senderSQL = "SELECT id, `source`, target, message, created, `status` FROM messages  WHERE id IN ( SELECT MAX(id) FROM messages GROUP BY `source`, target )";
 
 function getUserName($id)
 {
@@ -228,7 +222,6 @@ if(isset($_GET['new_message'])){
 
                     <?php
 
-
                     if($messagesCount != 0){
                         foreach (array_reverse($messages) as $message) {
                             if ($userID == $message['source']) {
@@ -295,35 +288,6 @@ if(isset($_GET['new_message'])){
                         }
                         ?>
 
-                        <style>
-                            .autocomplete-items {
-                                position: absolute;
-                                border: 1px solid #d4d4d4;
-                                border-bottom: none;
-                                border-top: none;
-                                z-index: 99;
-                                /*position the autocomplete items to be the same width as the container:*/
-                                top: 100%;
-                                left: 0;
-                                right: 0;
-                            }
-                            .autocomplete-items div {
-                                padding: 10px;
-                                cursor: pointer;
-                                background-color: #fff;
-                                border-bottom: 1px solid #d4d4d4;
-                            }
-                            .autocomplete-items div:hover {
-                                /*when hovering an item:*/
-                                background-color: #e9e9e9;
-                            }
-                            .autocomplete-active {
-                                /*when navigating through the items using the arrow keys:*/
-                                background-color: DodgerBlue !important;
-                                color: #ffffff;
-                            }
-                        </style>
-
                         <div class="form-group" style="width: 100%">
                             <div class="icons form-inline" style="height: 30px;width:40px">
                                 <div id="drop-area" class="image-icon" style="height: 30px;  width: 32px; margin-left: auto;margin-right: auto;"></div>
@@ -355,7 +319,7 @@ if(isset($_GET['new_message'])){
 <script>
     const loadedUserList = {};
 
-    function autocomplete(inp, arr) {
+    function name_autocomplete(inp, arr) {
         let currentFocus;
         const textList = [];
         for (let i = 0; i < arr.length; i++) {
@@ -474,7 +438,6 @@ if(isset($_GET['new_message'])){
                 }
             }
 
-
             Demiran.call("send_new_message", Demiran.convertToFormEncoded(form),function(error,result){
                 if(!error && result.trim() === "OK"){
                     location.reload();
@@ -494,7 +457,7 @@ if(isset($_GET['new_message'])){
                 console.error(e);
             }
             if(Array.isArray(json)){
-                autocomplete(document.querySelector(".autocomplete input"),json);
+                name_autocomplete(document.querySelector(".autocomplete input"),json);
             }
 
         }

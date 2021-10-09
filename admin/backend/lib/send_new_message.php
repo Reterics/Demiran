@@ -10,6 +10,10 @@ $Demiran->add_method("send_new_message", function ($arguments, $connection){
     function base64_to_image($base64_string)
     {
         //echo "Base64 data:".$base64_string."\n";
+
+        if(!file_exists("./uploads")) {
+            mkdir("./uploads");
+        }
         $output_file = "./uploads/" . round(microtime(true) * 1000);
         $extension = "";
 
