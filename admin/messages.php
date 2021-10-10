@@ -84,7 +84,6 @@ if(isset($_GET['new_message'])){
     $new_message = true;
 }
 
-
 ?>
 
 <div class="top_outer_div">
@@ -218,7 +217,7 @@ if(isset($_GET['new_message'])){
                          ?></h5>
 
                 </div>
-                <div class="body messages-list" style="max-height: 50vh;overflow-y: scroll;    min-height: 75px;padding:5px">
+                <div class="body messages-list" style="max-height: 50vh;overflow-y: scroll; min-height: 75px;padding:5px">
 
                     <?php
 

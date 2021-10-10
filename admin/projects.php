@@ -576,8 +576,8 @@ endif;
             <div class="header">
                 <h5 class="title">Naptár</h5>
             </div>
-            <div class="body" style="height:20vh">
-                <div class="v" style="display: flex;justify-content: center;"></div>
+            <div class="body calendar_parent" style="height:20vh">
+                <div class="calendar_chart" style="display: flex;justify-content: center;"></div>
             </div>
         </div>
     </div>
@@ -609,7 +609,7 @@ endif;
             }
         });
         drawCalendar2({
-            selector:".v",
+            selector:".calendar_chart",
             data:inputData
 
         })
