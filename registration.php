@@ -7,9 +7,9 @@ require_once('config.php');
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <title>Regisztrációs űrlap</title>
+    <title>Regisztrációs űrlap - Demiran</title>
     <link rel="stylesheet" href="style.css"/>
-    <?php head(); ?>
+    <?php head("Regisztrációs űrlap - Demiran"); ?>
 </head>
 <body>
 <?php

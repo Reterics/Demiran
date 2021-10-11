@@ -14,10 +14,10 @@ require_once("./template.php");
 <html lang="hu">
 <head>
     <meta charset="utf-8">
-    <title>Beállítások</title>
+    <title>Beállítások - Demiran</title>
     <link rel="stylesheet" href="./css/leaflet.css"/>
 
-    <?php admin_head(); ?>
+    <?php admin_head("Beállítások - Demiran"); ?>
     <script src="./js/leaflet.js"></script>
     <script src="./js/map.js"></script>
 </head>
@@ -88,7 +88,7 @@ require_once "process.php";
                             </div>
                         </div>
 
-                        <script type="text/javascript">
+                        <script type="application/javascript">
                             const tzStrings = [
                                 {"label":"(GMT-12:00) International Date Line West","value":"Etc/GMT+12"},
                                 {"label":"(GMT-11:00) Midway Island, Samoa","value":"Pacific/Midway"},
@@ -282,7 +282,7 @@ require_once "process.php";
 
                         const addIP = document.querySelector(".add-ip");
                         if(addIP){
-                            console.log(addIP);
+                            //console.log(addIP);
                             const id = addIP.id.replace("add-","");
                             addIP.onclick = function(){
                                 const element = document.querySelector("#id-"+id);
@@ -524,7 +524,7 @@ require_once "process.php";
 
     </div>
     </div>
-    <script type="text/javascript">
+    <script type="application/javascript">
         const tabParent = document.querySelector(".lio-vertical-tabs");
         if (tabParent) {
             const modals = tabParent.querySelectorAll(".lio-modal");

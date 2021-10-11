@@ -5,9 +5,9 @@ require_once('config.php');
 <html lang="hu">
 <head>
     <meta charset="UTF-8">
-    <title>Bejelentkezés</title>
+    <title>Bejelentkezés - Demiran</title>
     <link rel="stylesheet" href="style.css" />
-    <?php head(); ?>
+    <?php head("Bejelentkezés - Demiran"); ?>
 </head>
 <body>
 <?php
@@ -46,7 +46,7 @@ if (isset($_POST['username']) && isset($connection)){
     echo "<style>div.message{display: none}</style>";
 }
 
-    ?>
+?>
 <div class="row" style="justify-content: center; margin-top: 20vh">
     <div class="col-md-6">
         <div class="logo">
@@ -57,9 +57,9 @@ if (isset($_POST['username']) && isset($connection)){
               style="    text-align: center;    max-width: 440px;margin-left: auto;margin-right: auto">
             <h1>Bejelentkezés</h1>
             <label>Felhasználói név:
-            <input type="text" class="form-control" name="username" placeholder="Felhasználói név" autofocus></label>
+            <input type="text" class="form-control" name="username" placeholder="Felhasználói név" autofocus autocomplete="on"></label>
             <label>Jelszó:
-            <input type="password" class="form-control" name="password" placeholder="Jelszó"></label>
+            <input type="password" class="form-control" name="password" placeholder="Jelszó" autocomplete="on"></label>
             <input id="geo_string" type="hidden" class="form-control" name="geo_string" value="">
             <input type="submit" value="Bejelentkezés" name="submit" class="btn btn-outline-black" >
 

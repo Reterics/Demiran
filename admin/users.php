@@ -8,8 +8,8 @@ require_once("./template.php");
     <html lang="hu">
     <head>
         <meta charset="utf-8">
-        <title>Users - Secured Page</title>
-        <?php admin_head(); ?>
+        <title>Felhasználók - Demiran</title>
+        <?php admin_head("Felhasználók - Demiran"); ?>
     </head>
 <body>
 <?php
@@ -37,17 +37,18 @@ if (isset($_GET['id'])):
                                 <?php echo $result['username']; ?></h5>
                         </div>
                         <div class="body">
-                            <?php if(isset($result['image']) && $result['image'] != ""): ?>
-                            <img <?php
 
-                            if(file_exists('./uploads/'.$result['image'])){
-                                echo 'src="./uploads/'.$result['image'].'"';
+                            <?php if(isset($result['image']) && $result['image'] != ""): ?>
+                            <div style="text-align: center;"><img <?php
+
+                            if(file_exists($result['image'])){
+                                echo 'src="'.$result['image'].'"';
                             } else {
                                 echo 'src=""';
                             }
 
                             ?> alt="profile-picture"
-                                 style=" width: 100%;">
+                                 style="     max-height: 200px;max-width: 100%;width: auto;"></div>
                             <?php
                             endif;
                             echo "<table class='table'>";
@@ -392,7 +393,8 @@ else:
                                    accept=".jpg, .jpeg, .png"></label>
 
                             <div id="drop-area" style="width: 100%; height: 100px; "></div>
-                            <input type="text" style="display:none;" id="image" name="adduser">
+                            <input type="text" style="display:none;" id="image" name="attachment">
+                            <input type="hidden" value="true" name="adduser">
 
 
                             <label for="role">Szerep

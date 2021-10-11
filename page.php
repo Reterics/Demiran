@@ -15,7 +15,7 @@ require_once "config.php";
     <title>Oldalak</title>
     <link rel="stylesheet" href="./style.css"/>
 
-    <?php head(); ?>
+    <?php head("Oldalak - Demiran"); ?>
 </head>
 <body>
 <?php headerHTML(); ?>

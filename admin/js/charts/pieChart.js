@@ -51,7 +51,7 @@ const drawPieChart = function (options) {
 
     function update(val = this.value) {
         // Join new data
-        console.log(val);
+        //console.log(val);
         const path = svg.selectAll("path")
             .data(pie(data));
 

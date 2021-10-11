@@ -178,8 +178,22 @@ function load_tiny_mce(){
     <!--<script src="./js/jquery-ui.min.js" rel="script" ></script>-->
     <?php
 }
-function admin_head(){
 
+function load_scripts($scriptList){
+    echo "<script type='application/javascript'>";
+    if(is_array($scriptList)){
+        foreach($scriptList as $script){
+            if(file_exists($script)) {
+                echo "\n".file_get_contents($script)."\n";
+            }
+        }
+    }
+    echo "</script>";
+}
+
+function admin_head($title){
+    favicon_meta();
+    meta_tags($title);
     echo "<style type='text/css'>".
         file_get_contents("./css/bootstrap.min.css").
         "\n".
@@ -195,7 +209,7 @@ function admin_head(){
     ?>
 
     <!-- <script src="./js/demiran.js"></script> -->
-    <script type="text/javascript">
+    <script type="application/javascript">
         <?php echo file_get_contents("./js/demiran.js"); ?>
         const navigate = function (url) {
             location.href = url;
@@ -747,7 +761,7 @@ function add_task_form($project_id = null){
         </form>
 
     </div>
-    <script type="text/javascript">
+    <script type="application/javascript">
         const addTaskButton = document.querySelector(".addTask");
         if(addTaskButton){
             addTaskButton.onclick = function () {

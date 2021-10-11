@@ -15,8 +15,8 @@ require_once("./template.php");
 <html lang="hu">
 <head>
     <meta charset="utf-8">
-    <title>Oldalak</title>
-    <?php admin_head(); ?>
+    <title>Feladatok - Demiran</title>
+    <?php admin_head("Feladatok - Demiran"); ?>
 </head>
 <body>
 <?php

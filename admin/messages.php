@@ -14,8 +14,8 @@ require_once("./template.php");
 <html lang="hu">
 <head>
     <meta charset="utf-8">
-    <title>Üzenetek</title>
-    <?php admin_head(); ?>
+    <title>Üzenetek - Demiran</title>
+    <?php admin_head("Üzenetek - Demiran"); ?>
 </head>
 <body>
 <?php
@@ -229,7 +229,7 @@ if(isset($_GET['new_message'])){
                                     <span class='message-title'><?php echo $myFullName; ?></span>
                                     <div class='message-box'><?php echo $message['message']; ?></div>
                                     <?php if(isset($message['attachment']) && $message['attachment'] != ""){
-                                        echo "<div class='message-box'><img alt='' src='".$message['attachment']."' height='300' /></div>";
+                                        echo "<div class='message-box'><img alt='' src='".$message['attachment']."' height='200' /></div>";
                                     } ?>
 
                                 </div>
@@ -240,7 +240,7 @@ if(isset($_GET['new_message'])){
                                     <span class='message-title'><?php echo $targetUser; ?></span>
                                     <div class='message-box'><?php echo $message['message']; ?></div>
                                     <?php if(isset($message['attachment']) && $message['attachment'] != ""){
-                                        echo "<div class='message-box'><img alt='' src='".$message['attachment']."' height='300' /></div>";
+                                        echo "<div class='message-box'><img alt='' src='".$message['attachment']."' height='200' /></div>";
                                     } ?>
                                 </div>
                                 <?php
@@ -356,11 +356,38 @@ if(isset($_GET['new_message'])){
             this.parentNode.appendChild(a);
             for (i = 0; i < textList.length; i++) {
                 const text = textList[i];
+                let statement = false;
+                let content = "";
+                // If name starts with
                 if (text.substr(0, val.length).toUpperCase() === val.toUpperCase()) {
+                    statement = true;
+                    content = "<strong>" + text.substr(0, val.length) + "</strong>";
+                    content += text.substr(val.length);
+                    content += "<input type='hidden' value='" + text + "'>";
+                } else if(text.toLowerCase().includes("("+val.toLowerCase())) {
+                    // Username startsWith
+                    statement = true;
+
+                    const parts = text.split("(");
+                    content = parts[0];
+                    content += "(<strong>"+val+"</strong>";
+                    content += parts[1].substr(val.length)+")";
+                    content += "<input type='hidden' value='" + text + "'>";
+                } else if(text.toLowerCase().includes(val.toLowerCase()+")")) {
+                    // Username endsWith
+                    statement = true;
+
+                    const splitPosition = text.length - (val.length + 1);
+                    content = text.substr(0, splitPosition);
+                    content += "<strong>"+text.substr(splitPosition)+"</strong>";
+                    content += "<input type='hidden' value='" + text + "'>";
+                }
+                if (statement) {
                     b = document.createElement("DIV");
-                    b.innerHTML = "<strong>" + text.substr(0, val.length) + "</strong>";
+                    b.innerHTML = content;
+                    /*b.innerHTML = "<strong>" + text.substr(0, val.length) + "</strong>";
                     b.innerHTML += text.substr(val.length);
-                    b.innerHTML += "<input type='hidden' value='" + text + "'>";
+                    b.innerHTML += "<input type='hidden' value='" + text + "'>";*/
                     b.addEventListener("click", function(e) {
                         inp.value = this.getElementsByTagName("input")[0].value;
                         closeAllLists();

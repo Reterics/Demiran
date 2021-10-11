@@ -18,7 +18,7 @@ $Demiran->add_method("upload_sql", function ($arguments, $connection){
                 strpos($sql_content, "INSERT INTO") !== false ) {
                 $result = mysqli_multi_query($connection, $sql_content);
                 if($result){
-                    echo "<script type=\"text/javascript\">window.addEventListener(\"load\", ()=>{Demiran.alert(\"Feltöltés sikeres!\")});</script>";
+                    echo "<script type=\"application/javascript\">window.addEventListener(\"load\", ()=>{Demiran.alert(\"Feltöltés sikeres!\")});</script>";
                 }
             }
         }

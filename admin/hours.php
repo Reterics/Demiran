@@ -8,8 +8,8 @@ require_once("./template.php");
 <html lang="hu">
 <head>
     <meta charset="utf-8">
-    <title>Users - Secured Page</title>
-    <?php admin_head(); ?>
+    <title>Óraszámok - Demiran</title>
+    <?php admin_head("Óraszámok - Demiran"); ?>
 </head>
 <body>
 

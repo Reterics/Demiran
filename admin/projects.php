@@ -15,15 +15,20 @@ require_once("./template.php");
     <html lang="hu">
     <head>
         <meta charset="utf-8">
-        <title>Projektek - Secured Page</title>
-        <?php admin_head(); ?>
-        <script src="./js/charts/d3v5.js" ></script>
-        <script src="./js/charts/d3color.js" ></script>
-        <script src="./js/charts/calendar.js" ></script>
-        <script src="./js/charts/forceChart.js" ></script>
-        <script src="./js/charts/sankey.js" ></script>
-        <script src="./js/charts/sankeyChart.js" ></script>
-
+        <title>Projektek - Demiran</title>
+        <?php
+        admin_head("Projektek - Demiran");
+        load_scripts(
+            array(
+                "./js/charts/d3v5.js",
+                "./js/charts/d3color.js",
+                "./js/charts/calendar.js",
+                "./js/charts/forceChart.js",
+                "./js/charts/sankey.js",
+                "./js/charts/sankeyChart.js"
+            )
+        );
+        ?>
     </head>
     <body>
 <?php
@@ -230,7 +235,7 @@ else:
                             selector:"#force",
                             data:json
                         })*/
-                        console.log(json);
+                        //console.log(json);
                         if(json.links && json.nodes){
                             const nodeContainer = {};
                             json.nodes.forEach(function(node,i){
@@ -582,14 +587,14 @@ endif;
         </div>
     </div>
 </div>
-<script type="text/javascript">
+<script type="application/javascript">
     Demiran.call("get_project_times", 'get_project_times=true<?php
         if(isset($_GET['id'])) {
             echo "&filter_project=".$_GET['id'];
         }
         ?>', function (e, result) {
         //console.log(result);
-        console.log(JSON.parse(result));
+        //console.log(JSON.parse(result));
         const data = JSON.parse(result);
         const inputData = [];
         data.forEach(function(d){

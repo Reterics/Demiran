@@ -32,8 +32,8 @@ const drawLineChart = function (options) {
 
     const x = d3.scaleTime().range([0, innerWidth]);
     x.domain([inputData[0][dateKey], inputData[inputData.length-1][dateKey]]);
-    console.log("Domain: ", [inputData[0][dateKey], inputData[inputData.length-1][dateKey]]);
-    console.log("Width: ", innerWidth);
+    //console.log("Domain: ", [inputData[0][dateKey], inputData[inputData.length-1][dateKey]]);
+    //console.log("Width: ", innerWidth);
 
     const y = d3.scaleLinear().range([innerHeight, 0]);
 

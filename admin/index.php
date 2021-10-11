@@ -8,17 +8,22 @@ require_once("./template.php");
 <html lang="hu">
 <head>
     <meta charset="utf-8">
-    <title>Dashboard - Secured Page</title>
+    <title>Kezdőlap - Demiran</title>
     <link rel="stylesheet" href="./css/leaflet.css"/>
-    <?php admin_head(); ?>
-    <script src="./js/leaflet.js"></script>
-    <script src="./js/map.js"></script>
-    <script src="./js/charts/d3v5.js" ></script>
-
-    <script src="./js/charts/calendar.js" ></script>
-    <script src="./js/charts/lineChart.js" ></script>
-    <script src="./js/charts/barChart.js" ></script>
-    <script src="./js/charts/pieChart.js" ></script>
+    <?php
+    admin_head("Kezdőlap - Demiran");
+    load_scripts(
+            array(
+                "./js/leaflet.js",
+                "./js/map.js",
+                "./js/charts/d3v5.js",
+                "./js/charts/calendar.js",
+                "./js/charts/lineChart.js",
+                "./js/charts/barChart.js",
+                "./js/charts/pieChart.js"
+            )
+    );
+    ?>
 </head>
 <body>
 
@@ -69,7 +74,7 @@ $ip = getIPAddress();
     } else {echo "12";}?>">
         <div class="lio-modal">
             <div class="header">
-                <h3>Vezérlőpult</h3>
+                <h5>Vezérlőpult</h5>
             </div>
             <div class="body">
                 <p>IP címed: <?php echo $ip; ?>  </p>
@@ -87,7 +92,7 @@ $ip = getIPAddress();
     <div class="col-sm-6">
         <div class="lio-modal">
             <div class="header">
-                <h3>Projekt Kategóriák</h3>
+                <h5>Projekt Kategóriák</h5>
             </div>
             <div id="pieChartDiv" class="body">
                 <div class="console">
@@ -203,7 +208,7 @@ $ip = getIPAddress();
                     let lineChartData = [];
                     let pieChartData = [];
                     let currentPrice = 0;
-                    console.log(json);
+                    //console.log(json);
                     json.push({
                         deadline: new Date().getTime(),
                         price: 0

@@ -25,21 +25,22 @@ function info($title, $content) {
     print "<br><strong>".$title.":</strong>".$content;
 }
 
-function head(){
-    ?>
+function head($title){
+    favicon_meta();
+    meta_tags($title);
+?>
     <link href="./admin/css/bootstrap.min.css" rel="stylesheet">
     <link href="./admin/css/product.css" rel="stylesheet">
     <link href="./admin/css/jquery-ui.min.css" rel="stylesheet">
-    <script src="./admin/js/jquery.min.js" rel="script" ></script>
+    <script src="./admin/js/jquery.min.js" rel="script"></script>
 
-    <script src="./admin/js/bootstrap.js" rel="script" ></script>
+    <script src="./admin/js/bootstrap.js" rel="script"></script>
 
-    <?php
+<?php
 }
 
 function headerHTML(){
-    ?>
-
+?>
 <header class="main">
     <nav class="navbar navbar-expand-lg navbar-dark" ><a
             class="navbar-brand" href="#">
@@ -122,6 +123,45 @@ function footer(){
         <p style="    font-size: 12px;"> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
     </div>
 </footer>
-
 <?php
+}
+
+function favicon_meta(){
+    ?>
+    <link rel="apple-touch-icon" sizes="57x57" href="/admin/img/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="/admin/img/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/admin/img/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="/admin/img/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="/admin/img/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/admin/img/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/admin/img/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/admin/img/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/admin/img/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="/admin/img/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/admin/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="/admin/img/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/admin/img/favicon-16x16.png">
+    <link rel="manifest" href="/manifest.json">
+<?php
+}
+
+function meta_tags($titleOutside){
+    $title = "Demiran Projektmenedzsment Szoftver";
+    if(isset($titleOutside) && $titleOutside != "") {
+        $title = $titleOutside;
+    }
+    $description = "Demiran segít kezelni a Projekteket, a Csapatot, a Megrendelőket, és óraszámokat egy helyen.";
+    //$keywords = "";
+?><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="author" content="Attila Reterics" />
+    <meta name="description" content="<?php echo $description; ?>">
+
+    <meta property="og:description" content="<?php echo $description; ?>" />
+    <meta property="og:title" content="<?php echo $title; ?>" />
+    <meta property="og:locale" content="hu_HU" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Demiran" />
+
+    <?php
 }

@@ -15,8 +15,8 @@ require_once("./template.php");
     <html lang="hu">
     <head>
         <meta charset="utf-8">
-        <title>Oldal Szerkesztése</title>
-        <?php admin_head(); load_tiny_mce();?>
+        <title>Oldal Szerkesztése - Demiran</title>
+        <?php admin_head("Oldal Szerkesztése - Demiran"); load_tiny_mce();?>
     </head>
     <body>
 <?php
@@ -102,7 +102,7 @@ if(isset($_POST['details'])){
 ?>
 </textarea>
 
-                            <script type="text/javascript">tinymce.init({
+                            <script type="application/javascript">tinymce.init({
                                     selector: 'textarea',
                                     height: 500,
                                     plugins: [
