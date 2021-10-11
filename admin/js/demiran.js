@@ -937,3 +937,25 @@ const editTask = function (id, viewOnly = true) {
     }
     //Demiran.alert('Ez a funckió nincs implementálva az MVPben');
 };
+
+const applyTheme = function(themeName){
+    const availableStyle = document.getElementById("loadedTheme");
+    if(!availableStyle && themeName !== "themeName"){
+        const style = document.createElement("link");
+        style.setAttribute("rel", "stylesheet");
+        style.setAttribute("id", "loadedTheme");
+        style.setAttribute("href", "./css/theme-"+themeName+".css");
+
+        document.head.appendChild(style);
+    } else if(themeName !== "default"){
+        availableStyle.setAttribute("href", "./css/theme-"+themeName+".css");
+    } else {
+        availableStyle.setAttribute("href", "#");
+    }
+
+};
+
+window.selectedTheme = window.localStorage.getItem("theme");
+if(window.selectedTheme && window.selectedTheme !== "default"){
+    applyTheme(window.selectedTheme);
+}

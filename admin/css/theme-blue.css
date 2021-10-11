@@ -1,0 +1,37 @@
+header.main > nav.navbar-dark {
+    background-color: rgb(63, 117, 162);
+    background-image: none;
+}
+
+form.mini_top_filter_bar > ul {
+    padding: 0 5px 3px 10px;
+    /* background-color: white; */
+    background-color: rgb(63, 117, 162);
+    font-size: 0.8em;
+    /* border: 1px solid #eeeeee; */
+    line-height: 1;
+}
+
+.lio-modal {
+    border: 0 solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    border-top: 3px solid rgb(63, 117, 162);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0 ,0 ,0 ,0.20);
+
+}
+
+.btn-outline-black {
+    color: rgb(63, 117, 162);
+    border-color: rgb(63, 117, 162);
+
+}
+
+.btn-outline-black:hover {
+    background-color: rgb(63, 117, 162);
+    border-color: rgb(63, 117, 162);
+
+}
+
+body{
+    color:#325f85
+}

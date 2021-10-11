@@ -119,9 +119,40 @@ function sqlGetAll($sql) {
 function footer(){
 ?>
 <footer class="footer">
+
     <div class="container">
-        <p style="    font-size: 12px;"> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
+        <p style="    font-size: 12px;text-align: center;"> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
     </div>
+    <div style="position:fixed; bottom:0; right:0">
+        <label style="font-weight: normal">Téma:
+            <select id="theme_selector">
+                <option value="default">Sötét</option>
+                <option value="blue">Kék</option>
+                <option value="gray">Szürke</option>
+            </select>
+        </label>
+    </div>
+    <script type="application/javascript">
+        const theme_selector = document.getElementById('theme_selector');
+        if(theme_selector){
+            window.selectedTheme = window.localStorage.getItem("theme");
+            if(window.selectedTheme) {
+                theme_selector.querySelectorAll("option").forEach(function(option){
+                    if(option.value === window.selectedTheme) {
+                        option.selected = true;
+                    }
+                });
+            } else {
+                window.localStorage.setItem("theme", "default");
+            }
+
+            theme_selector.onchange = function(){
+                console.log('Change to ' + theme_selector.value);
+                window.localStorage.setItem("theme", theme_selector.value);
+                applyTheme(theme_selector.value);
+            }
+        }
+    </script>
 </footer>
 <?php
 }
