@@ -258,6 +258,20 @@ else:
                                 force_row.style.display = "none";
                             }
                         } else {
+                            Demiran.addResize(function(){
+                                drawSankeyChart({
+                                    selector:"#force",
+                                    data:json,
+                                    fillKey: "group",
+                                    fills: [
+                                        "#fc8d62",
+                                        "#8da0cb",
+                                        "#66c2a5",
+                                        "#a6d854",
+                                        "#e78ac3",
+                                        "#ffd92f"]
+                                });
+                            });
                             drawSankeyChart({
                                 selector:"#force",
                                 data:json,
@@ -613,10 +627,15 @@ endif;
                 }
             }
         });
+        Demiran.addResize(function(){
+            drawCalendar2({
+                selector:".calendar_chart",
+                data:inputData
+            })
+        });
         drawCalendar2({
             selector:".calendar_chart",
             data:inputData
-
         })
     });
 </script>

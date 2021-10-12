@@ -914,6 +914,45 @@ const Demiran = {
         await this.promisifyCall("delete_user", Demiran.convertToFormEncoded({
             deleteuser:client.id
         }));
+    },
+    resizeFunctions:[],
+    addResize(method){
+        if(typeof method === "function") {
+            this.resizeFunctions.push(method);
+        }
+    },
+    removeResize(method) {
+        if(typeof method === "function") {
+            const tempArray = [];
+            this.resizeFunctions.forEach(function(m){
+                if(m !== method) {
+                    tempArray.push(m);
+                }
+            });
+            if(tempArray.length !== this.resizeFunctions.length) {
+                this.resizeFunctions = tempArray;
+            }
+        }
+    },
+    applyResize:function(node){
+        if(!node) {
+            node = window;
+        }
+        if(node) {
+            const self = this;
+            let timeout;
+            node.onresize = function(){
+                clearTimeout(timeout);
+
+                timeout = setTimeout(function(){
+                    for(let i = 0; i < self.resizeFunctions.length; i++) {
+                        if(typeof self.resizeFunctions[i] === "function") {
+                            self.resizeFunctions[i]();
+                        }
+                    }
+                }, 400);
+            }
+        }
     }
 };
 
@@ -972,6 +1011,7 @@ const removeTask = function (id, title) {
 
     return false;
 };
+
 const editTask = function (id, viewOnly = true) {
 
     const editTaskDivOuter = document.getElementById("editTaskDivOuter");
@@ -1116,3 +1156,4 @@ window.selectedTheme = window.localStorage.getItem("theme");
 if(window.selectedTheme && window.selectedTheme !== "default"){
     applyTheme(window.selectedTheme);
 }
+Demiran.applyResize(window);

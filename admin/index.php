@@ -179,9 +179,18 @@ $ip = getIPAddress();
                     Object.keys(userData).forEach(function (name){
                         if(userData[name]){
                             // Convert to hours
-                            userData[name].duration = Math.floor(userData[name].duration / 3600)
+                            userData[name].duration = Math.floor(userData[name].duration / 3600);
                             barChartData.push(userData[name]);
                         }
+                    });
+                    Demiran.addResize(function(){
+                        drawBarChart({
+                            selector: "#barChartDiv",
+                            name: "username",
+                            value: "duration",
+                            color: "color",
+                            data: barChartData
+                        })
                     });
                     drawBarChart({
                         selector: "#barChartDiv",
@@ -241,6 +250,21 @@ $ip = getIPAddress();
                         })
                     });
                     if(lineChartData.length > 1){
+                        Demiran.addResize(function(){
+                            drawLineChart({
+                                selector: "#lineChartDiv",
+                                date: "deadline",
+                                value: "price",
+                                data: lineChartData
+                            });
+
+                            drawPieChart({
+                                selector: "#pieChartDiv",
+                                value:"price",
+                                name: "name",
+                                data: pieChartData
+                            })
+                        });
                         drawLineChart({
                             selector: "#lineChartDiv",
                             date: "deadline",

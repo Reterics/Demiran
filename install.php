@@ -173,6 +173,8 @@ INSERT IGNORE INTO users SET id=1,username='admin',email='test@test.com',passwor
             exit;
         }
     }catch (Exception $e){
+        file_put_contents('./error_install.log', json_encode($e->getMessage()));
+        header("Location: /install.php?error=fatal");
         die($e->getMessage());
     }
 
@@ -254,6 +256,9 @@ else:
 
                         <script type="text/javascript">
 
+                            if(location.search.startsWith("?error")) {
+                                alert("Hiba történt az oldal telepítése közben!")
+                            }
                             /*const formButton = document.getElementById("formButton");
                             if(formButton){
                                 formButton.onclick = function(e) {

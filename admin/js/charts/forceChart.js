@@ -7,7 +7,7 @@ const drawForceChart = function (options) {
         console.error("Invalid selector");
         return null;
     }
-
+    node.innerHTML = "";
     const {width, height} = node.getBoundingClientRect();
 
     let graph;

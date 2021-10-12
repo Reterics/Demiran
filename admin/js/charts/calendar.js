@@ -20,7 +20,7 @@ const drawCalendar = function(options){
         console.error("Invalid input data");
         return null;
     }
-
+    node.innerHTML = "";
     const dateKey = options.date ? options.date : "date";
     const colorKey = options.color ? options.color : "color";
 

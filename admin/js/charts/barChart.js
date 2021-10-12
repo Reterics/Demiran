@@ -11,6 +11,7 @@ const drawBarChart = function (options) {
         console.error("Invalid input data");
         return null;
     }
+    node.innerHTML = "";
     const nameKey = options.name ? options.name : "name";
     const valueKey = options.value ? options.value : "value";
     const colorKey = options.color ? options.color : "color";
@@ -72,4 +73,4 @@ const drawBarChart = function (options) {
             return d[colorKey];
         });
     return svg.node();
-}
+};

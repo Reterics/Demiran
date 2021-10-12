@@ -7,6 +7,7 @@ const drawPieChart = function (options) {
         console.error("Invalid selector");
         return null;
     }
+    node.innerHTML = "";
     if (!Array.isArray(options.data)) {
         console.error("Invalid input data");
         return null;
