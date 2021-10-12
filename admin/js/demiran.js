@@ -759,10 +759,161 @@ const Demiran = {
         }
     },
     /**
+     * @param task_name
+     * @param uri
+     * @returns {Promise<any>}
+     */
+    promisifyCall: function (task_name, uri){
+        const self = this;
+        return new Promise((resolve, reject) => {
+            self.call(task_name, uri, function(error,result){
+                if(error) {
+                    reject(result);
+                } else {
+                    let json = null;
+                    try {
+                        json = JSON.parse(result);
+                    }catch (e) {
+
+                    }
+                    if(json){
+                        resolve(json);
+                    } else {
+                        resolve(result);
+                    }
+                }
+            })
+        })
+    },
+    /**
      * Initiate Functional Self Test
      */
-    selfTest: function (){
+    selfTest: async function (){
 
+        const results = [];
+        const users = await this.promisifyCall("get_user_list");
+        if(Array.isArray(users)) {
+            console.log("User List: OK");
+            results.push(true);
+        } else {
+            console.log("User List: HIBA");
+            results.push(false);
+            return;
+        }
+
+        await this.promisifyCall("add_user", Demiran.convertToFormEncoded({
+            username:"_____testuser",
+            email:"_____testuser@test.com",
+            password:"1234",
+            password_confirmation:"1234"
+        }));
+        let users_after = await this.promisifyCall("get_user_list");
+        let lastUser = Array.isArray(users_after) ? users_after.pop() : null;
+        if(lastUser && lastUser.username === "_____testuser") {
+            console.log("Add User: OK");
+            results.push(true);
+        } else {
+            console.log("Add User: HIBA");
+            results.push(false);
+            return;
+        }
+
+        await this.promisifyCall("delete_user", Demiran.convertToFormEncoded({
+            deleteuser:lastUser.id
+        }));
+        users_after = await this.promisifyCall("get_user_list");
+        lastUser = Array.isArray(users_after) ? users_after.pop() : null;
+        if(lastUser && lastUser.username !== "_____testuser") {
+            console.log("Delete User: OK");
+            results.push(true);
+        } else {
+            console.log("Delete User: HIBA");
+            results.push(false);
+            return;
+        }
+
+        const projects = await this.promisifyCall("get_project_list");
+        if(Array.isArray(projects)) {
+            console.log("Project List: OK");
+            results.push(true);
+        } else {
+            console.log("Project List: HIBA");
+            console.log(projects);
+            results.push(false);
+            return;
+        }
+
+        await this.promisifyCall("add_user", Demiran.convertToFormEncoded({
+            username:"_____testuser",
+            email:"_____testuser@test.com",
+            password:"1234",
+            password_confirmation:"1234",
+            role:"member"
+        }));
+
+        await this.promisifyCall("add_user", Demiran.convertToFormEncoded({
+            username:"_____testclient",
+            email:"_____testclient@test.com",
+            password:"1234",
+            password_confirmation:"1234",
+            role:"client"
+        }));
+        users_after = await this.promisifyCall("get_user_list");
+
+        const client = users_after.pop();
+        const member = users_after.pop();
+
+
+        await this.promisifyCall("add_project", Demiran.convertToFormEncoded({
+            users:member.id,
+            title:"TestProject",
+            category:"PHP-MySQL",
+            client:client.id,
+            billing:"fixed"
+        }));
+
+        let projects_after = await this.promisifyCall("get_project_list");
+        let lastProject = projects_after.pop();
+        if(lastProject && lastProject.title === "TestProject") {
+            console.log("Add Project: OK");
+            results.push(true);
+        } else {
+            console.log("Add Project: HIBA");
+            results.push(false);
+            return;
+        }
+        const projects_flow = await this.promisifyCall("get_project_flow");
+        if(projects_flow && Array.isArray(projects_flow.nodes)) {
+            console.log("Project Graph: OK");
+            results.push(true);
+        } else {
+            console.log("Project Graph: HIBA");
+            results.push(false);
+            return;
+        }
+
+        await this.promisifyCall("delete_project", Demiran.convertToFormEncoded({
+            deleteproject:lastProject.id
+        }));
+
+        projects_after = await this.promisifyCall("get_project_list");
+        lastProject = projects_after.pop();
+        if(lastProject && lastProject.title !== "TestProject") {
+            console.log("Delete Project: OK");
+            results.push(true);
+        } else {
+            console.log("Delete Project: HIBA");
+            results.push(false);
+            return;
+        }
+
+        //Delete Test Users
+        await this.promisifyCall("delete_user", Demiran.convertToFormEncoded({
+            deleteuser:member.id
+        }));
+        await this.promisifyCall("delete_user", Demiran.convertToFormEncoded({
+            deleteuser:client.id
+        }));
     }
 };
 

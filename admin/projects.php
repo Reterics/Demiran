@@ -420,7 +420,7 @@ else:
                                     value:"Igen",
                                     onclick: (closeDialog)=>{
                                         closeDialog();
-                                        Demiran.call("delete_project",Demiran.convertToFormEncoded(form),function(error,result){
+                                        Demiran.call("delete_project","deleteproject="+id,function(error,result){
                                             if(!error && result.trim() === "OK"){
                                                 location.reload();
                                             } else {
