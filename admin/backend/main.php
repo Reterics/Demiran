@@ -38,9 +38,40 @@ class DemiranBackend {
         return $success;
     }
 
+    function get_permission_level(){
+        $level = 0;
+
+        if(isset($_SESSION['role'])) {
+            switch($_SESSION['role']) {
+                case "owner":
+                    $level = 4;
+                    break;
+                case "admin":
+                    $level = 3;
+                    break;
+                case "member":
+                    $level = 2;
+                    break;
+                case "other":
+                    $level = 1;
+                    break;
+                case "client":
+                    $level = 1;
+                    break;
+            }
+        }
+        return $level;
+    }
+
     function call($task_name, $arguments, $files = array()) {
         if(isset($this->methods[$task_name]) && is_callable($this->methods[$task_name])) {
             $filtered_arguments = array();
+            $permission_level = $this->get_permission_level();
+            $is_sensitive_method = strpos($task_name, "update_") === 0 || strpos($task_name, "delete_") === 0;
+            if($permission_level < 3 && $is_sensitive_method) {
+                echo "You don't have permission to execute this method.";
+                return;
+            }
             global $connection;
             if(isset($arguments) && is_array($arguments)) {
                 foreach($arguments as $key => $value) {

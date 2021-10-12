@@ -757,6 +757,12 @@ const Demiran = {
         }catch (e) {
             console.error(e.message);
         }
+    },
+    /**
+     * Initiate Functional Self Test
+     */
+    selfTest: function (){
+
     }
 };
 

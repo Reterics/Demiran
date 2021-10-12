@@ -18,11 +18,12 @@ if(isset($_POST['add_tables']) && isset($_POST['db_name']) && isset($_POST['data
     $db_name = $_POST['db_name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $port = isset($_POST['port']) ? $_POST['port'] : "3306";
 
     mysqli_report(MYSQLI_REPORT_STRICT);
     $connection = false;
     try{
-        $connection = mysqli_connect($database, $username, $password, $db_name);
+        $connection = mysqli_connect($database, $username, $password, $db_name, $port);
     }catch(Exception $e) {
 
     }
@@ -144,15 +145,31 @@ INSERT IGNORE INTO users SET id=1,username='admin',email='test@test.com',passwor
             $result = mysqli_multi_query($connection, $addTable);
 
             if($result){
-                header("Location: /index.php");
+                $filewrite = file_put_contents('./env.php', "<?php\n// Host name of the MySQL Database\n".
+                    "define(\"DB_HOST\", \"".$database."\");\n".
+                    "// Username of the MySQL Database\n".
+                    "define(\"DB_USER\", \"".$username."\");\n".
+                    "// Password of the MySQL Database\n".
+                    "define(\"DB_PASS\", \"".$password."\");\n".
+                    "// Database Name of the MySQL Database\n".
+                    "define(\"DB_NAME\", \"".$db_name."\");\n".
+                    "// Post of the MySQL Database\n".
+                    "define(\"DB_PORT\", \"".$port."\");\n".
+                    "");
+                if($filewrite === false) {
+                    header("Location: /install.php?error=file_write_failed");
+                } else {
+                    header("Location: /index.php");
+                }
+
                 exit;
 
             } else {
-                header("Location: /install.php?error=sql");
+                header("Location: /install.php?error=sql&details=failed_query");
                 exit;
             }
         } else {
-            header("Location: /install.php?error=sql");
+            header("Location: /install.php?error=sql&details=connection_error");
             exit;
         }
     }catch (Exception $e){
@@ -207,8 +224,12 @@ else:
                         <p>Itt adhatjuk meg az adatbázis tulajdonságait. Amennyiben nem vagyunk biztosak bennük, fel kell venni a kapcsolatot a tárhely szolgáltatóval, vagy a rendszergazdával.</p>
                         <form method="post">
                             <label>
-                                Adatbázis kiszolgáló címe:
+                                Kiszolgáló Címe:
                                 <input name="database" type="text" class="form-control" placeholder="localhost">
+                            </label>
+                            <label>
+                                Kiszolgáló Port:
+                                <input name="port" type="text" class="form-control" placeholder="3306">
                             </label>
                             <label>
                                 Felhasználónév:
@@ -216,7 +237,7 @@ else:
                             </label>
                             <label>
                                 Jelszó:
-                                <input name="password" type="text" class="form-control" placeholder="">
+                                <input name="password" type="password" class="form-control" placeholder="">
                             </label>
 
                             <label>
