@@ -115,6 +115,7 @@ body {
     box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
+    border-top: 3px solid rgb(59 59 59);
 }
 
 .lio-modal > .header {
@@ -242,7 +243,8 @@ body {
     border-right: none;
 }
 .lio-tabs {
-    background-color: #eef7ff;
+    background-color: #3b3b3b;
+    color: #d9d9d9;
     width: 130px;
     padding: 0;
     border: 1px solid rgba(0, 0, 0, .4);
@@ -254,12 +256,11 @@ body {
     text-align: left;
     cursor: pointer;
 }
-.lio-tabs > .tab-line:hover {
+.lio-tabs > .tab-line.active, .lio-tabs > .tab-line:hover {
     background-color: #fff;
+    color: #3e3e3e;
 }
-.lio-tabs > .tab-line.active {
-    background-color: #fff;
-}
+
 .lio-tabs > .tab-line.activee:hover {
     background-color: #eef7ff;
 }
@@ -855,6 +856,7 @@ Chat részletek / details
     box-shadow: 0 0 1px rgba(0,0,0,0.13), 0 1px 3px rgba(0,0,0,0.2);
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
+    border-top: 3px solid rgb(59 59 59);
 }
 
 .footer {

@@ -19,6 +19,9 @@ form.mini_top_filter_bar > ul {
     box-shadow: 0 0 1px rgba(0, 0, 0, 0.13), 0 1px 3px rgba(0 ,0 ,0 ,0.20);
 
 }
+.status-box-4 {
+    border-top: 3px solid rgb(63, 117, 162);
+}
 
 .btn-outline-black {
     color: rgb(63, 117, 162);
@@ -34,4 +37,14 @@ form.mini_top_filter_bar > ul {
 
 body{
     color:#325f85
+}
+
+.lio-tabs {
+    background-color: #eef7ff;
+    color: #3e3e3e;
+}
+
+.lio-tabs > .tab-line.active, .lio-tabs > .tab-line:hover {
+    background-color: #fff;
+    color: #3e3e3e;
 }
