@@ -112,7 +112,7 @@ foreach ($project_tasks as $task) {
     <form class="mini_top_filter_bar navbar" method="get">
         <input id="hiddenTypeInput" type="hidden" name="type" value="<?php echo $currentType; ?>" onchange="document.querySelector('form.mini_top_filter_bar').submit()">
 
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav" style="margin-right: auto;">
             <li class="nav-item inline">
                 <label for="project_selector">Projekt </label><select id="project_selector" class="project_selector" name="project" onchange="document.querySelector('form.mini_top_filter_bar').submit()">
                     <option value="">Minden Projekt</option>

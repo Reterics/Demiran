@@ -561,7 +561,8 @@ const Demiran = {
         modal.id = "";
 
         const background = document.createElement("div");
-        background.style.position = "absolute";
+        //background.style.position = "absolute";
+        background.style.position = "fixed";
         background.style.height = "100vh";
         background.style.width = document.body.offsetWidth + "px";
         background.style.top = "0";

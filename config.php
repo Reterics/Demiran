@@ -44,7 +44,7 @@ function headerHTML(){
 <header class="main">
     <nav class="navbar navbar-expand-lg navbar-dark" ><a
             class="navbar-brand" href="#">
-            <img class="d-inline-block align-top" height="30" src="./admin/img/logo.svg" style="height: 35px; width: 100%;" alt="demiran Logo">
+            <img class="d-inline-block align-top" height="30" src="./admin/img/logo.svg" alt="demiran Logo">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#headerMenu"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigatiopn"><span

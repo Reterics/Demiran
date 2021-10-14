@@ -860,14 +860,16 @@ Chat részletek / details
 }
 
 .footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     width: 100%;
     /*height: 60px;
     line-height: 60px;*/
     height: 35px;
 
-    /*background-color: #fdfeffa6;*/
+    background-color: #fdfeffa6;
+}
+footer.footer {
     background-color: #3f3f3fa6;
     color: #f2f2f2;
 }
@@ -1238,4 +1240,11 @@ header nav.navbar {
     /*when navigating through the items using the arrow keys:*/
     background-color: DodgerBlue !important;
     color: #ffffff;
+}
+
+header nav.navbar {
+    padding: 0.2rem 0.7rem;
+}
+a.navbar-brand {
+    padding-top: 5px;
 }

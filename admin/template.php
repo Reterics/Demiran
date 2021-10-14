@@ -295,17 +295,7 @@ function admin_header_menu(){
 
 
         <div id="headerMenu" class="collapse navbar-collapse">
-            <div class="ml-auto navbar-nav clock-bar" style="font-size: 120%;">
-                <div class="elapsed-time">...</div>
-                <span class="stop-icon inactive-icon"> </span>
-                <span class="pause-icon inactive-icon" style="display: none"> </span>
-                <span class="play-icon"> </span>
-                <?php
-
-                //echo $_SESSION['role'];
-
-            ?></div>
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto-inactive">
                 <li class="nav-item active"><a class="nav-link index" href="index.php">Kezdőlap</a></li>
                 <li class="nav-item"><a class="nav-link tasks" href="tasks.php">Feladatok</a></li>
                 <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
@@ -333,10 +323,16 @@ function admin_header_menu(){
                         <a class="dropdown-item" href="logout.php">Kijelentkezés</a>
                     </div>
                 </li>
-
-
-
             </ul>
+            <div class="ml-auto navbar-nav clock-bar" style="font-size: 120%;">
+                <div class="elapsed-time">...</div>
+                <span class="stop-icon inactive-icon"> </span>
+                <span class="pause-icon inactive-icon" style="display: none"> </span>
+                <span class="play-icon"> </span>
+                <?php
+
+                //echo $_SESSION['role'];
+             ?></div>
 
         </div>
     </nav>
