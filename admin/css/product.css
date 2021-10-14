@@ -865,14 +865,43 @@ Chat részletek / details
     width: 100%;
     /*height: 60px;
     line-height: 60px;*/
-    height: 20px;
+    height: 35px;
 
-    background-color: #fdfeffa6;
+    /*background-color: #fdfeffa6;*/
+    background-color: #3f3f3fa6;
+    color: #f2f2f2;
 }
 .footer > .container {
     width: auto;
     max-width: 680px;
     padding: 0 15px;
+}
+
+.footer > .container > p {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: auto;
+    margin-top: auto;
+    height: 100%;
+    vertical-align: middle;
+    line-height: 2.4em;
+}
+
+.footer > .footer-theme-parent {
+    position:fixed;bottom:0;right:0;height: 35px;
+}
+
+.footer > .footer-theme-parent > label {
+    font-weight: normal;height: 35px;
+}
+
+#theme_selector {
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    margin-left: 5px;
 }
 
 @media (min-width: 1200px) {
@@ -1209,13 +1238,4 @@ header nav.navbar {
     /*when navigating through the items using the arrow keys:*/
     background-color: DodgerBlue !important;
     color: #ffffff;
-}
-
-
-#theme_selector {
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }

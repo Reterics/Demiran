@@ -419,13 +419,16 @@ function admin_header_menu(){
     const home = {log:homeLog};
     const selected = location.pathname.split("/").pop().split(".")[0];
 
-    const node = document.querySelector("#headerMenu li a."+selected);
-    if(selected && node){
-        document.querySelectorAll("#headerMenu li").forEach(function (node) {
-            node.classList.remove("active");
-        });
-        node.parentElement.classList.add("active");
+    if(selected) {
+        const node = document.querySelector("#headerMenu li a."+selected);
+        if(selected && node){
+            document.querySelectorAll("#headerMenu li").forEach(function (node) {
+                node.classList.remove("active");
+            });
+            node.parentElement.classList.add("active");
+        }
     }
+
 
     const stopIcon = document.querySelector(".stop-icon");
     const startIcon = document.querySelector(".play-icon");

@@ -13,7 +13,6 @@ require_once "config.php";
 <?php headerHTML(); ?>
 <style>
     body {
-
         -ms-flex-pack: center;
         -webkit-box-pack: center;
         justify-content: center;
@@ -22,15 +21,13 @@ require_once "config.php";
         background-image: url(/admin/img/DSC01980.jpg);
     }
     .cover-container {
-        max-width: 42em;
+        max-width: 35em;
         margin-top: 10vh;
         text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .2);
 
         margin-bottom: calc(90vh - 61px - 338px);
         color: #3b3b3bdb;
-
     }
-
 
     /*
      * Header
@@ -79,10 +76,10 @@ require_once "config.php";
      * Cover
      */
     .cover {
-        padding: 0 1.5rem;
+        padding: 0 1rem;
     }
     .cover .btn-lg {
-        padding: .75rem 1.25rem;
+        padding: .5rem 1rem;
         font-weight: 700;
     }
 
@@ -92,6 +89,14 @@ require_once "config.php";
      */
     .mastfoot {
         color: rgba(255, 255, 255, .5);
+    }
+
+    h1.cover-heading {
+        font-size: 2rem;
+    }
+
+    .lead {
+        font-size: 1rem;
     }
 
 </style>

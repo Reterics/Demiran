@@ -121,9 +121,9 @@ function footer(){
 <footer class="footer">
 
     <div class="container">
-        <p style="    font-size: 12px;text-align: center;"> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
+        <p> Copyright (c) 2021, Attila Reterics - Minden Jog Fenntartva</p>
     </div>
-    <div style="position:fixed; bottom:0; right:0">
+    <div class="footer-theme-parent" style="position:fixed; bottom:0; right:0">
         <label style="font-weight: normal">Téma:
             <select id="theme_selector">
                 <option value="default">Sötét</option>
@@ -151,6 +151,33 @@ function footer(){
                 window.localStorage.setItem("theme", theme_selector.value);
                 applyTheme(theme_selector.value);
             }
+        }
+
+        if(!window.applyTheme) {
+            window.applyTheme = function(themeName){
+                let uri = "./admin/css/";
+                if(location.href.includes("/admin")) {
+                    uri = uri.replace("/admin", "");
+                }
+                const availableStyle = document.getElementById("loadedTheme");
+                if(!availableStyle && themeName !== "themeName"){
+                    const style = document.createElement("link");
+                    style.setAttribute("rel", "stylesheet");
+                    style.setAttribute("id", "loadedTheme");
+                    style.setAttribute("href", uri+"/theme-"+themeName+".css");
+
+                    document.head.appendChild(style);
+                } else if(themeName !== "default"){
+                    availableStyle.setAttribute("href", uri+"./theme-"+themeName+".css");
+                } else {
+                    availableStyle.setAttribute("href", "#");
+                }
+            };
+        }
+
+        window.selectedTheme = window.localStorage.getItem("theme");
+        if(window.selectedTheme && window.selectedTheme !== "default"){
+            applyTheme(window.selectedTheme);
         }
     </script>
 </footer>
