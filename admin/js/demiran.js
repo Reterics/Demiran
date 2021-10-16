@@ -1150,7 +1150,7 @@ window.applyTheme = function(themeName){
 
         document.head.appendChild(style);
     } else if(themeName !== "default"){
-        availableStyle.setAttribute("href", uri+"./theme-"+themeName+".css");
+        availableStyle.setAttribute("href", uri+"/theme-"+themeName+".css");
     } else {
         availableStyle.setAttribute("href", "#");
     }

@@ -129,6 +129,7 @@ function footer(){
                 <option value="default">Sötét</option>
                 <option value="blue">Kék</option>
                 <option value="gray">Szürke</option>
+                <option value="light">Világos</option>
             </select>
         </label>
     </div>
