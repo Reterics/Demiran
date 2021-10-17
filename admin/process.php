@@ -15,6 +15,11 @@ if(isset($_POST['_call'])) {
     if(file_exists(dirname(__FILE__).'/backend/lib/'.$task_name.'.php')) {
         require_once(dirname(__FILE__).'/backend/lib/'.$task_name.'.php');
     }
+    if(isset($_POST['_plugin']) && $_POST['_plugin'] != "") {
+        if(file_exists('../plugins/'.$_POST['_plugin'].'/lib/'.$task_name.'.php')) {
+            require_once('../plugins/'.$_POST['_plugin'].'/lib/'.$task_name.'.php');
+        }
+    }
 
     $Demiran->call($task_name, $_POST, $_FILES);
 }
