@@ -28,6 +28,7 @@ function createSimplifiedInvoice($data) {
         $data['invoiceLines'] = $invoiceLines;
     }
 
+
     $xmlContent = file_get_contents(dirname(__FILE__)."/simplified.xml");
 
     $xmlContent = xmlStringParser($xmlContent, $data);
