@@ -11,7 +11,7 @@ if (!isset($_SESSION["username"])) {
 }
 
 ?>
-
+<form id="invoiceForm" onsubmit="return false" method="post">
 <div class="container-md">
 
     <div class="row">
@@ -30,31 +30,34 @@ if (!isset($_SESSION["username"])) {
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                        <label for="full_name">Adószám
+                        <label>Adószám
                             <input type="text" class="form-control" placeholder="11111111-2-42" id="supplierTaxNumber" name="supplierTaxNumber" maxlength="13" pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}">
+                            <input type="hidden" id="supplierTaxpayerId" name="supplierTaxpayerId" >
+                            <input type="hidden" id="supplierVatCode" name="supplierVatCode" >
+                            <input type="hidden" id="supplierCountyCode" name="supplierCountyCode" >
                         </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-4">
-                            <label for="full_name">Irányítószám
-                                <input type="number" min="1000" max="9999" alt="iranyitoszam" class="form-control" name="supplieriranyitoszam" id="supplieriranyitoszam" placeholder="8900">
+                            <label for="supplierPostCode">Irányítószám
+                                <input type="number" min="1000" max="9999" alt="PostCode" class="form-control" name="supplierPostCode" id="supplierPostCode" placeholder="8900">
                             </label>
                         </div>
                         <div class="col-md-8">
-                            <label for="full_name">Település
-                                <input type="text" class="form-control" name="full_name" id="full_name"
-                                       placeholder="Teljes név" required/></label>
+                            <label for="supplierTown">Település
+                                <input type="text" class="form-control" name="supplierTown" id="supplierTown"
+                                       placeholder="Zalaegerszeg" required/></label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-6">
-                            <label for="full_name">Közterület
-                                <input type="text" class="form-control" name="full_name" id="full_name"
-                                       placeholder="Teljes név" required/></label>
+                            <label for="supplierStreetName">Közterület
+                                <input type="text" class="form-control" name="supplierStreetName" id="supplierStreetName"
+                                       placeholder="Kossuth" required/></label>
                         </div>
                         <div class="col-md-3">
-                            <label for="full_name">Jelleg
+                            <label for="supplierStreet">Jelleg
                                 <select class="form-control" id="supplierStreet" name="supplierStreet">
                                     <option value="út">út</option>
                                     <option value="utca">utca</option>
@@ -127,14 +130,14 @@ if (!isset($_SESSION["username"])) {
                             </label>
                         </div>
                         <div class="col-md-3">
-                            <label for="full_name">Házszám
+                            <label for="supplierAddress">Házszám
                                 <input type="text" class="form-control" placeholder="20/a" id="supplierAddress" name="supplierAddress">
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label for="full_name">Bankszámlaszám
+                            <label for="supplierBankAccountNumber">Bankszámlaszám
                                 <input type="text" class="form-control" placeholder="88888888-66666666-12345678" id="supplierBankAccountNumber" name="supplierBankAccountNumber" pattern="[0-9]{8}[-][0-9]{8}[-][0-9]{8}|[0-9]{8}[-][0-9]{8}|[A-Z]{2}[0-9]{2}[0-9A-Za-z]{11,30}">
                             </label>
                         </div>
@@ -150,38 +153,42 @@ if (!isset($_SESSION["username"])) {
                 <div class="body">
                     <div class="form-group">
                         <div class="col-md-12">
-                            <label for="full_name">Teljes Név
+                            <label for="customerVatStatus">Adózói Státusz
+                                <select class="form-control" id="customerVatStatus" name="customerVatStatus">
+                                    <option value="PRIVATE_PERSON">Magánszemély</option>
+                                    <option value="DOMESTIC">Belföldi adózó</option>
+                                </select>
+                            </label>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="customerName">Teljes Név
                                 <input type="text" class="form-control" name="customerName" id="customerName"
                                        placeholder="Teljes név" required/></label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-md-12">
-                            <label for="full_name">Adószám
-                                <input type="text" class="form-control" placeholder="11111111-2-42" id="customerTaxNumber" name="customerTaxNumber" maxlength="13" pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <div class="col-md-4">
-                            <label for="full_name">Irányítószám
-                                <input type="number" min="1000" max="9999" alt="iranyitoszam" class="form-control" name="customeriranyitoszam" id="customeriranyitoszam" placeholder="8900">
+                            <label for="customerPostCode">Irányítószám
+                                <input type="number" min="1000" max="9999" alt="PostCode" class="form-control" name="customerPostCode" id="customerPostCode" placeholder="8900">
                             </label>
                         </div>
                         <div class="col-md-8">
-                            <label for="full_name">Település
+                            <label for="customerTown">Település
                                 <input type="text" class="form-control" placeholder="Zalaegerszeg" id="customerTown" name="customerTown">
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-6">
-                            <label for="full_name">Közterület
+                            <label for="customerStreetName">Közterület
                                 <input type="text" class="form-control" placeholder="Arany János" id="customerStreetName" name="customerStreetName">
                             </label>
                         </div>
                         <div class="col-md-3">
-                            <label for="full_name">Jelleg
+                            <label for="customerStreet">Jelleg
                                 <select class="form-control" id="customerStreet" name="customerStreet">
                                     <option value="út">út</option>
                                     <option value="utca">utca</option>
@@ -254,8 +261,18 @@ if (!isset($_SESSION["username"])) {
                             </label>
                         </div>
                         <div class="col-md-3">
-                            <label for="full_name">Házszám
+                            <label for="customerAddress">Házszám
                                 <input type="text" class="form-control" placeholder="20/a" id="customerAddress" name="customerAddress">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>Adószám
+                                <input type="text" class="form-control" placeholder="11111111-2-42" id="customerTaxNumber" name="customerTaxNumber" maxlength="13" pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}">
+                                <input type="hidden" id="customerTaxpayerId" name="customerTaxpayerId" >
+                                <input type="hidden" id="customerVatCode" name="customerVatCode" >
+                                <input type="hidden" id="customerCountyCode" name="customerCountyCode" >
                             </label>
                         </div>
                     </div>
@@ -300,11 +317,12 @@ if (!isset($_SESSION["username"])) {
                         </div>
                         <div class="col-md-3">
                             <label for="full_name">Fizetési Mód
-                                <select class="form-control" id="currencyCode" name="currencyCode">
+                                <select class="form-control" id="paymentMethod" name="paymentMethod">
                                     <option value="CASH">Készpénz</option>
                                     <option value="TRANSFER">Átutalás</option>
                                     <option value="CARD">Bankkártya</option>
-                                    <option value="DELIVERY">Utánvét</option>
+                                    <option value="VOUCHER">VOUCHER</option>
+                                    <option value="Other">Egyéb</option>
                                 </select>
                             </label>
                         </div>
@@ -317,12 +335,12 @@ if (!isset($_SESSION["username"])) {
                         </div>
                         <div class="col-md-3">
                             <label for="full_name">Számla Teljesítés
-                                <input type="date" class="form-control" id="paymentDate" name="paymentDate" value="2021-10-17">
+                                <input type="date" class="form-control" id="invoiceIssueDate" name="invoiceIssueDate" value="2021-10-17">
                             </label>
                         </div>
                         <div class="col-md-3">
                             <label for="full_name">Számla Sorszáma
-                                <input type="text" class="form-control" id="paymentDate" name="paymentDate" value="2021-10-16/0001">
+                                <input type="text" class="form-control" id="invoiceNumber" name="invoiceNumber" value="2021-10-16/0001">
                             </label>
                         </div>
 
@@ -350,13 +368,13 @@ if (!isset($_SESSION["username"])) {
                             <th class="productCodeValue">Kód</th>
                             <th class="lineDescription">Név</th>
                             <th class="quantity">Mennyiség</th>
-                            <th class="unitOfMeasure">Mértékegység</th>
+                            <th class="unitOfMeasure">Egység</th>
                             <th class="unitPrice">Nettó Egységár</th>
                             <th class="lineNetAmount">Nettó Érték</th>
                             <th class="vatPercentage">ÁFA(%)</th>
                             <th class="lineVatAmount">ÁFA(Ft)</th>
                             <th class="lineGrossAmountNormal">Bruttó Ár</th>
-                            <th>Műveletek</th>
+                            <th></th>
                         </tr>
                         </thead>
                         <tbody>
@@ -420,7 +438,7 @@ if (!isset($_SESSION["username"])) {
                             </td>
                             <td><input type="number" min="1" class="form-control" placeholder="30000" step="0.01" id="lineVatData"></td>
                             <td><input type="number" min="1" class="form-control" placeholder="630000" step="0.01" id="lineGrossAmountData"></td>
-                            <td><button class="btn btn-default addButton" onclick="return addItem()" style="display: inline-block ;    border: 1px solid;">Hozzáadás</button></td>
+                            <td><button class="btn btn-default addButton" onclick="return addItem()" style="display: inline-block ;    border: 1px solid;">+</button></td>
                         </tr>
 
                         </tbody></table>
@@ -454,18 +472,27 @@ if (!isset($_SESSION["username"])) {
                             </label>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
 
+                        </div>
+                        <div class="col-md-6">
+                            <h3>25000 Ft</h3>
+                        </div>
+                    </div>
 
                 </div>
                 <div class="footer">
-                    <h3>25000 Ft</h3>
+                    <button class="btn btn-outline-black" onclick="downloadXML()">XML Letöltés</button>
+                    <button class="btn btn-outline-black" onclick="sendNAV()">Beküldés</button>
+
                 </div>
             </div>
         </div>
 
     </div>
 </div>
-
+<input type="hidden" name="_plugin" value="invoices">
 <script type="application/javascript">
 
     const generateSelectOptions = function (array){
@@ -480,6 +507,7 @@ if (!isset($_SESSION["username"])) {
         });
         return select;
     };
+
     const setUnitPrice = function(){
         const invoiceCategory = document.getElementById("invoiceCategory");
         const unitPrice = document.querySelector("tr th.unitPrice");
@@ -495,7 +523,8 @@ if (!isset($_SESSION["username"])) {
                                 {name:"18%", value: "0.1525"},
                                 {name:"5%", value: "0.0476"},
                                 {name:"0", value: "0"},
-                                {name:"TAM", value: "0"}
+                                {name:"TAM", value: "0"},
+                                {name:"AAM", value: "0"}
                             ]
                         ).innerHTML;
                     }
@@ -506,10 +535,15 @@ if (!isset($_SESSION["username"])) {
                         lineVatRate.innerHTML = generateSelectOptions(
                             [
                                 {name:"27%", value: "0.27"},
+                                //{name:"25%", value: "0.25"},
+                                //{name:"20%", value: "0.20"},
                                 {name:"18%", value: "0.18"},
+                                //{name:"12%", value: "0.12"},
+                                //{name:"7%", value: "0.07"},
                                 {name:"5%", value: "0.05"},
-                                {name:"0", value: "0"},
-                                {name:"TAM", value: "0"}
+                                {name:"0%", value: "0"},
+                                {name:"TAM", value: "0"},
+                                {name:"AAM", value: "0"}
                             ]
                         ).innerHTML;
                     }
@@ -517,10 +551,54 @@ if (!isset($_SESSION["username"])) {
             }
         }
     };
+
     const invoiceCategory = document.getElementById("invoiceCategory");
     if(invoiceCategory){
         invoiceCategory.onchange = setUnitPrice;
         setUnitPrice();
+    }
+
+    const applyTaxNumbers = function(prefix){
+        if(!prefix){
+            prefix = "supplier";
+        }
+        const TaxNumber = document.getElementById(prefix+"TaxNumber");
+        const TaxpayerId = document.getElementById(prefix+"TaxpayerId");
+        const VatCode = document.getElementById(prefix+"VatCode");
+        const CountyCode = document.getElementById(prefix+"CountyCode");
+        TaxNumber.onchange = function (){
+            const parts = TaxNumber.value.split("-");
+            if(parts.length === 3 && parts[0].length === 8 && parts[1].length === 1 && parts.length === 2){
+                TaxpayerId.value = parts.shift();
+                VatCode.value = parts.shift();
+                CountyCode.value = parts.shift();
+            }
+        }
+    };
+    applyTaxNumbers("customer");
+    applyTaxNumbers("supplier");
+
+    const customerVatStatus = document.querySelector("#customerVatStatus");
+    if(customerVatStatus){
+        const changeVatStatus = function(){
+            const customerVatStatus = document.querySelector("#customerVatStatus");
+            const customerTaxNumber = document.querySelector("#customerTaxNumber");
+
+            if(customerVatStatus && customerTaxNumber){
+                const vatStatus = customerVatStatus.value;
+
+                switch(vatStatus){
+                    case "DOMESTIC":
+                        customerTaxNumber.parentElement.parentElement.parentElement.style.display = null;
+                        break;
+                    case "PRIVATE_PERSON":
+                        customerTaxNumber.parentElement.parentElement.parentElement.style.display = "none";
+                        break;
+                }
+            }
+        };
+        changeVatStatus();
+        customerVatStatus.onchange = changeVatStatus;
     }
 
     const inputStyles = {
@@ -575,7 +653,11 @@ if (!isset($_SESSION["username"])) {
                         if (!Number.isNaN(num) && num) {
                             values.push((num * 100).toFixed(2));
                             ids.push(input.id);
-                            titles.push(null);
+                            if(!input.options[input.selectedIndex].text.includes("%")) {
+                                titles.push(input.options[input.selectedIndex].text);
+                            } else {
+                                titles.push(null);
+                            }
                             return
                         }
 
@@ -599,11 +681,18 @@ if (!isset($_SESSION["username"])) {
 
         //Create TRs
         const tr = document.createElement("tr");
-
+        tr.classList.add("product_line");
         values.forEach((value,i)=>{
             const td = document.createElement("td");
+            const exception = document.createElement("input");
+            exception.type = "hidden";
+            exception.setAttribute("name", ids[i] + "_exception[]");
             if(titles[i]){
                 td.innerHTML = titles[i];
+                if(ids[i] === "lineVatRate") {
+                    exception.value = titles[i];
+                }
+
             } else {
                 td.innerHTML = value;
             }
@@ -616,7 +705,7 @@ if (!isset($_SESSION["username"])) {
             input.value = value;
             input.setAttribute("name", ids[i] + "[]");
             td.appendChild(input);
-            td.classList.add("product_line");
+            td.appendChild(exception);
             tr.appendChild(td);
         });
 
@@ -681,6 +770,118 @@ if (!isset($_SESSION["username"])) {
         if (invoiceCategory) {
             invoiceCategory.disabled = true;
         }
+    };
 
+    const calculateTaxes = function(){
+        const table = document.querySelector(".invoiceTable");
+        if(!table){
+            return;
+        }
+        const addItemTr = table.querySelector("tr.add_new_item");
+        if(!addItemTr){
+            return;
+        }
+
+        const quantityNode = addItemTr.querySelector("#quantity");
+        const unitPriceNode = addItemTr.querySelector("#unitPrice");
+        const lineNetAmountDataNode = addItemTr.querySelector("#lineNetAmountData");
+        const lineVatRateNode = addItemTr.querySelector("#lineVatRate");
+        const lineVatDataNode = addItemTr.querySelector("#lineVatData");
+        const lineGrossAmountDataNode = addItemTr.querySelector("#lineGrossAmountData");
+        const invoiceCategory = document.querySelector("#invoiceCategory");
+
+        if(quantityNode && unitPriceNode && lineNetAmountDataNode && lineVatRateNode && lineVatDataNode &&
+        lineGrossAmountDataNode && invoiceCategory) {
+            const calculateFromUnitPrice = function () {
+                if (quantityNode.value && quantityNode.value.includes(",")) {
+                    quantityNode.value = quantityNode.value.replace(",",".");
+                }
+                if (unitPriceNode.value && unitPriceNode.value.includes(",")) {
+                    unitPriceNode.value = unitPriceNode.value.replace(",",".");
+                }
+
+                const lineNetAmountData = parseInt(lineNetAmountDataNode.value);
+                const lineVatRate = parseFloat(lineVatRateNode.value);
+                const ratePercentage  = parseFloat((lineVatRate*100).toFixed(2));
+
+                const invoiceCategoryValue = invoiceCategory.value || invoiceCategory.getAttribute("value") || null;
+                const quantity = parseFloat(quantityNode.value);
+                const unitPrice = parseInt(unitPriceNode.value);
+
+                if (invoiceCategoryValue === "SIMPLIFIED") {
+                    //lineGrossAmountDataNode.value = lineNetAmountData;
+                    if (!Number.isNaN(quantity) && !Number.isNaN(unitPrice)) {
+                        console.log("Brutto Ar: ", quantity * unitPrice);
+                        lineGrossAmountDataNode.value = quantity * unitPrice
+                    } else {
+                        console.log(quantity,unitPrice);
+                    }
+                    const lineGrossAmountData = parseFloat(lineGrossAmountDataNode.value);
+                    if (!Number.isNaN(lineGrossAmountData) && !Number.isNaN(lineVatRate)) {
+                        console.log(ratePercentage);
+                        const vatValue = (lineGrossAmountData * lineVatRate).toFixed(2);
+
+                        lineVatDataNode.value = vatValue;
+                        lineNetAmountDataNode.value = lineGrossAmountData - vatValue;
+                    }
+                }else{
+                    if (!Number.isNaN(quantity) && !Number.isNaN(unitPrice)) {
+                        lineNetAmountDataNode.value = quantity * unitPrice
+                    } else {
+                        console.log(quantity,unitPrice);
+                    }
+
+                    if (!Number.isNaN(lineNetAmountData) && !Number.isNaN(lineVatRate)) {
+                        console.log(ratePercentage);
+                        lineVatDataNode.value = (lineNetAmountData * lineVatRate).toFixed(2)
+                    }
+
+                    const lineVatData = parseFloat(lineVatDataNode.value);
+
+
+                    lineGrossAmountDataNode.value = lineVatData + lineNetAmountData;
+
+                }
+            };
+            quantityNode.onchange = calculateFromUnitPrice;
+            unitPriceNode.onchange = calculateFromUnitPrice;
+            lineVatRateNode.onchange = calculateFromUnitPrice;
+        } else {
+            console.log(quantityNode,unitPriceNode,lineNetAmountDataNode, lineVatRateNode, lineVatDataNode, lineGrossAmountDataNode);
+        }
+
+    };
+
+    calculateTaxes();
+
+
+    const downloadXML = function (){
+        const invoiceForm = document.getElementById('invoiceForm');
+        if(invoiceForm && invoiceForm instanceof HTMLFormElement){
+            const disabledNodes = document.querySelectorAll("[disabled]");
+            disabledNodes.forEach(function(node){
+                node.disabled = !node.disabled;
+            });
+            const formData = new FormData(invoiceForm);
+            disabledNodes.forEach(function(node){
+                node.disabled = !node.disabled;
+            });
+            Demiran.confirm("XML Adatok letöltése","Biztosan letöltöd az adatokat?", result=>{
+                if(result){
+                    Demiran.call("generate_xml", formData, function(error,result) {
+                        if(!error && result) {
+                            Demiran.downloadData(Math.floor(new Date().getTime()/360000) + ".json", result);
+                        } else {
+                            console.error(error);
+                            console.error(result);
+                        }
+                    })
+                }
+            })
+
+        } else {
+            Demiran.alert("Űrlap nem található");
+        }
     }
 </script>
+</form>

@@ -51,3 +51,23 @@ label > input.form-control, label > select.form-control {
 .advanced {
     display: none;
 }
+
+.form-control option{
+    min-height: 1em
+}
+.form-control {
+    padding: .3rem .45rem;
+}
+select.form-control:not([size]):not([multiple]) {
+    height: auto;
+}
+
+
+.addButton {
+    display: inline-block;
+    border: 1px solid;
+    padding: 0 6px 5px;
+    font-size: 23px;
+    line-height: 1;
+    background-color: #f8f8f8;
+}
