@@ -18,7 +18,9 @@ if (!isset($_SESSION["username"])) {
         <div class="col-md-6">
             <div class="lio-modal">
                 <div class="header">
-                    <h5 class="title">Kiállító</h5>
+                    <h5 class="title">
+                        <span class="back-icon" style="margin-top: -5px;height: 1.3em;width: 1.3em;" onclick="location.href='./plugin.php?name=invoices'"></span>
+                        Kiállító</h5>
                 </div>
                 <div class="body">
                     <div class="form-group">
@@ -459,25 +461,18 @@ if (!isset($_SESSION["username"])) {
                 <div class="body">
                     <div class="form-group">
                         <div class="col-md-6">
-                            <label>ÁFA tartalom %
-                                <input type="text" class="form-control" value="21.26%" disabled>
-                                <input type="text" class="form-control" value="4.76%" disabled>
+                            <label id="vatLabel">ÁFA tartalom %
                             </label>
                         </div>
                         <div class="col-md-6">
-                            <label>Összesen Ft
-                                <input type="text" class="form-control" value="24000" disabled>
-                                <input type="text" class="form-control" value="1000" disabled>
-
+                            <label id="vatAmountLabel">Összesen Ft
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
-                        <div class="col-md-6">
-
-                        </div>
-                        <div class="col-md-6">
-                            <h3>25000 Ft</h3>
+                       
+                        <div class="col-md-12">
+                            <h3 id="sumAmount" style="text-align: right">0 Ft</h3>
                         </div>
                     </div>
 
@@ -629,14 +624,176 @@ if (!isset($_SESSION["username"])) {
         }
     };
 
-    const addItem = function(){
+    const getInvoiceTableItems = function() {
         const table = document.querySelector(".invoiceTable");
         if(!table){
             return;
         }
+        const lines = table.querySelectorAll("tr");
+        if (lines.length < 3) {
+            return [];
+        }
+        const product_details = [
+            "lineNatureIndicator",
+            "productCodeCategory",
+            "productCodeValue",
+            "lineDescription",
+            "quantity",
+            "unitOfMeasure",
+            "unitPrice",
+            "lineNetAmount",
+            "vatPercentage",
+            "lineVatAmount",
+            "lineGrossAmountNormal"];
+
+        const items = [];
+        lines.forEach((line,index) => {
+            if (index && index < lines.length - 1) {
+                const fields = line.querySelectorAll("td");
+                let fieldData = {};
+                fields.forEach((field,index) => {
+                    if (product_details[index]) {
+                        if(product_details[index] === "productCodeValue") {
+                            fieldData[product_details[index]] = field.querySelector("input").value.toUpperCase();
+                        } else {
+                            fieldData[product_details[index]] = field.querySelector("input").value;
+                        }
+                        if(product_details[index] === "vatPercentage") {
+                            const exceptionInput = field.querySelectorAll("input")[1];
+                            if(exceptionInput) {
+                                const value = exceptionInput.value;
+                                if(value){
+                                    fieldData.lineVatRate_exception = value;
+                                }
+                            }
+                        }
+                    }
+                });
+                items.push(fieldData);
+            }
+
+        });
+        return items;
+    };
+    const calculateSummary = function() {
+        const items = getInvoiceTableItems();
+        let summaryDetails = {
+            vatRates:{
+
+            },
+            invoiceNetAmount: 0.00,
+            invoiceNetAmountHUF: 0.00,
+            invoiceVatAmount: 0.00,
+            invoiceVatAmountHUF: 0.00,
+            invoiceGrossAmount:0.00,
+            invoiceGrossAmountHUF:0.00
+
+        };
+        items.forEach(item => {
+            if (!item) {
+                return;
+            }
+
+            item.vatRate = Number.parseFloat(item["vatPercentage"]) || 0;
+
+            const vatRateCategory = item["lineVatRate_exception"] ? item["lineVatRate_exception"] : item["vatPercentage"];
+            if(!summaryDetails.vatRates[vatRateCategory]) {
+                summaryDetails.vatRates[vatRateCategory] = {
+                    vatPercentage : Number(item["vatPercentage"]),
+                    vatRate : item.vatRate,
+                    vatException : item["lineVatRate_exception"] || null,
+                    vatRateNetAmount : Number(item["lineNetAmount"]),
+                    vatRateNetAmountHUF : Number(item["lineNetAmount"]),
+                    vatRateVatAmount : Number(item["lineVatAmount"]),
+                    vatRateVatAmountHUF : Number(item["lineVatAmount"]),
+                    vatRateGrossAmount : Number(item["lineGrossAmountNormal"]),
+                    vatRateGrossAmountHUF : Number(item["lineGrossAmountNormal"]),
+                };
+                switch(item["lineVatRate_exception"]){
+                    case "TAM":
+                        summaryDetails.vatRates[vatRateCategory].exceptionReason = "Adómentes ÁFA tv. 86.§ (1)";
+                        break;
+                    case "AAM":
+                        summaryDetails.vatRates[vatRateCategory].exceptionReason = "Alanyi adómentes";
+                        break;
+                    case "KBAET":
+                        summaryDetails.vatRates[vatRateCategory].exceptionReason = "adómentes Közösségen belüli termékértékesítés";
+                        break;
+                }
+            } else {
+
+                summaryDetails.vatRates[vatRateCategory].vatRateNetAmount += Number(item["lineNetAmount"]);
+                summaryDetails.vatRates[vatRateCategory].vatRateNetAmountHUF += Number(item["lineNetAmount"]);
+                summaryDetails.vatRates[vatRateCategory].vatRateVatAmount += Number(item["lineVatAmount"]);
+                summaryDetails.vatRates[vatRateCategory].vatRateVatAmountHUF += Number(item["lineVatAmount"]);
+                summaryDetails.vatRates[vatRateCategory].vatRateGrossAmount += Number(item["lineGrossAmountNormal"]);
+                summaryDetails.vatRates[vatRateCategory].vatRateGrossAmountHUF += Number(item["lineGrossAmountNormal"]);
+            }
+
+            summaryDetails.invoiceNetAmount += Number(item["lineNetAmount"]);
+            summaryDetails.invoiceNetAmountHUF += Number(item["lineNetAmount"]);
+            summaryDetails.invoiceVatAmount += Number(item["lineVatAmount"]);
+            summaryDetails.invoiceVatAmountHUF += Number(item["lineVatAmount"]);
+            summaryDetails.invoiceGrossAmount += Number(item["lineGrossAmountNormal"]);
+            summaryDetails.invoiceGrossAmountHUF += Number(item["lineGrossAmountNormal"]);
+
+        });
+        summaryDetails.invoiceNetAmount = summaryDetails.invoiceNetAmount.toFixed(2);
+        summaryDetails.invoiceNetAmountHUF = summaryDetails.invoiceNetAmountHUF.toFixed(2);
+        summaryDetails.invoiceVatAmount = summaryDetails.invoiceVatAmount.toFixed(2);
+        summaryDetails.invoiceVatAmountHUF = summaryDetails.invoiceVatAmountHUF.toFixed(2);
+        summaryDetails.invoiceGrossAmount = summaryDetails.invoiceGrossAmount.toFixed(2);
+        summaryDetails.invoiceGrossAmountHUF = summaryDetails.invoiceGrossAmountHUF.toFixed(2);
+
+        // Clear VATNodes
+        const vatAmountLabel = document.getElementById('vatAmountLabel');
+        const vatLabel = document.getElementById('vatLabel');
+        if(vatAmountLabel && vatLabel) {
+            vatAmountLabel.querySelectorAll("input").forEach(n=>n.outerHTML = "");
+            vatLabel.querySelectorAll("input").forEach(n=>n.outerHTML = "");
+
+            Object.keys(summaryDetails.vatRates).forEach(rate=>{
+                const data = summaryDetails.vatRates[rate];
+                const vatRateGrossAmount = data.vatRateGrossAmount;
+                const vatPercentage = (data.vatPercentage * 100).toFixed(2);
+
+                const inputPercentage = document.createElement("input");
+                inputPercentage.setAttribute("type", "text");
+                inputPercentage.classList.add("form-control");
+                inputPercentage.disabled = true;
+                if(data.vatException) {
+                    inputPercentage.value = "0% (" + data.vatException + ")";
+                } else {
+                    inputPercentage.value = vatPercentage + "%";
+                }
+
+                vatLabel.appendChild(inputPercentage);
+
+                const inputAmount = document.createElement("input");
+                inputAmount.setAttribute("type", "text");
+                inputAmount.classList.add("form-control");
+                inputAmount.disabled = true;
+                inputAmount.value = vatRateGrossAmount + " Ft";
+                vatAmountLabel.appendChild(inputAmount);
+            });
+
+        }
+        const sumAmount = document.getElementById("sumAmount");
+        if(sumAmount){
+            sumAmount.innerHTML = summaryDetails.invoiceGrossAmount + " Ft";
+        }
+
+        return summaryDetails;
+    };
+
+    const addItem = function(){
+        const table = document.querySelector(".invoiceTable");
+        if(!table){
+            return false;
+        }
         const addItemTr = table.querySelector("tr.add_new_item");
         if(!addItemTr){
-            return;
+            return false;
         }
 
         const tds = addItemTr.querySelectorAll("td");
@@ -740,6 +897,7 @@ if (!isset($_SESSION["username"])) {
                                 //vatRate.disabled = false;
                             }
                         }
+                        calculateSummary();
                     }
                 })
             }
@@ -771,6 +929,8 @@ if (!isset($_SESSION["username"])) {
         if (invoiceCategory) {
             invoiceCategory.disabled = true;
         }
+        calculateSummary();
+        return false;
     };
 
     const calculateTaxes = function(){
@@ -854,7 +1014,6 @@ if (!isset($_SESSION["username"])) {
     };
 
     calculateTaxes();
-
 
     const downloadXML = function (){
         const invoiceForm = document.getElementById('invoiceForm');

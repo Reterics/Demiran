@@ -17,7 +17,7 @@ if (!isset($_SESSION["username"])) {
                 <div class="header">
                     <h5 class="title">Számlák</h5>
                     <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-                        <span class="plus-icon addInvoice"></span>
+                        <span class="plus-icon" onclick="location.href='./plugin.php?name=invoices&page=create'"></span>
                     <?php endif; ?>
                 </div>
 
