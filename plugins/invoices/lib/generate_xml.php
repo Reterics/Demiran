@@ -9,11 +9,13 @@
 $Demiran->add_method("generate_xml", function ($arguments){
     header('Content-type: application/json');
     $xml = null;
+    require('../plugins/invoices/functions.php');
     switch ($arguments['invoiceCategory']) {
         case 'SIMPLIFIED':
-            require('../invoice_types/simplified.php');
+            require('../plugins/invoices/invoice_types/simplified.php');
+
             $xml = createSimplifiedInvoice($arguments);
     }
 
-    echo json_encode($xml);
+    echo $xml;
 });

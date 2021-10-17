@@ -27,7 +27,7 @@
 				</supplierInfo>
 				<customerInfo>
 					<customerVatStatus>DOMESTIC</customerVatStatus>
-					{{#customerTaxNumber}}
+					{#customerTaxNumber}}
 						<customerVatData>
 							<customerTaxNumber>
 								<base:taxpayerId>99887764</base:taxpayerId>
@@ -35,7 +35,7 @@
 								<base:countyCode>02</base:countyCode>
 							</customerTaxNumber>
 						</customerVatData>
-					{{/customerTaxNumber}}
+					{/#customerTaxNumber}}
 					<customerName>Beszerző Kft</customerName>
 					<customerAddress>
 						<base:detailedAddress>
@@ -60,31 +60,31 @@
 			</invoiceHead>
 			<invoiceLines>
 				<mergedItemIndicator>false</mergedItemIndicator>
-				{{>invoiceLines}}
+				{>invoiceLines}}
 				<line>
-					<lineNumber>{{id}}</lineNumber>
+					<lineNumber>{{+id}}</lineNumber>
 					<productCodes>
 						<productCode>
-							<productCodeCategory>{{productCodeCategory}}</productCodeCategory>
-							<productCodeValue>{{productCodeValue}}</productCodeValue>
+							<productCodeCategory>{{+productCodeCategory}}</productCodeCategory>
+							<productCodeValue>{{+productCodeValue}}</productCodeValue>
 						</productCode>
 					</productCodes>
 					<lineExpressionIndicator>true</lineExpressionIndicator>
-					<lineNatureIndicator>{{lineNatureIndicator}}</lineNatureIndicator>
-					<lineDescription>{{lineDescription}}</lineDescription>
-					<quantity>{{quantity}}</quantity>
-					<unitOfMeasure>{{unitOfMeasure}}</unitOfMeasure>
-					<unitPrice>{{unitPrice}}</unitPrice>
-					<unitPriceHUF>{{unitPrice}}</unitPriceHUF>
+					<lineNatureIndicator>{{+lineNatureIndicator}}</lineNatureIndicator>
+					<lineDescription>{{+lineDescription}}</lineDescription>
+					<quantity>{{+quantity}}</quantity>
+					<unitOfMeasure>{{+unitOfMeasure}}</unitOfMeasure>
+					<unitPrice>{{+unitPrice}}</unitPrice>
+					<unitPriceHUF>{{+unitPrice}}</unitPriceHUF>
 					<lineAmountsSimplified>
 						<lineVatRate>
 							<vatContent>0.2126</vatContent>
 						</lineVatRate>
-						<lineGrossAmountSimplified>{{lineGrossAmountData}}</lineGrossAmountSimplified>
-						<lineGrossAmountSimplifiedHUF>{{lineGrossAmountData}}</lineGrossAmountSimplifiedHUF>
+						<lineGrossAmountSimplified>{{+lineGrossAmountData}}</lineGrossAmountSimplified>
+						<lineGrossAmountSimplifiedHUF>{{+lineGrossAmountData}}</lineGrossAmountSimplifiedHUF>
 					</lineAmountsSimplified>
 				</line>
-				{{/invoiceLines}}
+				{/>invoiceLines}}
 			</invoiceLines>
 			<invoiceSummary>
 				<summarySimplified>

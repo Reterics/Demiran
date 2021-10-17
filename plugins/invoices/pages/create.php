@@ -651,7 +651,8 @@ if (!isset($_SESSION["username"])) {
                     if (input.id === "lineVatRate") {
                         const num = parseFloat(input.value);
                         if (!Number.isNaN(num) && num) {
-                            values.push((num * 100).toFixed(2));
+                            values.push(input.value);
+                            //values.push((num * 100).toFixed(2));
                             ids.push(input.id);
                             if(!input.options[input.selectedIndex].text.includes("%")) {
                                 titles.push(input.options[input.selectedIndex].text);
@@ -870,7 +871,7 @@ if (!isset($_SESSION["username"])) {
                 if(result){
                     Demiran.call("generate_xml", formData, function(error,result) {
                         if(!error && result) {
-                            Demiran.downloadData(Math.floor(new Date().getTime()/360000) + ".json", result);
+                            Demiran.downloadData(Math.floor(new Date().getTime()/360000) + ".xml", result);
                         } else {
                             console.error(error);
                             console.error(result);
