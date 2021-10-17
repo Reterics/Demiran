@@ -9,21 +9,27 @@
 require('../config.php');
 include("./auth.php");
 require_once("./template.php");
-
+$pluginDir = '../plugins/';
 ?>
     <!DOCTYPE html>
     <html lang="hu">
     <head>
         <meta charset="utf-8">
         <title>Bővítmények - Demiran</title>
-        <?php admin_head("Bővítmények - Demiran"); ?>
+        <?php admin_head("Bővítmények - Demiran");
+
+        if (isset($_GET['name']) && $_GET['name'] != "" && file_exists($pluginDir . $_GET['name'] . '/style.css')){
+            echo "<style type='text/css'>";
+            require_once($pluginDir . $_GET['name'] . '/style.css');
+            echo "</style>";
+        }
+        ?>
     </head>
 <body>
 <?php
 require_once('./backend/main.php');
 admin_header_menu();
 require_once "process.php";
-$pluginDir = '../plugins/';
 
 if (isset($_GET['name']) && $_GET['name'] != ""):
     $currentPage = "index";

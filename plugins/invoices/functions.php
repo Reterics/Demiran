@@ -8,7 +8,7 @@
 
 global $connection;
 
-$query = "CREATE TABLE invoice_list (
+$query = "CREATE TABLE IF NOT EXISTS invoice_list (
       id int(11) AUTO_INCREMENT,
       unixID varchar(50) NOT NULL,
       supplierName varchar(60) NOT NULL,

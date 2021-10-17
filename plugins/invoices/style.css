@@ -1,0 +1,53 @@
+label {
+    display: inline-block;
+    margin-bottom: .5rem;
+    font-weight: normal;
+}
+
+.lio-modal .body .form-group {
+    margin-bottom: 0;
+    /*display: inline-flex;*/
+    flex-direction: row;
+}
+
+label > input.form-control, label > select.form-control {
+    margin-left: 0px;
+    width: 80%;
+}
+
+.container-md, .container-sm, .container-lg{
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+@media (min-width: 576px) {
+
+}
+
+@media (min-width: 768px) {
+    .container, .container-md, .container-sm {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container, .container-lg, .container-md, .container-sm {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container, .container-md, .container-sm, .container-xl {
+        max-width: 1140px;
+    }
+    .container-lg{
+        max-width: 100%;
+    }
+}
+
+.advanced {
+    display: none;
+}
