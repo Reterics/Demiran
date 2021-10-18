@@ -70,14 +70,14 @@ $Demiran->add_method("send_new_message", function ($arguments, $connection){
         }
 
         $create = date("Y-m-d H:i:s");
-        $query = "INSERT into `messages` (source, target, created, message, status, project, attachment, msg_id)
-VALUES ('$source', '$target', '$create', '$message', 'sent', '', '$imgTarget', '$msg_id')";
+        $query = "INSERT into `messages` (source, target, created, message, status, attachment, msg_id)
+VALUES ('$source', '$target', '$create', '$message', 'sent', '$imgTarget', '$msg_id')";
 
         $result = mysqli_query($connection, $query);
         if($result) {
             echo "OK";
         } else {
-            echo "Az adatok mentése sikertelen!";
+            echo "Az adatok mentése sikertelen!\n".json_encode(mysqli_error($connection));
         }
     } else {
         echo "Rossz bemeneti adatok";

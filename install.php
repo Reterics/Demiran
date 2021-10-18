@@ -109,7 +109,7 @@ if(isset($_POST['add_tables']) && isset($_POST['db_name']) && isset($_POST['data
             `created` datetime NOT NULL,
             `message` varchar(500) NOT NULL,
             `status` varchar(50) NOT NULL,
-            `project` int(11) NOT NULL,
+            `project` int(11),
             `attachment` varchar(1500) NOT NULL,
          PRIMARY KEY (`id`)
          );
