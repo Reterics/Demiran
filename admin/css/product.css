@@ -1248,3 +1248,15 @@ header nav.navbar {
 a.navbar-brand {
     padding-top: 5px;
 }
+
+.inner-padding {
+    padding: 5px;
+}
+.center-text{
+    text-align: center;
+}
+.center {
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
