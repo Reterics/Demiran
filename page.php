@@ -33,7 +33,7 @@ if (isset($_GET['id'])) :
                         <div class="header">
                             <h5 class="title">Hiba </h5>
                         </div>
-                        <div class="body">
+                        <div class="body inner-padding">
                             404 - A keresett oldal nem található!
                         </div>
 
@@ -54,7 +54,7 @@ if (isset($_GET['id'])) :
                         <?php echo $row['user'] . " - " . $row['modified']; ?>
                     </span>
                         </div>
-                        <div class="body">
+                        <div class="body inner-padding">
                             <?php echo html_entity_decode($row['details']); ?>
                         </div>
 
@@ -71,39 +71,55 @@ else:
     <div class="top_outer_div">
         <div class="row" style="justify-content: center">
             <div class="col-md-4">
-                <form class="form" method="get" style="text-align: center">
-                    <h2 style="color:black;">Oldalak Keresése</h2>
-                    <label for="page"> Keresőszó </label>
-                    <input type="text" class="form-control" value="page" id="page">
+                <form class="form center center-text" method="get">
+                    <h2>Oldalak Keresése</h2>
+                    <label for="searchfor"> Keresőszó </label>
+                    <input type="text" class="form-control" value="<?php if(isset($_GET['searchfor'])) {echo $_GET['searchfor'];} ?>" id="searchfor" name="searchfor" placeholder="Keresőszó">
 
-                    <input type="button" value="Keresés" class="btn btn-outline-black" style="margin-top: 5px">
+                    <input type="submit" value="Keresés" class="btn btn-outline-black" style="margin-top: 5px">
                 </form>
 
             </div>
         </div>
-        <div class="row" style="justify-content: center">
-            <div class="col-md-8" style="display: flex;flex-wrap: wrap">
+        <div class="row center">
+            <div class="col-md-12" style="display: flex;flex-wrap: wrap">
                 <?php
 
                 $categories = "SELECT COUNT(categories), categories FROM pages GROUP BY categories";
-                $pagesByCategories = "SELECT id, categories, title 
-  FROM pages 
- WHERE id IN (
-               SELECT MAX(id)
-                 FROM pages 
-                GROUP BY categories
-             )";
+
+                if(isset($_GET['searchfor']) && $_GET['searchfor'] != "") {
+                    $searchFor = mysqli_real_escape_string($connection, stripslashes($_GET['searchfor']));
+
+                    $pagesByCategories = "SELECT pages.id as id, categories, title, users.username as username, pages.user
+ FROM pages LEFT JOIN users ON pages.user = users.id 
+ WHERE pages.id IN (
+               SELECT id FROM pages GROUP BY categories ORDER BY id DESC
+             ) AND title LIKE '%".$searchFor."%' LIMIT 20";
+                } else {
+                    $pagesByCategories = "SELECT pages.id as id, categories, title, users.username as username, pages.user
+ FROM pages LEFT JOIN users ON pages.user = users.id 
+ WHERE pages.id IN (
+               SELECT id FROM pages GROUP BY categories ORDER BY id DESC
+             ) LIMIT 20";
+                }
 
                 $result = mysqli_query($connection, $pagesByCategories);
 
+                $titles = array();
                 while ($row = mysqli_fetch_array($result)) {
+                    if(!isset($titles[$row['categories']])) {
+                        $titles[$row['categories']] = array();
+                    }
+                    array_push($titles[$row['categories']], $row);
+                }
+                foreach ($titles as $categories => $rows):
 
                     ?>
                     <div class="lio-modal" style="max-width: 300px;margin: 5px;height: auto;">
                         <div class="header">
                             <h5 class="title"><?php
-                                if($row['categories'] != "" ) {
-                                    echo $row['categories'];
+                                if($categories != "" ) {
+                                    echo $categories;
                                 }else {
                                     echo "Kategorizálatlan";
                                 }
@@ -111,34 +127,27 @@ else:
                                 ?></h5>
                         </div>
                         <div class="body">
-                            <a href="?id=<?php echo $row['id'] ?>"><?php echo $row['title'] ?></a>
+                            <ul>
+                            <?php
+                                foreach ($rows as $row):
+                                ?><li>
+                                    <a href="?id=<?php echo $row['id'] ?>"><?php echo $row['title'] ?></a>
+                                    </li>
+                                <?php
+                                endforeach;
+                            ?>
+                            </ul>
                         </div>
                     </div>
 
                     <?php
-                }
+                endforeach;
 
 
                 ?>
             </div>
         </div>
 
-        <div class="row" style="justify-content: center">
-            <div class="col-md-8">
-                <section class="articles">
-                    <?php
-
-                        $sql = "SELECT * FROM pages ORDER BY id desc limit 10;";
-
-                        $result = mysqli_query($connection, $pagesByCategories);
-
-                        while ($row = mysqli_fetch_array($result)) {
-
-                        }
-                    ?>
-                </section>
-            </div>
-        </div>
     </div>
 
 <?php
