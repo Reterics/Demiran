@@ -39,6 +39,10 @@ const drawPieChart = function (options) {
 
     const arc = d3.arc()
         .innerRadius(0)
+        .outerRadius(radius * 0.85);
+
+    const arcOuter = d3.arc()
+        .innerRadius(0)
         .outerRadius(radius);
 
 
@@ -65,7 +69,22 @@ const drawPieChart = function (options) {
             .attr("d", arc)
             .attr("stroke", "white")
             .attr("stroke-width", "6px")
-            .each(function(d) { this._current = d; });
+            .each(function(d) { this._current = d; })
+            .on("mouseover", function(d) {
+                d3.select(this)      // make a selection of the parent g
+                    .transition()      // create a transition for the path
+                    .attr("d", arcOuter)    // update the path's d attribute
+                    .duration(300);   // do it slowly.
+
+            })
+            .on("mouseout", function(d) {
+                d3.select(this)      // make a selection of the parent g
+                    .transition()      // create a transition for the path
+                    .attr("d", arc)    // update the path's d attribute
+                    .duration(300);   // do it slowly.
+
+            });
+
 
 
         const text = svg.selectAll("text")
@@ -76,6 +95,7 @@ const drawPieChart = function (options) {
                 return "translate(" + arc.centroid(d) + ")";
             })
             .attr("text-anchor", "middle")
+            .attr("cursor", "pointer")
             .attr("fill", "white")
             .text(function (d) {
                 return d.data[nameKey];

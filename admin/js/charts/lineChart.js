@@ -56,8 +56,29 @@ const drawLineChart = function (options) {
         .attr("d", valueline);
 
 
+    function multiFormat(date) {
+        var formatMillisecond = d3.timeFormat(".%L"),
+            formatSecond = d3.timeFormat(":%S"),
+            formatMinute = d3.timeFormat("%I:%M"),
+            formatHour = d3.timeFormat("%I:%M %p"),
+            formatDay = d3.timeFormat("%a %d"),
+            formatWeek = d3.timeFormat("%b %d"),
+            formatMonth = d3.timeFormat("%B"),
+            formatYear = d3.timeFormat("%Y");
+
+        return (d3.timeSecond(date) < date ? formatMillisecond
+            : d3.timeMinute(date) < date ? formatSecond
+                : d3.timeHour(date) < date ? formatMinute
+                    : d3.timeDay(date) < date ? formatHour
+                        : d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek)
+                            : d3.timeYear(date) < date ? formatMonth
+                                : formatYear)(date);
+    }
+
     const xAxis_woy = d3.axisBottom(x)
         //.tickFormat(d3.timeFormat("Week %V"))
+        .ticks(8)
+        .tickFormat(multiFormat)
         .tickValues(inputData.map(d=>d[[dateKey]]));
 
     svg.append("g")
@@ -74,6 +95,15 @@ const drawLineChart = function (options) {
         .attr("cy", function(d) { return y(d[valueKey]) })
         .attr("r", 5);
 */
+    const showPrice = function(d) {
+        if(d[valueKey]){
+            const string = d[valueKey].toString();
+            return string.substr(0,3) + " " + string.substr(3,3) + " Ft ";
+
+        } else {
+            return d[valueKey];
+        }
+    };
 
     svg.selectAll(".text")
         .data(inputData)
@@ -83,8 +113,9 @@ const drawLineChart = function (options) {
         .attr("x", function(d, i) { return x(d[[dateKey]]) })
         .attr("y", function(d) { return y(d[valueKey]) })
         .attr("dy", "-5")
+        .attr("title", showPrice)
         .style("font-size", "13px")
-        .text(function(d) {return d[valueKey]; });
+        .text(showPrice);
 
 
 };
