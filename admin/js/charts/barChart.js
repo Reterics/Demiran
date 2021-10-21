@@ -21,7 +21,7 @@ const drawBarChart = function (options) {
 
     const {width, height} = node.getBoundingClientRect();
 
-    const margin = {top: 30, right: 30, bottom: 70, left: 60},
+    const margin = {top: 10, right: 30, bottom: 60, left: 40},
         innerWidth = width - margin.left - margin.right,
         innerHeight = height - margin.top - margin.bottom;
 
