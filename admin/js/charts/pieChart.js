@@ -21,14 +21,19 @@ const drawPieChart = function (options) {
 
     const data = options.data || [];
 
+    const totals = d3.sum(data, function(d) {
+        return d[valueKey];
+    });
+    data.forEach(function(d) {
+        d._percentage = Math.round(d[valueKey]  / totals * 100);
+    });
+
     const svg = d3.select(node)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
         .append("g")
         .attr("transform", `translate(${width / 2}, ${height / 2})`);
-
-
 
     const color = d3.scaleOrdinal(["#66c2a5","#fc8d62","#8da0cb",
         "#e78ac3","#a6d854","#ffd92f"]);
@@ -52,7 +57,7 @@ const drawPieChart = function (options) {
         return (t) => arc(i(t));
     }
     const key = function(d){ return d.data[nameKey]; };
-
+    const svgPosition = svg.node().getBoundingClientRect();
 
     function update(val = this.value) {
         // Join new data
@@ -71,18 +76,25 @@ const drawPieChart = function (options) {
             .attr("stroke-width", "6px")
             .each(function(d) { this._current = d; })
             .on("mouseover", function(d) {
-                d3.select(this)      // make a selection of the parent g
-                    .transition()      // create a transition for the path
-                    .attr("d", arcOuter)    // update the path's d attribute
-                    .duration(300);   // do it slowly.
+                d3.select(this)
+                    .transition()
+                    .attr("d", arcOuter)
+                    .duration(300);
+                Demiran.tooltip.html("Kategória: " + d.data.name +
+                "<br>Darabszám: " + d.data.price +
+                "<br>Arány: " + d.data._percentage);
+                Demiran.tooltip.show(d3.event)
 
             })
+            .on("mousemove", function (){
+                Demiran.tooltip.show(d3.event);
+            })
             .on("mouseout", function(d) {
-                d3.select(this)      // make a selection of the parent g
-                    .transition()      // create a transition for the path
-                    .attr("d", arc)    // update the path's d attribute
-                    .duration(300);   // do it slowly.
-
+                d3.select(this)
+                    .transition()
+                    .attr("d", arc)
+                    .duration(300);
+                Demiran.tooltip.hide();
             });
 
 
@@ -99,6 +111,8 @@ const drawPieChart = function (options) {
             .attr("fill", "white")
             .text(function (d) {
                 return d.data[nameKey];
+            }).on("mousemove", function (){
+                Demiran.tooltip.show(d3.event);
             });
 
 

@@ -30,7 +30,7 @@ $Demiran->add_method("add_page", function ($arguments, $connection) {
 
     $result = mysqli_query($connection, $query);
     if ($result) {
-        echo "";
+        echo "OK";
     } else {
         echo mysqli_connect_error();
     }

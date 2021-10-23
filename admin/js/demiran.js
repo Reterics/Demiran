@@ -955,6 +955,51 @@ const Demiran = {
                 }, 400);
             }
         }
+    },
+    tooltip:{
+        show:function (event){
+            let x;
+            let y;
+            if(!this._tooltipNode) {
+                this._createTooltipNode();
+            }
+            const offsetY = this._tooltipNode.offsetHeight + 15;
+
+            if(event && event.pageX && event.pageY) {
+                x = event.pageX ;
+                y = event.pageY - offsetY;
+            } else if(event && event.x && event.y) {
+                x = event.x ;
+                y = event.y - offsetY;
+            }
+            if(x && this._tooltipNode){
+                this._tooltipNode.style.display = "block";
+                this._tooltipNode.style.left = x + "px";
+                this._tooltipNode.style.top = y + "px";
+            }
+        },
+        hide: function (){
+            if(this._tooltipNode){
+                this._tooltipNode.style.display = "none";
+            }
+        },
+        html: function (innerHTML){
+            if(!this._tooltipNode){
+                this._createTooltipNode();
+            }
+            this._tooltipNode.innerHTML = innerHTML;
+        },
+        _tooltipNode:null,
+        _createTooltipNode:function (){
+            if(this._tooltipNode){
+                return;
+            }
+            this._tooltipNode = document.createElement("div");
+            this._tooltipNode.classList.add("tooltip");
+            this._tooltipNode.style.opacity = 1;
+            this._tooltipNode.style.maxWidth = "200px";
+            document.body.appendChild(this._tooltipNode);
+        }
     }
 };
 
