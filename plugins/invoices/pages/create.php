@@ -332,12 +332,12 @@ if (!isset($_SESSION["username"])) {
                     <div class="form-group">
                         <div class="col-md-3">
                             <label for="full_name">Számla Kelte
-                                <input type="date" class="form-control" id="invoiceDeliveryDate" name="invoiceDeliveryDate" value="2021-10-17">
+                                <input type="date" class="form-control" id="invoiceIssueDate" name="invoiceIssueDate" value="2021-10-17">
                             </label>
                         </div>
                         <div class="col-md-3">
                             <label for="full_name">Számla Teljesítés
-                                <input type="date" class="form-control" id="invoiceIssueDate" name="invoiceIssueDate" value="2021-10-17">
+                                <input type="date" class="form-control" id="invoiceDeliveryDate" name="invoiceDeliveryDate" value="2021-10-17">
                             </label>
                         </div>
                         <div class="col-md-3">

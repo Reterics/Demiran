@@ -34,12 +34,35 @@ $query = "CREATE TABLE IF NOT EXISTS invoice_list (
       totalPrice varchar(20) NOT NULL,
       data TEXT,
       PRIMARY KEY  (id)
+      );
+
+      CREATE TABLE IF NOT EXISTS invoice_user (
+      id int(11) AUTO_INCREMENT,
+      supplierName varchar(60),
+      supplierTaxNumber varchar(15) NOT NULL UNIQUE,
+      supplierPostCode varchar(10),
+      supplierTown varchar(20),
+      supplierStreetName varchar(60),
+      supplierStreet varchar(60),
+      supplierAddress varchar(60),
+      supplierBankAccountNumber varchar(60),
+      
+      login varchar(60),
+      password varchar(60),
+      signKey varchar(60),
+      exchangeKey varchar(60),
+
+      PRIMARY KEY  (id)
       )";
-$result = mysqli_query($connection, $query);
+$result = mysqli_multi_query($connection, $query);
 if(!$result) {
     echo "Probléma merült fel a táblák ellenőrzése során";
+} else {
+    while(mysqli_more_results($connection))
+    {
+        mysqli_next_result($connection);
+    }
 }
-
 
 /**
  * Custom Handlebar based XML parser to create custom Templates for every use case
@@ -121,3 +144,16 @@ function xmlStringParser($xmlContent, $data){
     }
     return $xmlContent;
 }
+
+$softwareData = array(
+    "softwareId" => "HU57823357DEMIRAN1",
+    "softwareName" => "Demiran Projektmenedzsment Szoftver",
+    "softwareOperation" => "ONLINE_SERVICE",
+    "softwareMainVersion" => "string",
+    "softwareDevName" => "Reterics Attila",
+    "softwareDevContact" => "attila@reterics.com",
+    "softwareDevCountryCode" => "HU",
+    "softwareDevTaxNumber" => "57823357",
+);
+
+require_once("load_nav_classes.php");

@@ -11,8 +11,13 @@ label {
 }
 
 label > input.form-control, label > select.form-control {
-    margin-left: 0px;
+    margin-left: 0;
     width: 80%;
+}
+
+.lio-modal label > input.form-control, label > select.form-control {
+    margin-left: 0;
+    width: 100%;
 }
 
 .container-md, .container-sm, .container-lg{
