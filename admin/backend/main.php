@@ -1,10 +1,14 @@
 <?php
 /**
- * Created by PhpStorm.
- * Author: Attila Reterics
- * Date: 2021-09-18
- * Time: 10:38
- */
+ * DEMIRAN Backend Core Class
+ *
+ * @author Attila Reterics
+ * @license BSD-3-Clause
+ * @copyright Attila Reterics
+ * @date 18.09.2021
+ * @contact reterics.attila@gmail.com
+ * @version 1.0.0
+ **/
 
 
 class DemiranBackend {

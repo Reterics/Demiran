@@ -18,14 +18,13 @@ if(isset($_POST['add_tables']) && isset($_POST['db_name']) && isset($_POST['data
     $db_name = $_POST['db_name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $port = isset($_POST['port']) ? $_POST['port'] : "3306";
+    $port = isset($_POST['port']) ? intval($_POST['port']) : 3306;
 
     mysqli_report(MYSQLI_REPORT_STRICT);
     $connection = false;
     try{
         $connection = mysqli_connect($database, $username, $password, $db_name, $port);
     }catch(Exception $e) {
-
     }
     if(!$connection) {
         header("Location: /install.php?error=sql");

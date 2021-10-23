@@ -7,8 +7,8 @@
  */
 global $globalSettings;
 $timezone = $globalSettings->getSettingByName("timezone");
-if($timezone){
-    date_default_timezone_set($timezone||'Europe/Budapest');
+if($timezone && isset($timezone['message'])){
+    date_default_timezone_set($timezone['message']);
 } else {
     date_default_timezone_set('Europe/Budapest');
 }
