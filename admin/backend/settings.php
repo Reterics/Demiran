@@ -6,8 +6,6 @@
  * Time: 8:20 PM
  */
 
-
-
 class Settings {
     public $_settings = array();
     public $_last_sql_error = "";
@@ -21,12 +19,16 @@ class Settings {
         $sql = "SELECT * FROM settings;";
         if (isset($connection) && $connection) {
             $result = mysqli_query($connection, $sql);
-
-            while ($row = mysqli_fetch_array($result)) {
-                if (isset($row['id']) && isset($row['message']) && isset($row['setting_name'])) {
-                    array_push($this->_settings, $row);
+            if($result){
+                while ($row = mysqli_fetch_array($result)) {
+                    if (isset($row['id']) && isset($row['message']) && isset($row['setting_name'])) {
+                        array_push($this->_settings, $row);
+                    }
                 }
+            } else {
+            $this->_last_sql_error = "SQL Query Failed";
             }
+
         } else {
             $this->_last_sql_error = "No SQL Connection found";
         }
@@ -51,6 +53,10 @@ class Settings {
         }
     }
 
+    /**
+     * @param mixed $setting
+     * @return bool
+     */
     function saveSetting($setting) {
         global $connection;
         if (!$connection) {
@@ -92,7 +98,11 @@ class Settings {
         }
     }
 
-    function saveAllSettings() {
+    /**
+     * @return bool
+     */
+    function saveAllSettings()
+    {
         $bool = true;
         foreach($this->_settings as $setting) {
             if ($bool == true){
@@ -102,6 +112,10 @@ class Settings {
         return $bool;
     }
 
+    /**
+     * @param string $name
+     * @return mixed|null
+     */
     function getSettingByName($name) {
         $selected = null;
         foreach($this->_settings as $setting) {
@@ -111,6 +125,10 @@ class Settings {
         } return $selected;
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     function getSettingValueByName($name) {
         $selected = $this->getSettingByName($name);
         if ($selected && isset($selected["message"])) {

@@ -6,6 +6,7 @@
  * @copyright Attila Reterics
  * @date 13.10.2020
  * @contact reterics.attila@gmail.com
+ * @version 1.0.0
  */
 
 const Misc = {
