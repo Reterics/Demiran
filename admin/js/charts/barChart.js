@@ -71,6 +71,15 @@ const drawBarChart = function (options) {
         })
         .attr("fill", function (d) {
             return d[colorKey];
-        });
+        })
+        .on("mouseover", function (d){
+            Demiran.tooltip.html("Felhasználó: " + d.username + "<br>Ledolgozott órák: "+d.duration);
+        })
+        .on("mousemove", function (){
+            Demiran.tooltip.show(d3.event);
+        })
+        .on("mouseout", function (){
+            Demiran.tooltip.hide();
+        })
     return svg.node();
 };

@@ -16,11 +16,11 @@ const drawLineChart = function (options) {
     const valueKey = options.value ? options.value : "value";
     const colorKey = options.color ? options.color : "color";
 
-    const inputData = options.data.sort((a, b) => b[dateKey] - a[dateKey]);
+    const inputData = options.data.sort((a, b) => a[dateKey] - b[dateKey]);
 
     const {width, height} = node.getBoundingClientRect();
 
-    const margin = {top: 20, right: 60, bottom: 25, left: 25};
+    const margin = {top: 20, right: 60, bottom: 25, left: 60};
 
     let innerWidth =     width - margin.left - margin.right;
     let innerHeight =    height - margin.top - margin.bottom;
@@ -84,6 +84,11 @@ const drawLineChart = function (options) {
         .attr("transform", "translate(0," + innerHeight + ")")
         .call(xAxis_woy);
 
+    const yAxis = d3.axisLeft(y)
+        .ticks(8);
+    svg.append("g")
+        .call(yAxis);
+
     /*svg.selectAll(".dot")
         .data(inputData)
         .enter()
@@ -115,11 +120,10 @@ const drawLineChart = function (options) {
         .style("font-size", "13px")
         .text(showPrice);
 
-// This allows to find the closest X index of the mouse:
-    var bisect = d3.bisector(function(d) { return d.x; }).left;
 
-    // Create the circle that travels along the curve of chart
-    var focus = svg
+    const bisect = d3.bisector(function(d) { return d[dateKey]; }).left;
+
+    const focus = svg
         .append('g')
         .append('circle')
         .style("fill", "none")
@@ -127,42 +131,44 @@ const drawLineChart = function (options) {
         .attr('r', 8.5)
         .style("opacity", 0)
 
-    // Create the text that travels along the curve of chart
-    var focusText = svg
-        .append('g')
-        .append('text')
-        .style("opacity", 0)
-        .attr("text-anchor", "left")
-        .attr("alignment-baseline", "middle");
-    // What happens when the mouse move -> show the annotations at the right positions.
-    function mouseover() {
-        focus.style("opacity", 1)
-        focusText.style("opacity",1)
-    }
+    let selectedData;
+
+    const svgPosition = svg.node().getBoundingClientRect();
 
     function mousemove() {
-        // recover coordinate we need
-        var x0 = x.invert(d3.mouse(this)[0]);
-        var i = bisect(data, x0, 1);
-        selectedData = data[i]
-        focus
-            .attr("cx", x(selectedData.x))
-            .attr("cy", y(selectedData.y))
-        focusText
-            .html("x:" + selectedData.x + "  -  " + "y:" + selectedData.y)
-            .attr("x", x(selectedData.x)+15)
-            .attr("y", y(selectedData.y))
+        const x0 = x.invert(d3.mouse(this)[0]);
+        const i = bisect(inputData, x0);//, 1
+        selectedData = inputData[i];
+
+        if(selectedData){
+            focus
+                .attr("cx", x(selectedData[dateKey]))
+                .attr("cy", y(selectedData[valueKey]))
+
+            const html = "Időpont: "+(selectedData[dateKey].toISOString().replace("T", " ").split(".")[0])+
+                "<br> Bevétel: " + selectedData[valueKey] + " Ft";
+            Demiran.tooltip.html(html);
+            Demiran.tooltip.show({
+                x:svgPosition.left + x(selectedData[dateKey]),
+                y:svgPosition.top + y(selectedData[valueKey]),
+            });
+        }
+
+    }
+
+    function mouseover(){
+        focus.style("opacity", 1)
     }
     function mouseout() {
         focus.style("opacity", 0)
-        focusText.style("opacity", 0)
+        Demiran.tooltip.hide();
     }
     svg
         .append('rect')
         .style("fill", "none")
         .style("pointer-events", "all")
-        .attr('width', width)
-        .attr('height', height)
+        .attr('width', innerWidth)
+        .attr('height', innerHeight)
         .on('mouseover', mouseover)
         .on('mousemove', mousemove)
         .on('mouseout', mouseout);

@@ -283,7 +283,7 @@ function admin_header_menu(){
 
 <header class="main">
     <nav class="navbar navbar-expand-lg navbar-dark"><a
-                class="navbar-brand" href="#">
+                class="navbar-brand" href="index.php">
             <?php
                 echo file_get_contents("./img/logo.svg");
             ?>

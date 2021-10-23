@@ -152,7 +152,6 @@ $ip = getIPAddress();
                     const barChartData = [];
                     let colorIndex = 0;
                     const colors = ["#DDA0DD", "steelblue", "#8A2BE2", "#F08080", "#7FFF00"];
-
                     const userData = {};
                     json.forEach(function (d){
                         const start_time = new Date(d.start_time);
@@ -222,10 +221,8 @@ $ip = getIPAddress();
                         deadline: new Date().getTime(),
                         price: 0
                     });
-                    json.sort(function(a,b){
-                        // Turn your strings into dates, and then subtract them
-                        // to get a value that is either negative, positive, or zero.
-                        return new Date(b.deadline) - new Date(a.deadline);
+                    json = json.sort(function(a,b){
+                        return new Date(a.deadline) - new Date(b.deadline);
                     });
                     const categories = {};
                     json.forEach(function (d){

@@ -54,7 +54,6 @@ $Demiran->add_method("add_project_task", function ($arguments, $connection){
     $query = "INSERT into `project_tasks` (users, title, project, `repeat`, image, details, attachments, state, priority, start_time, deadline, `order`)
 VALUES ('$users', '$title', '$project_id', '$repeat', '', '', '', '$state', '$priority', '$start_date', '$end_date', '1')";
     $result = mysqli_query($connection, $query);
-    echo "$query";
     if ($result) {
         echo "OK";
     } else {
