@@ -7,11 +7,43 @@ require_once('env.php');
 
 mysqli_report(MYSQLI_REPORT_STRICT);
 $connection = false;
-$connection = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
-
-if(mysqli_connect_errno()){
-    die("Failed to connect to MySQL: " . mysqli_connect_error());
+try {
+    $connection = @mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+}catch (Exception $e) {
+    //echo $e;
 }
+
+if(!$connection):
+    ?>
+<!DOCTYPE html>
+<html lang="hu">
+    <head>
+        <?php head("Hiba a kapcsolat létrehozása során"); ?>
+        <style>
+            header.main > .navbar.navbar-expand-lg.navbar-dark > #headerMenu {display: none !important;}
+        </style>
+    </head>
+    <body><?php headerHTML(); ?>
+        <div class="top_outer_div">
+            <div class="row" style="justify-content: center;">
+                <div class="col-md-6">
+                    <div class="lio-modal">
+                        <div class="header">
+                            <h5 class="title">Hiba</h5>
+                        </div>
+                        <div class="body" style="padding: 5px">
+                            <?php echo "Failed to connect to MySQL: " . mysqli_connect_error(); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+
+    <?php
+    die();
+endif;
 
 require_once "admin/backend/settings.php";
 $globalSettings = new Settings();
