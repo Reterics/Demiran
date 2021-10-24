@@ -10,9 +10,275 @@ if (!isset($_SESSION["username"])) {
     die("Az oldal megtekintesehez be kell jelentkezned");
 }
 
+$maxId = "SELECT MAX(id) as last_id FROM invoice_list;";
+$result = sqlGetFirst($maxId);
+$lastId = "001";
+$today = date("Y-m-d");
+if($result && isset($result['last_id'])) {
+    $lastId = $result['last_id'];
+}
+$len = strlen($lastId);
+if($len < 2){
+    $lastId = "00".$lastId;
+} else if($len < 3) {
+    $lastId = "0".$lastId;
+}
+
+$newInvoiceId = $today."/".$lastId;
+
+global $technicalUser;
+global $missingData;
+global $missingDataList;
+
+$supplierTaxpayerId = "";
+$supplierVatCode = "";
+$supplierCountyCode = "";
+if(isset($technicalUser) && isset($technicalUser['supplierTaxNumber'])){
+    $parts = explode("-", $technicalUser['supplierTaxNumber']);
+    if(count($parts) < 3) {
+        $missingData = true;
+    }
+    $supplierTaxpayerId = $parts[0];
+    $supplierVatCode = $parts[1];
+    $supplierCountyCode = $parts[2];
+}
+
+
 ?>
-<form id="invoiceForm" onsubmit="return false" method="post">
-<div class="container-md">
+<form id="invoiceForm" onsubmit="return false" method="post" style="max-width: 1270px; margin-left: auto; margin-right: auto;">
+    <div class="top_outer_div">
+        <h3 style="padding: 10px">Új számla (sorszám: <?php echo $newInvoiceId; ?>)</h3>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="lio-modal">
+                    <div class="header">
+                        <h5>Számla beállítások</h5>
+                    </div>
+                    <div class="body">
+                        <div class="form-group invoice-header-group">
+                            <div class="col-md-12">
+                                <label for="nav_status">NAV Kapcsolat
+                                    <input type="text" class="form-control" id="nav_status" name="nav_status" value="<?php
+                                    $result = getNAVToken();
+                                    if(!$result['error']){
+                                        echo "Sikeres kapcsolat! Token: ". $result['result'];
+                                    } else {
+                                        if(strlen($result['error']) > 90){
+                                            echo "Sikertelen: ".substr(str_replace("\n","",stripslashes($result['error'])), 0,90);
+                                        } else {
+                                            echo "Sikertelen: ".str_replace("\n","",stripslashes($result['error']));
+                                        }
+
+                                    }
+                                    ?>" disabled>
+                                </label>
+
+
+                            </div>
+                            <div class="col-md-6">
+                                <label for="full_name">Kiállító
+                                    <select class="form-control" id="technicalUser" name="invoiceAppearance">
+                                        <?php echo getTechnicalUsersAsOptions($_GET['user']); ?>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="full_name">Számla Típus
+                                    <select class="form-control" id="invoiceCategory" name="invoiceCategory">
+                                        <option value="SIMPLIFIED">Egyszerüsített</option>
+                                        <option value="NORMAL">Normál</option>
+                                        <option value="AGGREGATE" disabled style="display: none">AGGREGATE</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="full_name">Számla Megjelenés
+                                    <select class="form-control" id="invoiceAppearance" name="invoiceAppearance">
+                                        <option value="PAPER">Papír alapú</option>
+                                        <option value="ELECTRONIC">Elektronikus</option>
+                                        <option value="EDI">EDI</option>
+                                        <option value="UNKNOWN">Ismeretlen</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="col-md-6" style="display: none">
+                                <label for="full_name">Pénznem
+                                    <select class="form-control" id="currencyCode" name="currencyCode">
+                                        <option value="HUF">HUF</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="full_name">Fizetési Mód
+                                    <select class="form-control" id="paymentMethod" name="paymentMethod">
+                                        <option value="CASH">Készpénz</option>
+                                        <option value="TRANSFER">Átutalás</option>
+                                        <option value="CARD">Bankkártya</option>
+                                        <option value="VOUCHER">VOUCHER</option>
+                                        <option value="Other">Egyéb</option>
+                                    </select>
+                                </label>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="full_name">Számla Kelte
+                                    <input type="date" class="form-control" id="invoiceIssueDate" name="invoiceIssueDate" value="<?php echo $today; ?>">
+                                </label>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="full_name">Számla Teljesítés
+                                    <input type="date" class="form-control" id="invoiceDeliveryDate" name="invoiceDeliveryDate" value="<?php echo $today; ?>">
+                                </label>
+                            </div>
+                            <div class="col-md-6" style="display: none">
+                                <label for="full_name">Számla Sorszáma
+                                    <input type="text" class="form-control" id="invoiceNumber" name="invoiceNumber" value="<?php echo $newInvoiceId; ?>">
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="lio-modal">
+                    <div class="header">
+                        <h5 class="title">Vevő</h5>
+                    </div>
+                    <div class="body">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="customerVatStatus">Adózói Státusz
+                                    <select class="form-control" id="customerVatStatus" name="customerVatStatus">
+                                        <option value="PRIVATE_PERSON">Magánszemély</option>
+                                        <option value="DOMESTIC">Belföldi adózó</option>
+                                    </select>
+                                </label>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="customerName">Teljes Név
+                                    <input type="text" class="form-control" name="customerName" id="customerName"
+                                           placeholder="Teljes név" required/></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4">
+                                <label for="customerPostCode">Irányítószám
+                                    <input type="number" min="1000" max="9999" alt="PostCode" class="form-control" name="customerPostCode" id="customerPostCode" placeholder="8900">
+                                </label>
+                            </div>
+                            <div class="col-md-8">
+                                <label for="customerTown">Település
+                                    <input type="text" class="form-control" placeholder="Zalaegerszeg" id="customerTown" name="customerTown">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                <label for="customerStreetName">Közterület
+                                    <input type="text" class="form-control" placeholder="Arany János" id="customerStreetName" name="customerStreetName">
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="customerStreet">Jelleg
+                                    <select class="form-control" id="customerStreet" name="customerStreet">
+                                        <option value="út">út</option>
+                                        <option value="utca">utca</option>
+                                        <option value="útja">útja</option>
+                                        <option value="allé">allé</option>
+                                        <option value="alsó rakpart">alsó rakpart</option>
+                                        <option value="alsósor">alsósor</option>
+                                        <option value="bekötőút">bekötőút</option>
+                                        <option value="dűlő">dűlő</option>
+                                        <option value="fasor">fasor</option>
+                                        <option value="felső rakpart">felső rakpart</option>
+                                        <option value="felsősor">felsősor</option>
+                                        <option value="főtér">főtér</option>
+                                        <option value="főút">főút</option>
+                                        <option value="gát">gát</option>
+                                        <option value="határ">határ</option>
+                                        <option value="határsor">határsor</option>
+                                        <option value="határút">határút</option>
+                                        <option value="ipartelep">ipartelep</option>
+                                        <option value="kert">kert</option>
+                                        <option value="kertsor">kertsor</option>
+                                        <option value="korzó">korzó</option>
+                                        <option value="környék">környék</option>
+                                        <option value="körönd">körönd</option>
+                                        <option value="körtér">körtér</option>
+                                        <option value="körút">körút</option>
+                                        <option value="köz">köz</option>
+                                        <option value="lakópark">lakópark</option>
+                                        <option value="lakótelep">lakótelep</option>
+                                        <option value="lejtő">lejtő</option>
+                                        <option value="lépcső">lépcső</option>
+                                        <option value="lépcsősor">lépcsősor</option>
+                                        <option value="liget">liget</option>
+                                        <option value="major">major</option>
+                                        <option value="mélyút">mélyút</option>
+                                        <option value="negyed">negyed</option>
+                                        <option value="oldal">oldal</option>
+                                        <option value="országút">országút</option>
+                                        <option value="park">park</option>
+                                        <option value="part">part</option>
+                                        <option value="pincesor">pincesor</option>
+                                        <option value="puszta">puszta</option>
+                                        <option value="rakpart">rakpart</option>
+                                        <option value="sétány">sétány</option>
+                                        <option value="sikátor">sikátor</option>
+                                        <option value="sor">sor</option>
+                                        <option value="sugárút">sugárút</option>
+                                        <option value="szállás">szállás</option>
+                                        <option value="szektor">szektor</option>
+                                        <option value="szél">szél</option>
+                                        <option value="szer">szer</option>
+                                        <option value="sziget">sziget</option>
+                                        <option value="szőlőhegy">szőlőhegy</option>
+                                        <option value="tag">tag</option>
+                                        <option value="tanya">tanya</option>
+                                        <option value="telep">telep</option>
+                                        <option value="tér">tér</option>
+                                        <option value="tető">tető</option>
+                                        <option value="udvar">udvar</option>
+                                        <option value="üdülőpart">üdülőpart</option>
+                                        <option value="üdülősor">üdülősor</option>
+                                        <option value="üdülőtelep">üdülőtelep</option>
+                                        <option value="vár">vár</option>
+                                        <option value="várkert">várkert</option>
+                                        <option value="város">város</option>
+                                        <option value="villasor">villasor</option>
+                                        <option value="völgy">völgy</option>
+                                        <option value="zug">zug</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="customerAddress">Házszám
+                                    <input type="text" class="form-control" placeholder="20/a" id="customerAddress" name="customerAddress">
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label>Adószám
+                                    <input type="text" class="form-control" placeholder="11111111-2-42" id="customerTaxNumber" name="customerTaxNumber" maxlength="13" pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}">
+                                    <input type="hidden" id="customerTaxpayerId" name="customerTaxpayerId" >
+                                    <input type="hidden" id="customerVatCode" name="customerVatCode" >
+                                    <input type="hidden" id="customerCountyCode" name="customerCountyCode" >
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="top_outer_div" style="display: none">
 
     <div class="row">
         <div class="col-md-6">
@@ -27,40 +293,41 @@ if (!isset($_SESSION["username"])) {
                         <div class="col-md-12">
                         <label for="full_name">Teljes Név
                             <input type="text" class="form-control" name="supplierName" id="supplierName"
-                                   placeholder="Teljes név" required/></label>
+                                   placeholder="Teljes név" value="<?php echo getDataIfThere($technicalUser, "supplierName"); ?>" required/></label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
                         <label>Adószám
-                            <input type="text" class="form-control" placeholder="11111111-2-42" id="supplierTaxNumber" name="supplierTaxNumber" maxlength="13" pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}">
-                            <input type="hidden" id="supplierTaxpayerId" name="supplierTaxpayerId" >
-                            <input type="hidden" id="supplierVatCode" name="supplierVatCode" >
-                            <input type="hidden" id="supplierCountyCode" name="supplierCountyCode" >
+                            <input type="text" class="form-control" placeholder="11111111-2-42" id="supplierTaxNumber" value="<?php echo getDataIfThere($technicalUser, "supplierTaxNumber"); ?>" name="supplierTaxNumber" maxlength="13" pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}">
+                            <input type="hidden" id="supplierTaxpayerId" name="supplierTaxpayerId" value="<?php echo getDataIfThere($technicalUser, "supplierTaxpayerId") ?>">
+                            <input type="hidden" id="supplierVatCode" name="supplierVatCode" value="<?php echo getDataIfThere($technicalUser, "supplierVatCode") ?>">
+                            <input type="hidden" id="supplierCountyCode" name="supplierCountyCode" value="<?php echo getDataIfThere($technicalUser, "supplierCountyCode") ?>">
                         </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-4">
                             <label for="supplierPostCode">Irányítószám
-                                <input type="number" min="1000" max="9999" alt="PostCode" class="form-control" name="supplierPostCode" id="supplierPostCode" placeholder="8900">
+                                <input type="number" min="1000" max="9999" alt="PostCode" class="form-control" value="<?php echo getDataIfThere($technicalUser, "supplierPostCode"); ?>" name="supplierPostCode" id="supplierPostCode" placeholder="8900">
                             </label>
                         </div>
                         <div class="col-md-8">
                             <label for="supplierTown">Település
-                                <input type="text" class="form-control" name="supplierTown" id="supplierTown"
+                                <input type="text" class="form-control" name="supplierTown" id="supplierTown" value="<?php echo getDataIfThere($technicalUser, "supplierTown"); ?>"
                                        placeholder="Zalaegerszeg" required/></label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-6">
                             <label for="supplierStreetName">Közterület
-                                <input type="text" class="form-control" name="supplierStreetName" id="supplierStreetName"
+                                <input type="text" class="form-control" name="supplierStreetName" id="supplierStreetName" value="<?php echo getDataIfThere($technicalUser, "supplierStreetName"); ?>"
                                        placeholder="Kossuth" required/></label>
                         </div>
                         <div class="col-md-3">
                             <label for="supplierStreet">Jelleg
                                 <select class="form-control" id="supplierStreet" name="supplierStreet">
+                                    <option value="<?php echo getDataIfThere($technicalUser, "supplierStreet"); ?>"><?php echo getDataIfThere($technicalUser, "supplierStreet"); ?></option>
                                     <option value="út">út</option>
                                     <option value="utca">utca</option>
                                     <option value="útja">útja</option>
@@ -133,234 +400,40 @@ if (!isset($_SESSION["username"])) {
                         </div>
                         <div class="col-md-3">
                             <label for="supplierAddress">Házszám
-                                <input type="text" class="form-control" placeholder="20/a" id="supplierAddress" name="supplierAddress">
+                                <input type="text" class="form-control" placeholder="20/a" id="supplierAddress" name="supplierAddress" value="<?php echo getDataIfThere($technicalUser, "supplierAddress"); ?>">
                             </label>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="supplierBankAccountNumber">Bankszámlaszám
-                                <input type="text" class="form-control" placeholder="88888888-66666666-12345678" id="supplierBankAccountNumber" name="supplierBankAccountNumber" pattern="[0-9]{8}[-][0-9]{8}[-][0-9]{8}|[0-9]{8}[-][0-9]{8}|[A-Z]{2}[0-9]{2}[0-9A-Za-z]{11,30}">
+                                <input type="text" class="form-control" placeholder="88888888-66666666-12345678" id="supplierBankAccountNumber" name="supplierBankAccountNumber" value="<?php echo getDataIfThere($technicalUser, "supplierBankAccountNumber"); ?>" pattern="[0-9]{8}[-][0-9]{8}[-][0-9]{8}|[0-9]{8}[-][0-9]{8}|[A-Z]{2}[0-9]{2}[0-9A-Za-z]{11,30}">
                             </label>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="lio-modal">
-                <div class="header">
-                    <h5 class="title">Vevő</h5>
-                </div>
-                <div class="body">
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <label for="customerVatStatus">Adózói Státusz
-                                <select class="form-control" id="customerVatStatus" name="customerVatStatus">
-                                    <option value="PRIVATE_PERSON">Magánszemély</option>
-                                    <option value="DOMESTIC">Belföldi adózó</option>
-                                </select>
-                            </label>
+        <script type="application/javascript">
+            <?php
+            if($missingData == true){
+                echo "Demiran.alert('Hiányzó adatok a Technikai felhasználónál: <br>".implode("<br>",$missingDataList)."');";
+            }
+            if($result['error']){
+                echo 'console.log("'.str_replace("\n","",stripslashes($result['error'])).'");';
+            }
+            ?>
+        </script>
 
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <label for="customerName">Teljes Név
-                                <input type="text" class="form-control" name="customerName" id="customerName"
-                                       placeholder="Teljes név" required/></label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-4">
-                            <label for="customerPostCode">Irányítószám
-                                <input type="number" min="1000" max="9999" alt="PostCode" class="form-control" name="customerPostCode" id="customerPostCode" placeholder="8900">
-                            </label>
-                        </div>
-                        <div class="col-md-8">
-                            <label for="customerTown">Település
-                                <input type="text" class="form-control" placeholder="Zalaegerszeg" id="customerTown" name="customerTown">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-6">
-                            <label for="customerStreetName">Közterület
-                                <input type="text" class="form-control" placeholder="Arany János" id="customerStreetName" name="customerStreetName">
-                            </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="customerStreet">Jelleg
-                                <select class="form-control" id="customerStreet" name="customerStreet">
-                                    <option value="út">út</option>
-                                    <option value="utca">utca</option>
-                                    <option value="útja">útja</option>
-                                    <option value="allé">allé</option>
-                                    <option value="alsó rakpart">alsó rakpart</option>
-                                    <option value="alsósor">alsósor</option>
-                                    <option value="bekötőút">bekötőút</option>
-                                    <option value="dűlő">dűlő</option>
-                                    <option value="fasor">fasor</option>
-                                    <option value="felső rakpart">felső rakpart</option>
-                                    <option value="felsősor">felsősor</option>
-                                    <option value="főtér">főtér</option>
-                                    <option value="főút">főút</option>
-                                    <option value="gát">gát</option>
-                                    <option value="határ">határ</option>
-                                    <option value="határsor">határsor</option>
-                                    <option value="határút">határút</option>
-                                    <option value="ipartelep">ipartelep</option>
-                                    <option value="kert">kert</option>
-                                    <option value="kertsor">kertsor</option>
-                                    <option value="korzó">korzó</option>
-                                    <option value="környék">környék</option>
-                                    <option value="körönd">körönd</option>
-                                    <option value="körtér">körtér</option>
-                                    <option value="körút">körút</option>
-                                    <option value="köz">köz</option>
-                                    <option value="lakópark">lakópark</option>
-                                    <option value="lakótelep">lakótelep</option>
-                                    <option value="lejtő">lejtő</option>
-                                    <option value="lépcső">lépcső</option>
-                                    <option value="lépcsősor">lépcsősor</option>
-                                    <option value="liget">liget</option>
-                                    <option value="major">major</option>
-                                    <option value="mélyút">mélyút</option>
-                                    <option value="negyed">negyed</option>
-                                    <option value="oldal">oldal</option>
-                                    <option value="országút">országút</option>
-                                    <option value="park">park</option>
-                                    <option value="part">part</option>
-                                    <option value="pincesor">pincesor</option>
-                                    <option value="puszta">puszta</option>
-                                    <option value="rakpart">rakpart</option>
-                                    <option value="sétány">sétány</option>
-                                    <option value="sikátor">sikátor</option>
-                                    <option value="sor">sor</option>
-                                    <option value="sugárút">sugárút</option>
-                                    <option value="szállás">szállás</option>
-                                    <option value="szektor">szektor</option>
-                                    <option value="szél">szél</option>
-                                    <option value="szer">szer</option>
-                                    <option value="sziget">sziget</option>
-                                    <option value="szőlőhegy">szőlőhegy</option>
-                                    <option value="tag">tag</option>
-                                    <option value="tanya">tanya</option>
-                                    <option value="telep">telep</option>
-                                    <option value="tér">tér</option>
-                                    <option value="tető">tető</option>
-                                    <option value="udvar">udvar</option>
-                                    <option value="üdülőpart">üdülőpart</option>
-                                    <option value="üdülősor">üdülősor</option>
-                                    <option value="üdülőtelep">üdülőtelep</option>
-                                    <option value="vár">vár</option>
-                                    <option value="várkert">várkert</option>
-                                    <option value="város">város</option>
-                                    <option value="villasor">villasor</option>
-                                    <option value="völgy">völgy</option>
-                                    <option value="zug">zug</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="customerAddress">Házszám
-                                <input type="text" class="form-control" placeholder="20/a" id="customerAddress" name="customerAddress">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <label>Adószám
-                                <input type="text" class="form-control" placeholder="11111111-2-42" id="customerTaxNumber" name="customerTaxNumber" maxlength="13" pattern="[0-9]{8}[-]{1}[0-9]{1}[-]{1}[0-9]{2}">
-                                <input type="hidden" id="customerTaxpayerId" name="customerTaxpayerId" >
-                                <input type="hidden" id="customerVatCode" name="customerVatCode" >
-                                <input type="hidden" id="customerCountyCode" name="customerCountyCode" >
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
 </div>
 
-<div class="container-md">
+
+<div class="top_outer_div">
     <div class="row">
         <div class="col-md-12">
             <div class="lio-modal">
-                <div class="body">
-                    <div class="form-group">
-                        <div class="col-md-3">
-                            <label for="full_name">Számla Típus
-                                <select class="form-control" id="invoiceCategory" name="invoiceCategory">
-                                    <option value="SIMPLIFIED">Egyszerüsített</option>
-                                    <option value="NORMAL">Normál</option>
-                                    <option value="AGGREGATE" disabled style="display: none">AGGREGATE</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="full_name">Számla Megjelenés
-                                <select class="form-control" id="invoiceAppearance" name="invoiceAppearance">
-                                    <option value="PAPER">PAPER</option>
-                                    <option value="ELECTRONIC">ELECTRONIC</option>
-                                    <option value="EDI">EDI</option>
-                                    <option value="UNKNOWN">UNKNOWN</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="full_name">Pénznem
-                                <select class="form-control" id="currencyCode" name="currencyCode">
-                                    <option value="HUF">HUF</option>
-                                </select>
-                            </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="full_name">Fizetési Mód
-                                <select class="form-control" id="paymentMethod" name="paymentMethod">
-                                    <option value="CASH">Készpénz</option>
-                                    <option value="TRANSFER">Átutalás</option>
-                                    <option value="CARD">Bankkártya</option>
-                                    <option value="VOUCHER">VOUCHER</option>
-                                    <option value="Other">Egyéb</option>
-                                </select>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-md-3">
-                            <label for="full_name">Számla Kelte
-                                <input type="date" class="form-control" id="invoiceIssueDate" name="invoiceIssueDate" value="2021-10-17">
-                            </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="full_name">Számla Teljesítés
-                                <input type="date" class="form-control" id="invoiceDeliveryDate" name="invoiceDeliveryDate" value="2021-10-17">
-                            </label>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="full_name">Számla Sorszáma
-                                <input type="text" class="form-control" id="invoiceNumber" name="invoiceNumber" value="2021-10-16/0001">
-                            </label>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-</div>
-
-<div class="container-lg">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="lio-modal">
-                <div class="header">
-                    <h5 class="title">Tételek</h5>
-                </div>
                 <div class="body">
                     <table class="invoiceTable">
                         <thead>
@@ -368,7 +441,7 @@ if (!isset($_SESSION["username"])) {
                             <th class="lineNatureIndicator">Típus</th>
                             <th class="productCodeCategory advanced">Kód Típus</th>
                             <th class="productCodeValue">Kód</th>
-                            <th class="lineDescription">Név</th>
+                            <th class="lineDescription">Megnevezés</th>
                             <th class="quantity">Mennyiség</th>
                             <th class="unitOfMeasure">Egység</th>
                             <th class="unitPrice">Nettó Egységár</th>
@@ -385,8 +458,8 @@ if (!isset($_SESSION["username"])) {
 
                         <tr class="add_new_item">
                             <td><select class="form-control" id="lineNatureIndicator">
-                                    <option value="PRODUCT">Termék</option>
                                     <option value="SERVICE">Szolgáltatás</option>
+                                    <option value="PRODUCT">Termék</option>
                                     <option value="OTHER">Egyéb</option>
                                 </select></td>
                             <td class="advanced"><select class="form-control" id="productCodeCategory">
@@ -402,10 +475,10 @@ if (!isset($_SESSION["username"])) {
 
                                     <option value="OTHER">OTHER</option>
                                 </select></td>
-                            <td><input type="text" class="form-control" placeholder="02031110" id="productCodeValue"></td>
-                            <td><input type="text" class="form-control" placeholder="Hűtött házi sertés (fél)" id="lineDescription"></td>
-                            <td><input type="number" min="1" class="form-control" placeholder="1500" id="quantity"></td>
-                            <td><select class="form-control" id="unitOfMeasure">
+                            <td><input type="text" class="form-control" placeholder="WF001" id="productCodeValue" style="max-width: 120px;"></td>
+                            <td><input type="text" class="form-control" placeholder="Weboldal Fejlesztés" id="lineDescription"></td>
+                            <td><input type="number" min="1" class="form-control" placeholder="1" id="quantity" style="max-width: 80px;"></td>
+                            <td><select class="form-control" id="unitOfMeasure" style="max-width: 70px;">
                                     <option value="PIECE">DB</option>
                                     <option value="KILOGRAM">KG</option>
                                     <option value="TON">T</option>
@@ -425,8 +498,8 @@ if (!isset($_SESSION["username"])) {
                                 </select></td>
 
 
-                            <td><input type="number" min="1" class="form-control" placeholder="400" id="unitPrice"></td>
-                            <td><input type="number" min="1" class="form-control" placeholder="600000" id="lineNetAmountData"></td>
+                            <td><input type="number" min="1" class="form-control" placeholder="400" id="unitPrice" style="max-width: 130px;"><span class="huf">Ft</span> </td>
+                            <td><input type="number" min="1" class="form-control" placeholder="600000" id="lineNetAmountData" style="max-width: 130px;"><span class="huf">Ft</span></td>
 
                             <td>
                                 <select class="form-control" id="lineVatRate">
@@ -438,8 +511,8 @@ if (!isset($_SESSION["username"])) {
                                 </select>
 
                             </td>
-                            <td><input type="number" min="1" class="form-control" placeholder="30000" step="0.01" id="lineVatData"></td>
-                            <td><input type="number" min="1" class="form-control" placeholder="630000" step="0.01" id="lineGrossAmountData"></td>
+                            <td><input type="number" min="1" class="form-control" placeholder="30000" step="0.01" id="lineVatData" style="max-width: 130px;"><span class="huf">Ft</span></td>
+                            <td><input type="number" min="1" class="form-control" placeholder="630000" step="0.01" id="lineGrossAmountData" style="max-width: 130px;"><span class="huf">Ft</span></td>
                             <td><button class="btn btn-default addButton" onclick="return addItem()" style="display: inline-block ;    border: 1px solid;">+</button></td>
                         </tr>
 
@@ -450,13 +523,13 @@ if (!isset($_SESSION["username"])) {
     </div>
 </div>
 
-<div class="container-md">
+<div class="top_outer_div">
     <div class="row">
         <div class="col-md-8"></div>
         <div class="col-md-4">
             <div class="lio-modal">
                 <div class="header">
-                    <h5 class="title">Összesítés az ÁFA tartalom szerint Ft</h5>
+                    <h5 class="title">Összesítés</h5>
                 </div>
                 <div class="body">
                     <div class="form-group">
@@ -510,25 +583,27 @@ if (!isset($_SESSION["username"])) {
         if(invoiceCategory && unitPrice){
             switch(invoiceCategory.value){
                 case "SIMPLIFIED":
-                    unitPrice.innerHTML = "Bruttó Egységár";
+                    unitPrice.innerHTML = "Br. Egységár";
                     if(lineVatRate){
                         lineVatRate.innerHTML = generateSelectOptions(
                             [
+                                {name:"AAM", value: "0"},
                                 {name:"27%", value: "0.2126"},
                                 {name:"18%", value: "0.1525"},
                                 {name:"5%", value: "0.0476"},
                                 {name:"0", value: "0"},
-                                {name:"TAM", value: "0"},
-                                {name:"AAM", value: "0"}
+                                {name:"TAM", value: "0"}
+
                             ]
                         ).innerHTML;
                     }
                     break;
                 case "NORMAL":
-                    unitPrice.innerHTML = "Nettó Egységár";
+                    unitPrice.innerHTML = "Nt. Egységár";
                     if(lineVatRate){
                         lineVatRate.innerHTML = generateSelectOptions(
                             [
+                                {name:"AAM", value: "0"},
                                 {name:"27%", value: "0.27"},
                                 //{name:"25%", value: "0.25"},
                                 //{name:"20%", value: "0.20"},
@@ -537,8 +612,7 @@ if (!isset($_SESSION["username"])) {
                                 //{name:"7%", value: "0.07"},
                                 {name:"5%", value: "0.05"},
                                 {name:"0%", value: "0"},
-                                {name:"TAM", value: "0"},
-                                {name:"AAM", value: "0"}
+                                {name:"TAM", value: "0"}
                             ]
                         ).innerHTML;
                     }

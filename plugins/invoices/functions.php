@@ -145,6 +145,8 @@ function xmlStringParser($xmlContent, $data){
     return $xmlContent;
 }
 
+$apiUrl = "https://api-test.onlineszamla.nav.gov.hu/invoiceService/v3";
+
 $softwareData = array(
     "softwareId" => "HU57823357DEMIRAN1",
     "softwareName" => "Demiran Projektmenedzsment Szoftver",
@@ -156,4 +158,89 @@ $softwareData = array(
     "softwareDevTaxNumber" => "57823357",
 );
 
+$technicalUserSQL = "SELECT * FROM invoice_user";
+if(isset($_GET['user']) && $_GET['user'] != '') {
+    $technicalUserSQL .= " WHERE id='".$_GET['user']."'";
+} else {
+    $technicalUserSQL .= " LIMIT 1";
+}
+$technicalUser = sqlGetFirst($technicalUserSQL);
+$missingData = false;
+$missingDataList = array();
+function getDataIfThere($technicalUser, $name){
+    global $missingData;
+    global $missingDataList;
+    if(isset($technicalUser) && $technicalUser && isset($technicalUser[$name]) && $technicalUser[$name] != "") {
+        return $technicalUser[$name];
+    } else {
+        $missingData = true;
+        array_push($missingDataList, $name);
+        return "";
+    }
+}
+if(isset($technicalUser) && isset($technicalUser['supplierTaxNumber'])){
+    $parts = explode("-", $technicalUser['supplierTaxNumber']);
+    if(count($parts) < 3) {
+        $missingData = true;
+    }
+    $technicalUser['supplierTaxpayerId'] = $parts[0];
+    $technicalUser['supplierVatCode'] = $parts[1];
+    $technicalUser['supplierCountyCode'] = $parts[2];
+}
+
+//$hashed = hash("sha512", $password);
+$userData = array(
+    "login" => getDataIfThere($technicalUser, "login"),
+    "password" => getDataIfThere($technicalUser, "password"),
+    // "passwordHash" => "...", // Opcionális, a jelszó már SHA512 hashelt változata. Amennyiben létezik ez a változó, akkor az authentikáció során ezt használja
+    "taxNumber" => getDataIfThere($technicalUser, "supplierTaxpayerId"),
+    "signKey" => getDataIfThere($technicalUser, "signKey"),
+    "exchangeKey" => getDataIfThere($technicalUser, "exchangeKey"),
+);
+
 require_once("load_nav_classes.php");
+
+$config = new NavOnlineInvoice\Config($apiUrl, $userData, $softwareData);
+$config->setCurlTimeout(60);
+//$config->verifySSL = false;
+$reporter = new NavOnlineInvoice\Reporter($config);
+$token = null;
+function getTechnicalUsersAsOptions($id){
+    global $connection;
+    $sql = "SELECT * FROM invoice_user";
+    if(isset($id) && $id != ''){
+        $sql.= " WHERE id='".$id."'";
+    } else {
+        $sql.= " LIMIT 1";
+    }
+    $result = sqlGetAll($sql);
+    $html = "";
+    if(!$result || !is_array($result)){
+        return $html;
+    }
+    foreach ($result as $user){
+        if(isset($user['id']) && isset($user['supplierName'])) {
+            $html .= "<option value='".$user['id']."'>".$user['supplierName']."</option>";
+        }
+    }
+    return $html;
+}
+
+function getNAVToken(){
+    global $reporter;
+    global $token;
+    $error = null;
+    $result = null;
+    try {
+        $t = $reporter->tokenExchange();
+        $token = $t;
+    } catch(Exception $ex) {
+        //$error =  get_class($ex) . ": " . $ex->getMessage();
+
+        $error =  $ex->getCode() . ": ". $ex->getMessage();
+    }
+    return array(
+        "error"=>$error,
+        "result"=>$result
+    );
+}
