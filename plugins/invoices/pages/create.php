@@ -78,7 +78,7 @@ if(isset($technicalUser) && isset($technicalUser['supplierTaxNumber'])){
                             </div>
                             <div class="col-md-6">
                                 <label for="full_name">Kiállító
-                                    <select class="form-control" id="technicalUser" name="invoiceAppearance">
+                                    <select class="form-control" id="technicalUser" name="invoiceTechnicalUser">
                                         <?php echo getTechnicalUsersAsOptions($_GET['user']); ?>
                                     </select>
                                 </label>
@@ -1105,6 +1105,35 @@ if(isset($technicalUser) && isset($technicalUser['supplierTaxNumber'])){
                     Demiran.call("generate_xml", formData, function(error,result) {
                         if(!error && result) {
                             Demiran.downloadData(Math.floor(new Date().getTime()/360000) + ".xml", result);
+                        } else {
+                            console.error(error);
+                            console.error(result);
+                        }
+                    })
+                }
+            })
+
+        } else {
+            Demiran.alert("Űrlap nem található");
+        }
+    }
+
+    const sendNAV = function (){
+        const invoiceForm = document.getElementById('invoiceForm');
+        if(invoiceForm && invoiceForm instanceof HTMLFormElement){
+            const disabledNodes = document.querySelectorAll("[disabled]");
+            disabledNodes.forEach(function(node){
+                node.disabled = !node.disabled;
+            });
+            const formData = new FormData(invoiceForm);
+            disabledNodes.forEach(function(node){
+                node.disabled = !node.disabled;
+            });
+            Demiran.confirm("XML Adatok letöltése","Biztosan letöltöd az adatokat?", result=>{
+                if(result){
+                    Demiran.call("send_invoice", formData, function(error,result) {
+                        if(!error && result) {
+                            Demiran.alert(result);
                         } else {
                             console.error(error);
                             console.error(result);

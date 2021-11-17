@@ -36,17 +36,19 @@
 							</customerTaxNumber>
 						</customerVatData>
 					{/#customerTaxNumber}}
-					<customerName>{{customerName}}</customerName>
-					<customerAddress>
-						<base:detailedAddress>
-							<base:countryCode>HU</base:countryCode>
-							<base:postalCode>{{customerPostCode}}</base:postalCode>
-							<base:city>{{customerTown}}</base:city>
-							<base:streetName>{{customerStreetName}}</base:streetName>
-							<base:publicPlaceCategory>{{customerStreet}}</base:publicPlaceCategory>
-							<base:number>{{customerAddress}}</base:number>
-						</base:detailedAddress>
-					</customerAddress>
+					{#customerAddressAvailable}}
+						<customerName>{{customerName}}</customerName>
+						<customerAddress>
+							<base:detailedAddress>
+								<base:countryCode>HU</base:countryCode>
+								<base:postalCode>{{customerPostCode}}</base:postalCode>
+								<base:city>{{customerTown}}</base:city>
+								<base:streetName>{{customerStreetName}}</base:streetName>
+								<base:publicPlaceCategory>{{customerStreet}}</base:publicPlaceCategory>
+								<base:number>{{customerAddress}}</base:number>
+							</base:detailedAddress>
+						</customerAddress>
+					{/#customerAddressAvailable}}
 				</customerInfo>
 				<invoiceDetail>
 					<invoiceCategory>{{invoiceCategory}}</invoiceCategory>
@@ -77,9 +79,9 @@
 					<unitPrice>{{+unitPrice}}</unitPrice>
 					<unitPriceHUF>{{+unitPrice}}</unitPriceHUF>
 					<lineAmountsSimplified>
-						<lineVatRate>
-							<vatContent>{{+lineVatRate}}</vatContent>
-						</lineVatRate>
+							<lineVatRate>
+								{{+lineVatRateContent}}
+							</lineVatRate>
 						<lineGrossAmountSimplified>{{+lineGrossAmountData}}</lineGrossAmountSimplified>
 						<lineGrossAmountSimplifiedHUF>{{+lineGrossAmountData}}</lineGrossAmountSimplifiedHUF>
 					</lineAmountsSimplified>
@@ -87,33 +89,18 @@
 				{/>invoiceLines}}
 			</invoiceLines>
 			<invoiceSummary>
-				<summarySimplified>
-					<vatRate>
-						<vatContent>0.2126</vatContent>
-					</vatRate>
-					<vatContentGrossAmount>24000</vatContentGrossAmount>
-					<vatContentGrossAmountHUF>24000</vatContentGrossAmountHUF>
-				</summarySimplified>
-				<summarySimplified>
-					<vatRate>
-						<vatContent>0.0476</vatContent>
-					</vatRate>
-					<vatContentGrossAmount>4000</vatContentGrossAmount>
-					<vatContentGrossAmountHUF>4000</vatContentGrossAmountHUF>
-				</summarySimplified>
-				<summarySimplified>
-					<vatRate>
-						<vatExemption>
-							<case>TAM</case>
-							<reason>Adómentes ÁFA tv. 86.§ (1)</reason>
-						</vatExemption>					
-					</vatRate>
-					<vatContentGrossAmount>5000</vatContentGrossAmount>
-					<vatContentGrossAmountHUF>5000</vatContentGrossAmountHUF>
-				</summarySimplified>
+				{>summaryLines}}
+					<summarySimplified>
+						<vatRate>
+							{{+lineVatRate}}
+						</vatRate>
+						<vatContentGrossAmount>{{+vatAmountSummary}}</vatContentGrossAmount>
+						<vatContentGrossAmountHUF>{{+vatAmountSummary}}</vatContentGrossAmountHUF>
+					</summarySimplified>
+				{/>summaryLines}}
 				<summaryGrossData>
-					<invoiceGrossAmount>33000</invoiceGrossAmount>
-					<invoiceGrossAmountHUF>33000</invoiceGrossAmountHUF>
+					<invoiceGrossAmount>{{invoiceAmountSummary}}</invoiceGrossAmount>
+					<invoiceGrossAmountHUF>{{invoiceAmountSummary}}</invoiceGrossAmountHUF>
 				</summaryGrossData>
 			</invoiceSummary>
 		</invoice>

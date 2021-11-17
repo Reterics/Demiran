@@ -9,6 +9,44 @@ if (!isset($_SESSION["username"])) {
     die("Az oldal megtekintesehez be kell jelentkezned");
 }
 
+$fromDate = date("Y-m-d", strtotime('first day of this month'));
+$toDate =   date("Y-m-d", strtotime('last day of this month'));
+
+if (isset($_POST["start-date"]) && isset($_POST["end-date"])) {
+    $fromDate = $_POST["start-date"];
+    $toDate = $_POST["end-date"];
+} else if(isset($_GET["start-date"])&& isset($_GET["end-date"])){
+    $fromDate = $_GET["start-date"];
+    $toDate = $_GET["end-date"];
+}
+
+$insDate = [
+    "dateTimeFrom" => $fromDate."T00:00:00Z",
+    "dateTimeTo" => $toDate."T23:59:59Z",
+];
+$page = 1;
+$transactionListResult = $reporter->queryTransactionList($insDate, $page);
+$table = "";
+if(isset($transactionListResult->transaction)) {
+    $table .= "<table style='width: 100%'><thead><tr><th>ID</th><th>Date</th><th>User</th><th>Source</th><th>Version</th></tr></thead>";
+    foreach($transactionListResult->transaction as $item) {
+        $table .= "<tr onclick='downloadTransactionData(\"".$item->transactionId."\")'>";
+        $table .= "<td>".$item->transactionId."</td>";
+        $table .= "<td>".$item->insDate."</td>";
+        $table .= "<td>".$item->insCusUser."</td>";
+        $table .= "<td>".$item->source."</td>";
+        $table .= "<td>" .$item->originalRequestVersion."</td>";
+        $table .= "</tr>";
+
+
+
+    }
+
+    $table .= "</table>";
+}else{
+    $table .= "Nincsenek tranzakciók";
+}
+
 ?>
 <div class="top_outer_div">
 
@@ -17,8 +55,17 @@ if (!isset($_SESSION["username"])) {
             <div class="lio-modal">
                 <div class="header">
                     <h5 class="title">Számlák</h5>
+                    <div class="filter-group" style="display: flex; flex-direction: row;width: 550px">
+                        <label for="start-date" style="margin-bottom: 0; margin-left: 10px;line-height: 1.8;">Kezdő Dátum</label>
+                            <input type="date" name="start-date" id="start-date" value="<?php echo $fromDate; ?>" />
+
+                        <label for="end-date" style="margin-bottom: 0; margin-left: 10px;line-height: 1.8;">Záró Dátum</label>
+                            <input type="date" name="end-date" id="end-date" value="<?php echo $toDate; ?>" />
+
+                    </div>
+
                     <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
-                        <span class="plus-icon" onclick="location.href='./plugin.php?name=invoices&page=create'"></span>
+                        <span class="plus-icon" onclick="location.href='./plugin.php?name=invoices&page=create<?php if(isset($_GET["user"])){ echo "&user=".$_GET["user"];}?>'"></span>
                     <?php endif; ?>
                 </div>
 
@@ -28,16 +75,15 @@ if (!isset($_SESSION["username"])) {
                         <button class="dragButton"><span class="toggler-icon"></span></button>
                         <div class="id short">UnixID</div>
                         <div class="supplierName">Eladó Név</div>
-                        <div class="supplierTaxNumber">Eladó Adószám</div>
                         <div class="invoiceIssueDate">Kiállítási Dátum</div>
                         <div class="invoiceDeliveryDate">Teljesítési Dátum</div>
                         <div class="invoiceNumber">Iktatási szám</div>
                         <div class="transactionID long">Tranzakció ID</div>
+                        <div class="state long">Státusz</div>
                         <div class="actions">Műveletek</div>
                     </div>
 
                     <?php
-
                     $sql = "SELECT * FROM invoice_list";
 
                     if (isset($connection)) :
@@ -49,10 +95,10 @@ if (!isset($_SESSION["username"])) {
                                 <button class="dragButton"><span class="toggler-icon"></span></button>
                                 <div class="unixID short"><?php echo $row['unixID']; ?></div>
                                 <div class="supplierName"><?php echo $row['supplierName']; ?></div>
-                                <div class="supplierTaxNumber"><?php echo $row['supplierTaxNumber']; ?></div>
                                 <div class="invoiceIssueDate"><?php echo $row['invoiceIssueDate']; ?></div>
                                 <div class="invoiceDeliveryDate"><?php echo $row['invoiceDeliveryDate']; ?></div>
-                                <div class="invoiceNumber" ><?php echo $row['invoiceNumber']; ?></div>
+                                <div class="invoiceNumber"><?php echo $row['invoiceNumber']; ?></div>
+                                <div class="state"></div>
 
                                 <div class="transactionID long"><?php echo $row['transactionID']; ?></div>
                                 <div class="actions">
@@ -67,7 +113,12 @@ if (!isset($_SESSION["username"])) {
                             echo "Az adatok töltése sikertelen!\n".json_encode(mysqli_error($connection));
                         endif;
                     endif;
+
+
+
                     ?>
+
+
                     <script type="application/javascript">
                         const openInvoice = function (id) {
                             navigate("./plugin.php?name=invoices&page=invoice&id=" + id);
@@ -329,3 +380,32 @@ if (!isset($_SESSION["username"])) {
         </div>
     </div>
 </div>
+
+<div class="top_outer_div">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="lio-modal">
+                <div class="header">
+                    <h5 class="title">Számlák a NAV Rendszerben</h5>
+                </div>
+                <div class="body">
+                    <?php echo $table; ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="application/javascript">
+    function downloadTransactionData(transactionId) {
+        Demiran.call("nav_invoice_details", {
+            _plugin:"invoices",
+            transactionId: transactionId
+        }, function (error,result){
+           if(error){
+               Demiran.alert(error, "Hiba");
+           } else {
+               Demiran.alert(result, "Részletek");
+           }
+        });
+    }
+</script>

@@ -39,7 +39,7 @@ $query = "CREATE TABLE IF NOT EXISTS invoice_list (
       CREATE TABLE IF NOT EXISTS invoice_user (
       id int(11) AUTO_INCREMENT,
       supplierName varchar(60),
-      supplierTaxNumber varchar(15) NOT NULL UNIQUE,
+      supplierTaxNumber varchar(15) NOT NULL,
       supplierPostCode varchar(10),
       supplierTown varchar(20),
       supplierStreetName varchar(60),
@@ -47,7 +47,7 @@ $query = "CREATE TABLE IF NOT EXISTS invoice_list (
       supplierAddress varchar(60),
       supplierBankAccountNumber varchar(60),
       
-      login varchar(60),
+      login varchar(60) UNIQUE,
       password varchar(60),
       signKey varchar(60),
       exchangeKey varchar(60),
@@ -89,7 +89,7 @@ function xmlStringParser($xmlContent, $data){
 
     // Check if statements
 
-    preg_match_all('/{#\w*}}(.|\n)*{\/#\w*}}/', $xmlContent, $matches, PREG_OFFSET_CAPTURE);
+    preg_match_all('/{#\w*}}(.|\n)*{\/#\w*}}/U', $xmlContent, $matches, PREG_OFFSET_CAPTURE);
 
     if(count($matches) > 0){
         foreach($matches[0] as $match) {
@@ -105,7 +105,7 @@ function xmlStringParser($xmlContent, $data){
 
     // Check For Loops
 
-    preg_match_all('/{>\w*}}(.|\n)*{\/>\w*}}/', $xmlContent, $matches, PREG_OFFSET_CAPTURE);
+    preg_match_all('/{>\w*}}(.|\n)*{\/>\w*}}/U', $xmlContent, $matches, PREG_OFFSET_CAPTURE);
 
     if(count($matches) > 0){
         foreach($matches[0] as $match) {
@@ -127,7 +127,7 @@ function xmlStringParser($xmlContent, $data){
                     $currentVariable = $data[$name][$i];
                     $currentFor = $forContent;
                     foreach($forVariables as $forVariable){
-                        if($currentVariable[$forVariable]){
+                        if(isset($currentVariable[$forVariable])){
                             $currentFor = str_replace("{{+".$forVariable."}}", $currentVariable[$forVariable], $currentFor);
                         } else {
                             $currentFor = str_replace("{{+".$forVariable."}}", "", $currentFor);
