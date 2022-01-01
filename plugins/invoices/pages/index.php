@@ -8,7 +8,6 @@
 if (!isset($_SESSION["username"])) {
     die("Az oldal megtekintesehez be kell jelentkezned");
 }
-
 $fromDate = date("Y-m-d", strtotime('first day of this month'));
 $toDate =   date("Y-m-d", strtotime('last day of this month'));
 
@@ -25,7 +24,11 @@ $insDate = [
     "dateTimeTo" => $toDate."T23:59:59Z",
 ];
 $page = 1;
-$transactionListResult = $reporter->queryTransactionList($insDate, $page);
+$transactionListResult = array();
+if(isset($config) && isset($reporter) && isset($token)
+    && $config && $reporter && $token){
+    $transactionListResult = $reporter->queryTransactionList($insDate, $page);
+}
 $table = "";
 if(isset($transactionListResult->transaction)) {
     $table .= "<table style='width: 100%'><thead><tr><th>ID</th><th>Date</th><th>User</th><th>Source</th><th>Version</th></tr></thead>";
@@ -159,13 +162,12 @@ if(isset($transactionListResult->transaction)) {
 
 
                     $sql = "SELECT * FROM invoice_user";
-
                     if (isset($connection)) :
                         $result = mysqli_query($connection, $sql);
                         if($result):
                             while ($row = mysqli_fetch_array($result)):
                                 ?>
-                                <div class="dragged">
+                                <div data-user-id="<?php echo $row['id']; ?>" style="cursor: pointer" onclick="changeUser(<?php echo $row['id']?>)" class="selectable-user dragged<?php if(isset($selectedTechnicalId) && intval($selectedTechnicalId) == intval($row['id'])){echo " active";} ?>">
                                     <button class="dragButton"><span class="toggler-icon"></span></button>
                                     <div class="id short"><?php echo $row['id']; ?></div>
                                     <div class="supplierName"><?php echo $row['supplierName']; ?></div>
@@ -372,6 +374,10 @@ if(isset($transactionListResult->transaction)) {
                                     }
                                 ]);
                             }
+                        }
+                        function changeUser(userId){
+                            GET.user = userId;
+                            location.href = "?"+Demiran.convertToFormEncoded(GET);
                         }
 
                     </script>

@@ -157,14 +157,23 @@ $softwareData = array(
     "softwareDevCountryCode" => "HU",
     "softwareDevTaxNumber" => "57823357",
 );
-
+$selectedTechnicalId = null;
 $technicalUserSQL = "SELECT * FROM invoice_user";
 if(isset($_GET['user']) && $_GET['user'] != '') {
     $technicalUserSQL .= " WHERE id='".$_GET['user']."'";
 } else {
-    $technicalUserSQL .= " LIMIT 1";
+    global $globalSettings;
+    $defaultUser = $globalSettings->getSettingValueByName('api_default_user');
+    if(isset($defaultUser) && $defaultUser){
+        $technicalUserSQL .= " WHERE id='".$defaultUser."'";
+    } else {
+        $technicalUserSQL .= " LIMIT 1";
+    }
 }
 $technicalUser = sqlGetFirst($technicalUserSQL);
+if(isset($technicalUser) && $technicalUser && isset($technicalUser['id'])){
+    $selectedTechnicalId = $technicalUser['id'];
+}
 $missingData = false;
 $missingDataList = array();
 function getDataIfThere($technicalUser, $name){
@@ -199,11 +208,17 @@ $userData = array(
 );
 
 require_once("load_nav_classes.php");
-
-$config = new NavOnlineInvoice\Config($apiUrl, $userData, $softwareData);
-$config->setCurlTimeout(60);
+$config = null;
+$reporter = null;
+try {
+    $config = new NavOnlineInvoice\Config($apiUrl, $userData, $softwareData);
+    $config->setCurlTimeout(60);
 //$config->verifySSL = false;
-$reporter = new NavOnlineInvoice\Reporter($config);
+    $reporter = new NavOnlineInvoice\Reporter($config);
+}catch (Exception $e){
+    echo $e;
+}
+
 $token = null;
 function getTechnicalUsersAsOptions($id){
     global $connection;

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InvoiceData xmlns="http://schemas.nav.gov.hu/OSA/3.0/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.nav.gov.hu/OSA/3.0/data invoiceData.xsd" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common" xmlns:base="http://schemas.nav.gov.hu/OSA/3.0/base">
+	<invoiceNumber>2021-12-27/001</invoiceNumber>
+	<invoiceIssueDate>2021-12-27</invoiceIssueDate>
+	<completenessIndicator>false</completenessIndicator>
+	<invoiceMain>
+		<invoice>
+			<invoiceHead>
+				<supplierInfo>
+					<supplierTaxNumber>
+						<base:taxpayerId>57823357</base:taxpayerId>
+						<base:vatCode>1</base:vatCode>
+						<base:countyCode>40</base:countyCode>
+					</supplierTaxNumber>
+					<supplierName>Reterics Attila</supplierName>
+					<supplierAddress>
+						<base:detailedAddress>
+							<base:countryCode>HU</base:countryCode>
+							<base:postalCode>8985</base:postalCode>
+							<base:city>Becsvölgye</base:city>
+							<base:streetName>Arany János</base:streetName>
+							<base:publicPlaceCategory>út</base:publicPlaceCategory>
+							<base:number>5/a</base:number>
+						</base:detailedAddress>
+					</supplierAddress>
+					<supplierBankAccountNumber>11773494-00872726-00000000</supplierBankAccountNumber>
+				</supplierInfo>
+				<customerInfo>
+					<customerVatStatus>PRIVATE_PERSON</customerVatStatus>
+					
+					
+				</customerInfo>
+				<invoiceDetail>
+					<invoiceCategory>SIMPLIFIED</invoiceCategory>
+					<invoiceDeliveryDate>2021-12-27</invoiceDeliveryDate>
+					<currencyCode>HUF</currencyCode>
+					<exchangeRate>1</exchangeRate>
+					<paymentMethod>TRANSFER</paymentMethod>
+					<cashAccountingIndicator>true</cashAccountingIndicator>
+					<invoiceAppearance>ELECTRONIC</invoiceAppearance>
+				</invoiceDetail>
+			</invoiceHead>
+			<invoiceLines>
+				<mergedItemIndicator>false</mergedItemIndicator>
+				
+				<line>
+					<lineNumber>1</lineNumber>
+					<productCodes>
+						<productCode>
+							<productCodeCategory>OWN</productCodeCategory>
+							<productCodeValue>WF001</productCodeValue>
+						</productCode>
+					</productCodes>
+					<lineExpressionIndicator>true</lineExpressionIndicator>
+					<lineNatureIndicator>PRODUCT</lineNatureIndicator>
+					<lineDescription>Szoftverfejl</lineDescription>
+					<quantity>10</quantity>
+					<unitOfMeasure>PIECE</unitOfMeasure>
+					<unitPrice>1000</unitPrice>
+					<unitPriceHUF>1000</unitPriceHUF>
+					<lineAmountsSimplified>
+							<lineVatRate>
+								<vatExemption><case>AAM</case><reason>Alanyi Adómentes</reason></vatExemption>
+							</lineVatRate>
+						<lineGrossAmountSimplified>10000</lineGrossAmountSimplified>
+						<lineGrossAmountSimplifiedHUF>10000</lineGrossAmountSimplifiedHUF>
+					</lineAmountsSimplified>
+				</line>
+				
+			</invoiceLines>
+			<invoiceSummary>
+				
+					<summarySimplified>
+						<vatRate>
+							<vatExemption><case>AAM</case><reason>Alanyi Adómentes</reason></vatExemption>
+						</vatRate>
+						<vatContentGrossAmount>10000</vatContentGrossAmount>
+						<vatContentGrossAmountHUF>10000</vatContentGrossAmountHUF>
+					</summarySimplified>
+				
+				<summaryGrossData>
+					<invoiceGrossAmount>10000</invoiceGrossAmount>
+					<invoiceGrossAmountHUF>10000</invoiceGrossAmountHUF>
+				</summaryGrossData>
+			</invoiceSummary>
+		</invoice>
+	</invoiceMain>
+</InvoiceData>

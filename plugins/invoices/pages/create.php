@@ -42,8 +42,6 @@ if(isset($technicalUser) && isset($technicalUser['supplierTaxNumber'])){
     $supplierVatCode = $parts[1];
     $supplierCountyCode = $parts[2];
 }
-
-
 ?>
 <form id="invoiceForm" onsubmit="return false" method="post" style="max-width: 1270px; margin-left: auto; margin-right: auto;">
     <div class="top_outer_div">
