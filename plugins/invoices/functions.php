@@ -211,10 +211,13 @@ require_once("load_nav_classes.php");
 $config = null;
 $reporter = null;
 try {
-    $config = new NavOnlineInvoice\Config($apiUrl, $userData, $softwareData);
-    $config->setCurlTimeout(60);
-//$config->verifySSL = false;
-    $reporter = new NavOnlineInvoice\Reporter($config);
+    if($userData['login'] != "" && $userData['taxNumber'] != "" &&
+        $userData['signKey'] != "" && $userData['exchangeKey'] != "") {
+        $config = new NavOnlineInvoice\Config($apiUrl, $userData, $softwareData);
+        $config->setCurlTimeout(60);
+        //$config->verifySSL = false;
+        $reporter = new NavOnlineInvoice\Reporter($config);
+    }
 }catch (Exception $e){
     echo $e;
 }
@@ -247,11 +250,14 @@ function getNAVToken(){
     $error = null;
     $result = null;
     try {
-        $t = $reporter->tokenExchange();
-        $token = $t;
+        if(isset($reporter) && $reporter != null){
+            $t = $reporter->tokenExchange();
+            $token = $t;
+        } else {
+            $error = "Nem megfelelő Technikai Felhasználó";
+        }
     } catch(Exception $ex) {
         //$error =  get_class($ex) . ": " . $ex->getMessage();
-
         $error =  $ex->getCode() . ": ". $ex->getMessage();
     }
     return array(

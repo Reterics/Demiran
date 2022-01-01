@@ -1,7 +1,6 @@
 <?php
 require_once('./../../../config.php');
-require_once('./../../../admin/auth.php');
-
+session_start();
 require_once('./../../../admin/backend/main.php');
 
 require_once('../verify.php');
