@@ -18,6 +18,8 @@ if(isset($result) && $result && $result['message'] != '' && $result['message'] !
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
             exit();
+        } else {
+            $_SESSION["api_mode"] = true;
         }
     }
 } else {
