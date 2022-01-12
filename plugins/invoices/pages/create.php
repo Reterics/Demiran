@@ -866,7 +866,8 @@ if(isset($technicalUser) && isset($technicalUser['supplierTaxNumber'])){
         return summaryDetails;
     };
 
-    const addItem = function(){
+    const addItem =
+        function(){
         const table = document.querySelector(".invoiceTable");
         if(!table){
             return false;

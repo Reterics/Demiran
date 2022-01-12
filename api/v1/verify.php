@@ -1,4 +1,7 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, PATCH, PUT, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token');
 
 $sql = "SELECT * FROM settings WHERE setting_name='api_auth' LIMIT 1";
 $result = sqlGetFirst($sql);
@@ -9,11 +12,11 @@ function admin_digest_auth(){
     if (substr(PHP_SAPI, 0, 3) == 'cgi') {
         return admin_basic_auth();
     }
-    if (!isset($_SERVER['PHP_AUTH_USER'])) {
+    if (!isset($_SERVER['PHP_AUTH_USER']) && !try_alternative()) {
         header('WWW-Authenticate: Basic realm="My Realm"');
         header('HTTP/1.0 401 Unauthorized');
         exit;
-    } else if(!login_try($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])){
+    } else if(isset($_SERVER['PHP_AUTH_USER']) && !login_try($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])){
         header('HTTP/1.0 401 Unauthorized');
         exit('Unauthorized');
     }
@@ -26,16 +29,28 @@ function admin_basic_auth(){
             explode(':' , base64_decode(substr($_SERVER['REDIRECT_HTTP_AUTH'], 6)));
     }
 
-    if (!isset($_SERVER['PHP_AUTH_USER'])) {
+    if (!isset($_SERVER['PHP_AUTH_USER']) && !try_alternative()) {
         header('WWW-Authenticate: Basic realm="My Realm"');
         header('HTTP/1.0 401 Unauthorized');
         exit('Unauthorized');
 
-    } else if(!login_try($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])){
+    } else if(isset($_SERVER['PHP_AUTH_USER']) && !login_try($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])){
         header('HTTP/1.0 401 Unauthorized');
         exit('Unauthorized');
     }
     return TRUE;
+}
+
+function try_alternative() {
+    $bool = false;
+
+    if(isset($_POST['demiran_token'])) {
+        echo $_POST['demiran_token'];
+        $decoded = base64_decode($_POST['demiran_token']);
+        list($username,$password) = explode(":",$decoded);
+        $bool = login_try($username, $password);
+    }
+    return $bool;
 }
 
 function login_try($user, $pass)
