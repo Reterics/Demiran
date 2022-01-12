@@ -7,7 +7,7 @@ require_once('../verify.php');
 
 $data = array(
     "_plugin" => "invoices",
-    "_call" => "generate_xml",
+    "_call" => "send_invoice",
 );
 
 if(file_exists('./../../../plugins/'.$data['_plugin'].'/lib/'.$data['_call'].'.php')) {

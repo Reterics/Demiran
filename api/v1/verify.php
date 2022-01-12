@@ -45,7 +45,6 @@ function try_alternative() {
     $bool = false;
 
     if(isset($_POST['demiran_token'])) {
-        echo $_POST['demiran_token'];
         $decoded = base64_decode($_POST['demiran_token']);
         list($username,$password) = explode(":",$decoded);
         $bool = login_try($username, $password);

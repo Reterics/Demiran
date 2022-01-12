@@ -16,6 +16,9 @@ $Demiran->add_method("generate_xml", function ($arguments){
             } else if(file_exists('./../../../plugins/invoices/invoice_types/simplified.php')) {
                 require('./../../../plugins/invoices/invoice_types/simplified.php');
             }
+            file_put_contents(__DIR__."/_temp_json_invoice.json", json_encode($arguments));
+            file_put_contents(__DIR__."/_temp_json_invoicep.json", json_encode($_POST));
+            file_put_contents(__DIR__."/_temp_json_invoicer.json", json_encode($_REQUEST));
 
             $xml = createSimplifiedInvoice($arguments);
     }
