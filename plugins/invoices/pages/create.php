@@ -84,7 +84,7 @@ if(isset($technicalUser) && isset($technicalUser['supplierTaxNumber'])){
                             <div class="col-md-3" <?php if($isAPI) {echo 'style="display:none"';}?>>
                                 <label for="full_name">Kiállító
                                     <select class="form-control" id="technicalUser" name="invoiceTechnicalUser">
-                                        <?php echo getTechnicalUsersAsOptions($_GET['user']); ?>
+                                        <?php echo getTechnicalUsersAsOptions($_GET['user'] ?? null); ?>
                                     </select>
                                 </label>
                             </div>
