@@ -28,14 +28,29 @@ function authenticate() {
             case array_key_exists('Authorization', $_SERVER) :
                 $authHeader = $_SERVER['Authorization'];
                 break;
+            case array_key_exists('REDIRECT_HTTP_AUTH', $_SERVER) :
+                $authHeader = $_SERVER['REDIRECT_HTTP_AUTH'];
+                break;
             default :
                 $authHeader = null;
                 break;
         }
-        preg_match('/Basic\s(\S+)/', $authHeader, $matches);
 
-        $username = mysqli_real_escape_string($connection,stripslashes($_SERVER['PHP_AUTH_USER']));
-        $password = mysqli_real_escape_string($connection,stripslashes($_SERVER['PHP_AUTH_PW']));
+        //preg_match('/Basic\s(\S+)/', $authHeader, $matches);
+        $username = null;
+        $password = null;
+        if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
+            $authString = str_replace("Basic ", "", $authHeader);
+            $un_pw = explode(":", base64_decode($authString));
+            $username = $un_pw[0];
+            $password = $un_pw[1];
+        } else {
+            $username = mysqli_real_escape_string($connection,stripslashes($_SERVER['PHP_AUTH_USER']));
+            $password = mysqli_real_escape_string($connection,stripslashes($_SERVER['PHP_AUTH_PW']));
+        }
+        if (!$username) {
+            return false;
+        }
         $query = "SELECT * FROM `users` WHERE username='$username' and password='".md5($password)."'";
         $result = mysqli_query($connection,$query) or die("Kapcsolódási hiba");
         $rows = mysqli_num_rows($result);
@@ -49,6 +64,7 @@ function authenticate() {
             return true;
         }
     } catch (\Exception $e) {
+        var_dump($e);
         return false;
     }
 }
