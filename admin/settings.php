@@ -39,6 +39,7 @@ require_once "process.php";
                     <div class="tab-line">Bejelentkezés</div>
                     <div class="tab-line">Névjegy</div>
                     <div class="tab-line">Import / Export</div>
+                    <div class="tab-line">API</div>
                 </div>
 
                 <div class="lio-modal">
@@ -519,6 +520,91 @@ require_once "process.php";
                         </div>
                     </div>
                 </div>
+                <div class="lio-modal" style="display: none">
+                    <div class="header">
+                        <h5 class="title">API</h5>
+                    </div>
+                    <form id="api_form" class="body">
+                        <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-1 input-lg setting_label">
+                                Engedélyezett hitelesítések
+                            </div>
+                            <div class="col-sm-7 control-label">
+                                <select id="api_auth" class="form-control" name="api_auth">
+                                    <?php
+                                    $selectedAPI = $globalSettings->getSettingValueByName('api_auth');
+
+                                    $list = array(
+                                            "inactive" => "API Inaktív",
+                                            "basic" => "Basic Auth"
+                                    );
+                                    foreach ($list as $key=>$value){
+                                        if(isset($selectedAPI) && $key == $selectedAPI){
+                                            echo "<option value='".$key."' selected>".$value."</option>";
+                                        } else {
+                                            echo "<option value='".$key."'>".$value."</option>";
+                                        }
+                                    }
+
+                                    ?>
+                                </select>
+                                <label class="pull-left" for="api_auth"></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-1 input-lg setting_label">
+                                NAV API URL
+                            </div>
+                            <div class="col-sm-7 control-label">
+                                <select id="api_nav_url" class="form-control" name="api_nav_url">
+                                    <?php
+                                    $selectedAPI = $globalSettings->getSettingValueByName('api_nav_url');
+
+                                    $list = array(
+                                        "https://api-test.onlineszamla.nav.gov.hu/invoiceService/v3" => "NAV v3 Teszt",
+                                        "https://api.onlineszamla.nav.gov.hu/invoiceService/v3" => "NAV v3 Éles"
+                                    );
+                                    foreach ($list as $key=>$value){
+                                        if(isset($selectedAPI) && $key == $selectedAPI){
+                                            echo "<option value='".$key."' selected>".$value."</option>";
+                                        } else {
+                                            echo "<option value='".$key."'>".$value."</option>";
+                                        }
+                                    }
+
+                                    ?>
+                                </select>
+                                <label class="pull-left" for="api_nav_url"></label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-1 input-lg setting_label">
+                                NAV Alapértelmezett Technikai Felhasználó
+                            </div>
+                            <div class="col-sm-7 control-label">
+                                <select id="api_default_user" class="form-control" name="api_default_user">
+                                    <?php
+                                    $selectedAPI = $globalSettings->getSettingValueByName('api_default_user');
+
+                                    $technicalUserSQL = "SELECT * FROM invoice_user LIMIT 50";
+                                    $technicalUser = sqlGetAll($technicalUserSQL);
+                                    foreach ($technicalUser as $user){
+                                        if(isset($selectedAPI) && $user['id'] == $selectedAPI){
+                                            echo "<option value='".$user['id']."' selected>".$user['login']." - ".$user['supplierName']."</option>";
+                                        } else {
+                                            echo "<option value='".$user['id']."'>".$user['login']." - ".$user['supplierName']."</option>";
+                                        }
+                                    }
+
+
+                                    ?>
+                                </select>
+                                <label class="pull-left" for="api_default_user"></label>
+                                <input id="save_api_auth" class="btn btn-outline-black" type="button" value="Mentés">
+                            </div>
+                        </div>
+                    </form>
+                </div>
         </div>
 
 
@@ -600,6 +686,28 @@ require_once "process.php";
                     Demiran.alert("Kérlek válassz ki egy fájlt a feltöltéshez!");
                 }
             };
+        }
+
+        const save_api_auth = document.getElementById("save_api_auth");
+        if(save_api_auth){
+            save_api_auth.onclick = function (){
+                const api_form = document.getElementById("api_form");
+
+                const api_auth = document.getElementById("api_auth");
+                if (api_form && api_form) {
+                    const value = api_auth.value;
+                    if(value){
+                        Demiran.call("save_api_settings", Demiran.convertToFormEncoded(api_form), function (error, data){
+                            if(!error){
+                                Demiran.alert("Beállítások mentése sikeres!");
+                            } else {
+                                Demiran.alert("Hiba történt a beállítások mentése során!");
+                            }
+                            console.log(data,error);
+                        });
+                    }
+                }
+            }
         }
 
         const startExport = function () {

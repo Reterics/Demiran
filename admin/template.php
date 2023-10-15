@@ -318,6 +318,7 @@ function admin_header_menu(){
                         <a class="dropdown-item" href="messages.php">Üzenetek</a>
                         <?php if(isset($_SESSION['role']) && ($_SESSION['role'] === 'owner' || $_SESSION['role'] === 'admin')): ?>
                             <a class="dropdown-item" href="settings.php">Beállítások</a>
+                            <a class="dropdown-item" href="plugin.php">Bővítmények</a>
                         <?php endif; ?>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="logout.php">Kijelentkezés</a>

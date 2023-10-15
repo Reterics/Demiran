@@ -1,0 +1,100 @@
+label {
+    display: inline-block;
+    margin-bottom: .5rem;
+    font-weight: normal;
+}
+
+.lio-modal .body .form-group {
+    margin-bottom: 0;
+    /*display: inline-flex;*/
+    flex-direction: row;
+}
+
+label > input.form-control, label > select.form-control {
+    margin-left: 0;
+    width: 80%;
+}
+
+.lio-modal label > input.form-control, label > select.form-control {
+    margin-left: 0;
+    width: 100%;
+}
+
+.container-md, .container-sm, .container-lg{
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    padding-top: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+@media (min-width: 576px) {
+
+}
+
+@media (min-width: 768px) {
+    .container, .container-md, .container-sm {
+        max-width: 720px;
+    }
+}
+
+@media (min-width: 992px) {
+    .container, .container-lg, .container-md, .container-sm {
+        max-width: 960px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .container, .container-md, .container-sm, .container-xl {
+        max-width: 1140px;
+    }
+    .container-lg{
+        max-width: 100%;
+    }
+}
+
+.advanced {
+    display: none;
+}
+
+.form-control option{
+    min-height: 1em
+}
+.form-control {
+    padding: .3rem .45rem;
+}
+select.form-control:not([size]):not([multiple]) {
+    height: auto;
+}
+
+
+.addButton {
+    display: inline-block;
+    border: 1px solid;
+    padding: 0 6px 5px;
+    font-size: 23px;
+    line-height: 1;
+    background-color: #f8f8f8;
+}
+
+.invoice-header-group {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    display: flex;
+    margin-bottom: 0;
+}
+
+.invoice-header-group > .col-md-3 {
+    max-width: 200px;
+}
+span.huf{
+    float: right;
+    margin-top: -29px;
+    margin-right: 10px;
+}
+
+.add_new_item select{
+    padding-right: 0px;
+    padding-left: 0.40rem;
+}
