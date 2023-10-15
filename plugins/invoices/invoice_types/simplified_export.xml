@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <InvoiceData xmlns="http://schemas.nav.gov.hu/OSA/3.0/data" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.nav.gov.hu/OSA/3.0/data invoiceData.xsd" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common" xmlns:base="http://schemas.nav.gov.hu/OSA/3.0/base">
-	<invoiceNumber>2021-12-27/001</invoiceNumber>
-	<invoiceIssueDate>2021-12-27</invoiceIssueDate>
+	<invoiceNumber>2022-01-03/001</invoiceNumber>
+	<invoiceIssueDate>2022-01-03</invoiceIssueDate>
 	<completenessIndicator>false</completenessIndicator>
 	<invoiceMain>
 		<invoice>
@@ -16,11 +16,11 @@
 					<supplierAddress>
 						<base:detailedAddress>
 							<base:countryCode>HU</base:countryCode>
-							<base:postalCode>8985</base:postalCode>
-							<base:city>Becsvölgye</base:city>
-							<base:streetName>Arany János</base:streetName>
+							<base:postalCode>8900</base:postalCode>
+							<base:city>Zalaegerszeg</base:city>
+							<base:streetName>Példa</base:streetName>
 							<base:publicPlaceCategory>út</base:publicPlaceCategory>
-							<base:number>5/a</base:number>
+							<base:number>45/b</base:number>
 						</base:detailedAddress>
 					</supplierAddress>
 					<supplierBankAccountNumber>11773494-00872726-00000000</supplierBankAccountNumber>
@@ -32,10 +32,10 @@
 				</customerInfo>
 				<invoiceDetail>
 					<invoiceCategory>SIMPLIFIED</invoiceCategory>
-					<invoiceDeliveryDate>2021-12-27</invoiceDeliveryDate>
+					<invoiceDeliveryDate>2022-01-03</invoiceDeliveryDate>
 					<currencyCode>HUF</currencyCode>
 					<exchangeRate>1</exchangeRate>
-					<paymentMethod>TRANSFER</paymentMethod>
+					<paymentMethod>CASH</paymentMethod>
 					<cashAccountingIndicator>true</cashAccountingIndicator>
 					<invoiceAppearance>ELECTRONIC</invoiceAppearance>
 				</invoiceDetail>
@@ -52,18 +52,18 @@
 						</productCode>
 					</productCodes>
 					<lineExpressionIndicator>true</lineExpressionIndicator>
-					<lineNatureIndicator>PRODUCT</lineNatureIndicator>
-					<lineDescription>Szoftverfejl</lineDescription>
-					<quantity>10</quantity>
+					<lineNatureIndicator>SERVICE</lineNatureIndicator>
+					<lineDescription>Weboldal fejlesztés</lineDescription>
+					<quantity>1</quantity>
 					<unitOfMeasure>PIECE</unitOfMeasure>
-					<unitPrice>1000</unitPrice>
-					<unitPriceHUF>1000</unitPriceHUF>
+					<unitPrice>100000</unitPrice>
+					<unitPriceHUF>100000</unitPriceHUF>
 					<lineAmountsSimplified>
 							<lineVatRate>
 								<vatExemption><case>AAM</case><reason>Alanyi Adómentes</reason></vatExemption>
 							</lineVatRate>
-						<lineGrossAmountSimplified>10000</lineGrossAmountSimplified>
-						<lineGrossAmountSimplifiedHUF>10000</lineGrossAmountSimplifiedHUF>
+						<lineGrossAmountSimplified>100000</lineGrossAmountSimplified>
+						<lineGrossAmountSimplifiedHUF>100000</lineGrossAmountSimplifiedHUF>
 					</lineAmountsSimplified>
 				</line>
 				
@@ -74,13 +74,13 @@
 						<vatRate>
 							<vatExemption><case>AAM</case><reason>Alanyi Adómentes</reason></vatExemption>
 						</vatRate>
-						<vatContentGrossAmount>10000</vatContentGrossAmount>
-						<vatContentGrossAmountHUF>10000</vatContentGrossAmountHUF>
+						<vatContentGrossAmount>100000</vatContentGrossAmount>
+						<vatContentGrossAmountHUF>100000</vatContentGrossAmountHUF>
 					</summarySimplified>
 				
 				<summaryGrossData>
-					<invoiceGrossAmount>10000</invoiceGrossAmount>
-					<invoiceGrossAmountHUF>10000</invoiceGrossAmountHUF>
+					<invoiceGrossAmount>100000</invoiceGrossAmount>
+					<invoiceGrossAmountHUF>100000</invoiceGrossAmountHUF>
 				</summaryGrossData>
 			</invoiceSummary>
 		</invoice>

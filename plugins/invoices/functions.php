@@ -265,3 +265,126 @@ function getNAVToken(){
         "result"=>$result
     );
 }
+
+function getTransactionDetails($transactionId) {
+    global $reporter;
+    $result = array(
+        "error"=>null,
+        "transaction_id"=> $transactionId,
+        "status"=>"",
+        "data"=>null
+    );
+    try {
+        $statusXml = $reporter->queryTransactionStatus($result['transaction_id']);
+
+        $result['data'] = $statusXml;
+        if (isset($_GET['debug'])) {
+            file_put_contents("status.json", json_encode($statusXml));
+        }
+        $result['status'] = $statusXml->processingResults->processingResult->invoiceStatus;
+        $result['statusText'] = $result['status'];
+        if ($statusXml->processingResults->processingResult->invoiceStatus == "DONE") {
+            $result['statusText'] = "Feldolgozva";
+        } else if ($statusXml->processingResults->processingResult->invoiceStatus == "ABORTED") {
+            $result['statusText'] = "Megszakítva";
+        } else if($statusXml->processingResults->processingResult->invoiceStatus == "PROCESSING") {
+            $result['statusText'] = "Feldolgozás alatt";
+        } else if($statusXml->processingResults->processingResult->invoiceStatus == "RECEIVED") {
+            $result['statusText'] = "Elfogadva";
+        } else if($statusXml->processingResults->processingResult->invoiceStatus == "SAVED") {
+            $result['statusText'] = "Elmentve";
+        }
+        if(isset($statusXml->processingResults->processingResult->businessValidationMessages->message) &&
+            $statusXml->processingResults->processingResult->businessValidationMessages->message){
+            $result['message'] = $statusXml->processingResults->processingResult->businessValidationMessages->message;
+        }
+    } catch(Exception $ex) {
+        $result['error'] = get_class($ex) . ": " . $ex->getMessage();
+    }
+    return $result;
+}
+
+function getTransactionList($dateFrom, $dateTo){
+    global $reporter;
+    if (!$reporter) {
+        return array("error"=>true,"message"=>"You need to provide NAV User");
+    }
+    try {
+        if (!isset($dateFrom ) || !$dateFrom) {
+            $dateFrom = strtotime("-1 days");
+        } else {
+            $dateFrom = strtotime($dateFrom);
+        }
+        if (!isset($dateTo ) || !$dateTo) {
+            $dateTo = strtotime("tomorrow");
+        } else {
+            $dateTo = strtotime($dateTo);
+        }
+        $page = 1;
+        if (isset($_GET['page']) && $_GET['page']) {
+            $page = intval($_GET['page']);
+        }
+
+        $dateFrom = str_replace(' ', 'T', date('Y-m-d H:i:s', $dateFrom)) . 'Z';
+        $dateTo = str_replace(' ', 'T', date('Y-m-d H:i:s', $dateTo)) . 'Z';
+        $insDate = [
+            "dateTimeFrom" => $dateFrom, //"2020-03-01T06:00:00Z"
+            "dateTimeTo" => $dateTo,
+        ];
+
+        return $reporter->queryTransactionList($insDate, $page);
+    } catch(Exception $ex) {
+        //print get_class($ex) . ": " . $ex->getMessage();
+        return array("error"=>true,"message"=>get_class($ex) . ": " . $ex->getMessage());
+    }
+}
+
+function overrideNAVUser($arguments) {
+    global $apiUrl;
+    global $softwareData;
+    global $config;
+    global $reporter;
+
+    if(isset($arguments['softwareId']) && isset($arguments['softwareName'])
+        && isset($arguments['softwareOperation']) && isset($arguments['softwareMainVersion'])
+        && isset($arguments['softwareDevName']) && isset($arguments['softwareDevContact'])
+        && isset($arguments['softwareDevCountryCode']) && isset($arguments['softwareDevTaxNumber'])) {
+        $softwareData = array(
+            "softwareId" => $arguments['softwareId'],
+            "softwareName" => $arguments['softwareName'],
+            "softwareOperation" => $arguments['softwareOperation'],
+            "softwareMainVersion" => $arguments['softwareMainVersion'],
+            "softwareDevName" => $arguments['softwareDevName'],
+            "softwareDevContact" => $arguments['softwareDevContact'],
+            "softwareDevCountryCode" => $arguments['softwareDevCountryCode'],
+            "softwareDevTaxNumber" => $arguments['softwareDevTaxNumber'],
+        );
+    }
+
+    if(isset($arguments['navTaxNumber']) && $arguments['navTaxNumber'] &&
+        isset($arguments['navLogin']) && $arguments['navLogin'] &&
+        isset($arguments['navPassword']) && $arguments['navPassword'] &&
+        isset($arguments['signKey']) && $arguments['signKey'] &&
+        isset($arguments['exchangeKey']) && $arguments['exchangeKey']) {
+        $userData = array(
+            "login" => $arguments['navLogin'],
+            "password" => $arguments['navPassword'],
+            // "passwordHash" => "...", // Opcionális, a jelszó már SHA512 hashelt változata. Amennyiben létezik ez a változó, akkor az authentikáció során ezt használja
+            "taxNumber" => $arguments['navTaxNumber'],
+            "signKey" => $arguments['signKey'],
+            "exchangeKey" => $arguments['exchangeKey'],
+        );
+
+        if (isset($arguments['navApiUrl']) && $arguments['navApiUrl']) {
+            $apiUrl = $arguments['navApiUrl'];
+        }
+        try {
+            $config = new NavOnlineInvoice\Config($apiUrl, $userData, $softwareData);
+            $config->setCurlTimeout(60);
+            //$config->verifySSL = false;
+            $reporter = new NavOnlineInvoice\Reporter($config);
+        }catch (Exception $e){
+            echo $e;
+        }
+    }
+}
